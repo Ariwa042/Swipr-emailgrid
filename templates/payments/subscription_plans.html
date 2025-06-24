@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}Subscription Plans{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold">Find the Perfect Plan</h1>
+        <p class="lead text-muted">Simple, transparent pricing for your email marketing needs.</p>
+    </div>
+
+    {% if current_subscription %}
+    <div class="alert alert-info text-center mb-5">
+        You are currently on the <strong>{{ current_subscription.plan.name }}</strong> plan. It is active until <strong>{{ current_subscription.end_date|date:"F d, Y" }}</strong>.
+    </div>
+    {% endif %}
+
+    <div class="row g-4 justify-content-center">
+        {% for plan in plans %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm {% if plan.name == 'Pro' %}border-primary{% endif %}">
+                <div class="card-header text-center py-3 {% if plan.name == 'Pro' %}bg-primary text-white{% endif %}">
+                    <h4 class="fw-bold mb-0">{{ plan.name }}</h4>
+                    {% if plan.name == 'Pro' %}<span class="badge bg-light text-primary mt-2">Most Popular</span>{% endif %}
+                </div>
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="text-center mb-4">
+                        <h2 class="display-4 fw-bold">${{ plan.price|floatformat:0 }}</h2>
+                        <small class="text-muted">/ {{ plan.duration_days }} days</small>
+                    </div>
+                    <ul class="list-unstyled mb-4 flex-grow-1">
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>{{ plan.max_emails|floatformat:0 }}</strong> emails/month</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional Templates</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Campaign Analytics</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>24/7 Email Support</li>
+                        {% if plan.name != 'Basic' %}
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>A/B Testing</li>
+                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Priority Support</li>
+                        {% endif %}
+                    </ul>
+                    {% if current_subscription.plan == plan %}
+                        <button class="btn btn-outline-success w-100 mt-auto" disabled>Your Current Plan</button>
+                    {% else %}
+                        <a href="{% url 'payments:checkout' plan.id %}" class="btn btn-primary w-100 mt-auto">Choose Plan</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning text-center">
+                No subscription plans are available at this time. Please check back later.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

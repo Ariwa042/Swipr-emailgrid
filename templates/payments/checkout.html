@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - {{ plan.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Complete Your Purchase</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="card-title">Plan Details</h5>
+                            <div class="plan-details p-3 border rounded">
+                                <h4>{{ plan.name }}</h4>
+                                <p><strong>Price:</strong> ${{ plan.price }}</p>
+                                <p><strong>Email Limit:</strong> {{ plan.max_emails }} emails</p>
+                                <p><strong>Duration:</strong> {{ plan.duration_days }} days</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="card-title">Payment Method</h5>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="{{ form.payment_method.id_for_label }}" class="form-label">Select Cryptocurrency:</label>
+                                    {{ form.payment_method }}
+                                    {% if form.payment_method.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.payment_method.errors }}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="payment-methods mt-4">
+                                    <h6>Available Payment Methods:</h6>
+                                    <div class="row">
+                                        {% for method in payment_methods %}
+                                        <div class="col-md-6 mb-2">
+                                            <div class="card">
+                                                <div class="card-body py-2">
+                                                    <small>{{ method.cryptocurrency }} ({{ method.symbol }})</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% empty %}
+                                        <div class="col-12">
+                                            <div class="alert alert-warning">No payment methods available</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mt-4">
+                                    <a href="{% url 'payments:subscription_plans' %}" class="btn btn-secondary">Back to Plans</a>
+                                    <button type="submit" class="btn btn-primary">Proceed to Payment</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

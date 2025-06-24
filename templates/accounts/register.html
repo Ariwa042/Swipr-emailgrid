@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Start Your Free Trial - EmailGrid{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
+                        <h3 class="card-title">Start Your Free Trial</h3>
+                        <p class="text-muted">Join thousands of businesses growing with EmailGrid</p>
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.email.id_for_label }}" class="form-label">
+                                <i class="fas fa-envelope me-2"></i>Email Address
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Password
+                            </label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small">{{ form.password1.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label">
+                                <i class="fas fa-lock me-2"></i>Confirm Password
+                            </label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small">{{ form.password2.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                <label class="form-check-label small" for="agreeTerms">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-rocket me-2"></i>Start Free Trial
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="mb-0">Already have an account? 
+                            <a href="{% url 'accounts:login' %}" class="text-decoration-none">
+                                <i class="fas fa-sign-in-alt me-1"></i>Sign in here
+                            </a>
+                        </p>
+                    </div>
+
+                    <!-- Features Preview -->
+                    <div class="mt-4">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
+                                <small class="d-block text-muted">Email Campaigns</small>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                                <small class="d-block text-muted">Analytics</small>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-users fa-2x text-info mb-2"></i>
+                                <small class="d-block text-muted">Contact Management</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

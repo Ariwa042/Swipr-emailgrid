@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Instructions{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Payment Instructions</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p><strong>Important:</strong> Please complete your payment to activate your subscription. Once payment is confirmed, your subscription will be automatically activated.</p>
+                    </div>
+                    
+                    <h5 class="card-title">Payment Details</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Plan:</strong> {{ plan.name }}</p>
+                            <p><strong>Amount:</strong> ${{ payment.amount }}</p>
+                            <p><strong>Payment ID:</strong> {{ payment.payment_id }}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-warning">{{ payment.get_status_display }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Payment Method:</strong> {{ wallet.cryptocurrency }} ({{ wallet.symbol }})</p>
+                            <p><strong>Date:</strong> {{ payment.created_at|date:"F j, Y H:i" }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-instructions border p-4 mb-4 bg-light">
+                        <h5 class="text-center mb-3">Send {{ payment.amount }} USD worth of {{ wallet.cryptocurrency }}</h5>
+                        <div class="mb-3">
+                            <label class="form-label"><strong>To Wallet Address:</strong></label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" value="{{ wallet.wallet_address }}" id="wallet-address" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('wallet-address')">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <small class="text-muted">Double-check the address before sending your payment</small>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <p><strong>Note:</strong> After sending payment, please contact our support team with your Payment ID to expedite verification.</p>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{% url 'payments:subscription_plans' %}" class="btn btn-secondary">Back to Plans</a>
+                        <a href="#" id="check-status-btn" class="btn btn-primary" data-payment-id="{{ payment.payment_id }}">Check Payment Status</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="payment-status-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Payment Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="payment-status-body">
+                Checking payment status...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    function copyToClipboard(elementId) {
+        var copyText = document.getElementById(elementId);
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        document.execCommand("copy");
+        
+        // Show alert or toast
+        alert("Copied: " + copyText.value);
+    }
+    
+    document.getElementById('check-status-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        var paymentId = this.getAttribute('data-payment-id');
+        var modal = new bootstrap.Modal(document.getElementById('payment-status-modal'));
+        modal.show();
+        
+        // Make AJAX request to check payment status
+        fetch('/payments/check-status/' + paymentId + '/')
+            .then(response => response.json())
+            .then(data => {
+                var statusBody = document.getElementById('payment-status-body');
+                
+                if (data.completed) {
+                    statusBody.innerHTML = '<div class="alert alert-success">Your payment has been completed! Your subscription is now active.</div>';
+                    setTimeout(function() {
+                        window.location.href = '{{ url "accounts:profile" }}';
+                    }, 3000);
+                } else {
+                    statusBody.innerHTML = '<div class="alert alert-info">Your payment is still being processed. Current status: ' + data.status + '</div>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('payment-status-body').innerHTML = '<div class="alert alert-danger">Error checking payment status. Please try again later.</div>';
+            });
+    });
+</script>
+{% endblock %}
+{% endblock %}

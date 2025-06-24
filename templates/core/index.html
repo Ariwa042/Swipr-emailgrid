@@ -1,0 +1,274 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}EmailGrid - Advanced Email Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="hero bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Email Marketing Made Simple</h1>
+                <p class="lead mb-4">EmailGrid helps you create, send, and track effective email campaigns. Reach your audience with professional templates and powerful analytics.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:create_campaign' %}" class="btn btn-light btn-lg me-3 mb-2">Create Campaign</a>
+                    <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-light btn-lg mb-2">View Campaigns</a>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-light btn-lg me-3 mb-2">Get Started</a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg mb-2">Login</a>
+                {% endif %}
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="position-relative">
+                    <img src="{% static 'images/email-marketing.jpg' %}" alt="Email Marketing" class="img-fluid rounded shadow">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary opacity-10 rounded"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <!-- Features Section -->
+    <section class="mb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Why Choose EmailGrid?</h2>
+            <p class="lead text-muted">Powerful features to supercharge your email marketing</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-envelope-fill fs-3"></i>
+                        </div>
+                        <h4 class="mt-2">Professional Templates</h4>
+                        <p class="text-muted">Choose from a variety of professionally designed email templates to engage your audience effectively.</p>
+                        <div class="mt-3">
+                            <a href="{% url 'core:create_campaign' %}" class="text-primary fw-bold text-decoration-none">
+                                Try Templates <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-graph-up fs-3"></i>
+                        </div>
+                        <h4 class="mt-2">Detailed Analytics</h4>
+                        <p class="text-muted">Track opens, clicks, and conversions with real-time data to optimize your email performance.</p>
+                        <div class="mt-3">
+                            <a href="{% url 'core:campaign_list' %}" class="text-primary fw-bold text-decoration-none">
+                                View Analytics <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow transition">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-shield-check fs-3"></i>
+                        </div>
+                        <h4 class="mt-2">Secure Delivery</h4>
+                        <p class="text-muted">Ensure your emails reach the inbox with our advanced delivery system and spam protection.</p>
+                        <div class="mt-3">
+                            <a href="{% url 'payments:subscription_plans' %}" class="text-primary fw-bold text-decoration-none">
+                                Learn More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pricing Section -->
+    <section class="mb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Flexible Pricing Plans</h2>
+            <p class="lead text-muted">Choose the plan that fits your needs</p>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-light text-center py-3">
+                        <h3 class="fw-bold mb-0">Basic</h3>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <h2 class="card-title pricing-card-title mb-3">
+                            $9.99<small class="text-muted fw-light">/mo</small>
+                        </h2>
+                        <ul class="list-unstyled mt-4 mb-4">
+                            <li>5,000 emails per month</li>
+                            <li>Basic templates</li>
+                            <li>Email support</li>
+                            <li>Basic analytics</li>
+                        </ul>
+                        <a href="{% url 'payments:subscription_plans' %}" class="btn btn-outline-primary btn-lg w-100">Get Started</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow border-primary">
+                    <div class="card-header bg-primary text-white text-center py-3">
+                        <h3 class="fw-bold mb-0">Pro</h3>
+                        <span class="badge bg-warning text-dark mt-2">Most Popular</span>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <h2 class="card-title pricing-card-title mb-3">
+                            $29.99<small class="text-muted fw-light">/mo</small>
+                        </h2>
+                        <ul class="list-unstyled mt-4 mb-4">
+                            <li>25,000 emails per month</li>
+                            <li>Advanced templates</li>
+                            <li>Priority support</li>
+                            <li>Detailed analytics</li>
+                            <li>A/B testing</li>
+                        </ul>
+                        <a href="{% url 'payments:subscription_plans' %}" class="btn btn-primary btn-lg w-100">Get Started</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-header bg-light text-center py-3">
+                        <h3 class="fw-bold mb-0">Enterprise</h3>
+                    </div>
+                    <div class="card-body text-center p-4">
+                        <h2 class="card-title pricing-card-title mb-3">
+                            $99.99<small class="text-muted fw-light">/mo</small>
+                        </h2>
+                        <ul class="list-unstyled mt-4 mb-4">
+                            <li>100,000 emails per month</li>
+                            <li>All Pro features</li>
+                            <li>Dedicated account manager</li>
+                            <li>API access</li>
+                            <li>White-label options</li>
+                        </ul>
+                        <a href="{% url 'payments:subscription_plans' %}" class="btn btn-outline-primary btn-lg w-100">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Testimonials Section -->
+    <section class="mb-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">What Our Customers Say</h2>
+            <p class="lead text-muted">Trusted by thousands of businesses</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="card-text mb-3">"EmailGrid has transformed our marketing strategy. We've seen a 40% increase in engagement since switching to their platform."</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">JD</div>
+                            <div>
+                                <h6 class="mb-0">John Doe</h6>
+                                <small class="text-muted">Marketing Director, TechCorp</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                        </div>
+                        <p class="card-text mb-3">"The templates are beautiful and the analytics help us understand exactly what's working and what's not. Great service!"</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">JS</div>
+                            <div>
+                                <h6 class="mb-0">Jane Smith</h6>
+                                <small class="text-muted">CEO, Fashion Boutique</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex mb-3">
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-fill text-warning me-1"></i>
+                            <i class="bi bi-star-half text-warning"></i>
+                        </div>
+                        <p class="card-text mb-3">"The customer support is exceptional. They helped us set up our first campaign and were available whenever we had questions."</p>
+                        <div class="d-flex align-items-center">
+                            <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">RJ</div>
+                            <div>
+                                <h6 class="mb-0">Robert Johnson</h6>
+                                <small class="text-muted">Owner, Local Restaurant</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+      <!-- CTA Section -->
+    <section class="text-center py-5 bg-light rounded shadow-sm">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="fw-bold mb-3">Ready to grow your business?</h2>
+                    <p class="lead mb-4">Join thousands of successful businesses that use EmailGrid to connect with their customers and drive results.</p>
+                    <div class="d-flex flex-wrap justify-content-center gap-2">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-lg px-4">
+                                <i class="bi bi-envelope-plus me-2"></i>Create Your First Campaign
+                            </a>
+                        {% else %}
+                            <a href="{% url 'accounts:register' %}" class="btn btn-primary btn-lg px-4">
+                                <i class="bi bi-person-plus me-2"></i>Sign Up Free
+                            </a>
+                            <a href="{% url 'payments:subscription_plans' %}" class="btn btn-outline-primary btn-lg px-4">
+                                <i class="bi bi-credit-card me-2"></i>View Plans
+                            </a>
+                        {% endif %}
+                    </div>
+                    <p class="text-muted mt-3">No credit card required. Get started in minutes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .transition {
+        transition: all 0.3s ease;
+    }
+</style>
+{% endblock %}
