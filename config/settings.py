@@ -25,7 +25,14 @@ SECRET_KEY = 'django-insecure-#)fe^y=_c4n2f#7u9w2f6^dmynu_o(59wz@qhvaz&+(0lebzyx
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', 'https://emailgrid.onrender.com', 'emailgrid.onrender.com']
+
+
+# CSRF trusted origins (for deployment, e.g. Render, custom domains)
+CSRF_TRUSTED_ORIGINS = [
+    'https://emailgrid.onrender.com',
+    'https://www.emailgrid.onrender.com',
+]
 
 
 # Application definition
