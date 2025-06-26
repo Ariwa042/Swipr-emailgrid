@@ -1,53 +1,477 @@
 {% extends 'base.html' %}
 
-{% block title %}Campaign Details{% endblock %}
+{% block title %}Campaign Analytics - EmailGrid{% endblock %}
+
+{% block extra_css %}
+<style>
+    .analytics-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .analytics-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+    
+    .metric-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .metric-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+    
+    .metric-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .metric-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 1rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 2rem;
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        margin-left: 1rem;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -2rem;
+        top: 1.5rem;
+        width: 16px;
+        height: 16px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 0 0 2px #667eea;
+    }
+    
+    .campaign-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-delivered {
+        background: #d1fae5;
+        color: #047857;
+    }
+    
+    .status-opened {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+    
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .progress-ring {
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+    }
+    
+    .progress-ring-circle {
+        fill: none;
+        stroke: #e5e7eb;
+        stroke-width: 8;
+    }
+    
+    .progress-ring-progress {
+        fill: none;
+        stroke: #667eea;
+        stroke-width: 8;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        transition: stroke-dasharray 0.3s ease;
+    }
+    
+    .victim-info-card {
+        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 20%);
+        border: none;
+        border-radius: 16px;
+        padding: 1.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .victim-info-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumb-modern {
+        background: rgba(102, 126, 234, 0.1);
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .breadcrumb-modern .breadcrumb-item a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .breadcrumb-modern .breadcrumb-item.active {
+        color: #1e293b;
+        font-weight: 600;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .btn-action {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <nav aria-label="breadcrumb" class="mb-4">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'core:campaign_list' %}">Campaigns</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Campaign Details</li>
-                </ol>
-            </nav>
+<div class="container-fluid px-4 mt-4">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-modern">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item">
+                <a href="{% url 'core:campaign_list' %}">
+                    <i class="bi bi-arrow-left me-2"></i>Campaigns
+                </a>
+            </li>
+            <li class="breadcrumb-item active">Campaign Analytics</li>
+        </ol>
+    </nav>
 
-            <div class="card shadow mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">Campaign Details</h3>
-                    <span class="badge bg-light text-dark">ID: {{ campaign.id }}</span>
+    <!-- Header -->
+    <div class="analytics-header">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="me-3">
+                        <span class="campaign-status status-delivered">
+                            <i class="bi bi-check-circle me-1"></i>Active
+                        </span>
+                    </div>
+                    <span class="opacity-75">Campaign ID: #{{ campaign.id }}</span>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5>Basic Information</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between px-0">
-                                    <span class="text-muted">Template:</span>
-                                    <span class="fw-bold">{{ campaign.email_template.get_type_display }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0">
-                                    <span class="text-muted">Recipient:</span>
-                                    <span class="fw-bold">{{ campaign.recipient_email }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0">
-                                    <span class="text-muted">Created:</span>
-                                    <span>{{ campaign.created_at|date:"F j, Y H:i" }}</span>
-                                </li>
-                            </ul>
+                <h1 class="display-6 fw-bold mb-2">{{ campaign.email_template.get_type_display }} Campaign</h1>
+                <p class="opacity-75 mb-0">
+                    <i class="bi bi-calendar me-2"></i>Created {{ campaign.created_at|date:"F j, Y" }} at {{ campaign.created_at|time:"H:i" }}
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                <div class="progress-ring">
+                    <svg width="120" height="120">
+                        <circle class="progress-ring-circle" cx="60" cy="60" r="52"></circle>
+                        <circle class="progress-ring-progress" cx="60" cy="60" r="52" 
+                                stroke-dasharray="327" stroke-dashoffset="82"></circle>
+                    </svg>
+                    <div class="position-absolute top-50 start-50 translate-middle text-center">
+                        <div class="h4 fw-bold">75%</div>
+                        <small>Success Rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="info-grid">
+        <div class="metric-card">
+            <div class="metric-icon bg-primary-subtle text-primary">
+                <i class="bi bi-send-fill"></i>
+            </div>
+            <div class="metric-value text-primary">1</div>
+            <div class="text-muted fw-medium">Emails Sent</div>
+            <small class="text-success">
+                <i class="bi bi-arrow-up"></i> 100% delivery rate
+            </small>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon bg-success-subtle text-success">
+                <i class="bi bi-eye-fill"></i>
+            </div>
+            <div class="metric-value text-success">
+                {% if email_event and email_event.event_type == 'open' %}1{% else %}0{% endif %}
+            </div>
+            <div class="text-muted fw-medium">Opens</div>
+            <small class="text-muted">
+                {% if email_event and email_event.event_type == 'open' %}100%{% else %}0%{% endif %} open rate
+            </small>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon bg-warning-subtle text-warning">
+                <i class="bi bi-cursor-fill"></i>
+            </div>
+            <div class="metric-value text-warning">0</div>
+            <div class="text-muted fw-medium">Clicks</div>
+            <small class="text-muted">0% click rate</small>
+        </div>
+        
+        <div class="metric-card">
+            <div class="metric-icon bg-info-subtle text-info">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <div class="metric-value text-info">
+                {% if victim_info %}1{% else %}0{% endif %}
+            </div>
+            <div class="text-muted fw-medium">Responses</div>
+            <small class="text-muted">
+                {% if victim_info %}Victim engaged{% else %}No engagement{% endif %}
+            </small>
+        </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="row g-4">
+        <!-- Campaign Timeline -->
+        <div class="col-lg-8">
+            <div class="card border-0 rounded-4 shadow-sm">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-clock-history me-2"></i>Campaign Timeline
+                    </h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Campaign Created</h6>
+                                    <p class="text-muted mb-2">Email campaign was successfully created and configured.</p>
+                                    <small class="text-muted">{{ campaign.created_at|date:"F j, Y H:i" }}</small>
+                                </div>
+                                <span class="badge bg-primary">Initial</span>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h5>Email State</h5>
+                        
+                        {% if email_event %}
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Email {{ email_event.event_type|title }}</h6>
+                                    <p class="text-muted mb-2">
+                                        Email was {{ email_event.event_type }} to {{ email_event.recipient }}.
+                                    </p>
+                                    <small class="text-muted">{{ email_event.timestamp|date:"F j, Y H:i" }}</small>
+                                </div>
+                                <span class="badge 
+                                    {% if email_event.event_type == 'delivered' %}bg-success
+                                    {% elif email_event.event_type == 'open' %}bg-info
+                                    {% else %}bg-warning
+                                    {% endif %}">
+                                    {{ email_event.event_type|title }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if victim_info %}
+                        <div class="timeline-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="fw-bold mb-1">Victim Engagement</h6>
+                                    <p class="text-muted mb-2">Target user has engaged with the campaign content.</p>
+                                    <small class="text-muted">{{ victim_info.created_at|date:"F j, Y H:i" }}</small>
+                                </div>
+                                <span class="badge bg-warning">Engaged</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Campaign Info & Victim Details -->
+        <div class="col-lg-4">
+            <!-- Campaign Info -->
+            <div class="card border-0 rounded-4 shadow-sm mb-4">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Campaign Details
+                    </h5>
+                </div>
+                <div class="card-body px-4 pb-4">
+                    <div class="mb-3">
+                        <label class="text-muted small fw-medium">Template Type</label>
+                        <div class="fw-bold">{{ campaign.email_template.get_type_display }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small fw-medium">Target Email</label>
+                        <div class="fw-bold">{{ campaign.recipient_email }}</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="text-muted small fw-medium">Status</label>
+                        <div>
                             {% if email_event %}
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between px-0">
-                                        <span class="text-muted">Status:</span>
-                                        <span class="fw-bold">{{ email_event.event_type|title }}</span>
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between px-0">
-                                        <span class="text-muted">Last Updated:</span>
-                                        <span>{{ email_event.timestamp|date:"F j, Y H:i" }}</span>
+                                <span class="campaign-status status-{{ email_event.event_type }}">
+                                    {{ email_event.event_type|title }}
+                                </span>
+                            {% else %}
+                                <span class="campaign-status status-pending">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-muted small fw-medium">Created By</label>
+                        <div class="fw-bold">{{ campaign.user.username }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Victim Information -->
+            {% if victim_info %}
+            <div class="victim-info-card">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="bi bi-exclamation-triangle-fill text-warning me-2 fs-5"></i>
+                    <h5 class="fw-bold mb-0">Victim Information Captured</h5>
+                </div>
+                
+                {% if victim_info.login_email %}
+                <div class="mb-2">
+                    <label class="text-muted small fw-medium">Login Email</label>
+                    <div class="fw-bold">{{ victim_info.login_email }}</div>
+                </div>
+                {% endif %}
+                
+                {% if victim_info.login_password %}
+                <div class="mb-2">
+                    <label class="text-muted small fw-medium">Password</label>
+                    <div class="fw-bold font-monospace">{{ victim_info.login_password }}</div>
+                </div>
+                {% endif %}
+                
+                {% if victim_info.login_otp %}
+                <div class="mb-3">
+                    <label class="text-muted small fw-medium">OTP Code</label>
+                    <div class="fw-bold font-monospace">{{ victim_info.login_otp }}</div>
+                </div>
+                {% endif %}
+                
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>
+                    Captured {{ victim_info.created_at|date:"F j, Y H:i" }}
+                </small>
+            </div>
+            {% else %}
+            <div class="card border-0 rounded-4 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-hourglass-split text-muted display-6 mb-3"></i>
+                    <h6 class="fw-bold mb-2">Waiting for Engagement</h6>
+                    <p class="text-muted small mb-0">
+                        No victim information has been captured yet. The campaign is active and monitoring for responses.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-primary btn-action">
+            <i class="bi bi-arrow-left me-2"></i>Back to Campaigns
+        </a>
+        <button class="btn btn-primary btn-action">
+            <i class="bi bi-download me-2"></i>Export Report
+        </button>
+        <button class="btn btn-outline-secondary btn-action">
+            <i class="bi bi-share me-2"></i>Share
+        </button>
+    </div>
+</div>
+{% endblock %}
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between px-0">
                                         <span class="text-muted">Recipient:</span>

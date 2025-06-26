@@ -8,115 +8,85 @@
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
-    <!-- Custom CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Modern Theme CSS -->
+    <link rel="stylesheet" href="{% static 'css/modern-theme.css' %}">
+    <!-- Legacy Custom CSS (for backward compatibility) -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-        .btn-primary {
-            background: linear-gradient(45deg, #4e73df, #224abe);
-            border: none;
-            border-radius: 25px;
-            padding: 10px 30px;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(45deg, #224abe, #4e73df);
-            transform: translateY(-2px);
-            transition: all 0.3s ease;
-        }
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 12px 15px;
-        }
-        .form-control:focus {
-            border-color: #4e73df;
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-        }
-        .alert {
-            border-radius: 10px;
-            border: none;        }
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 5px solid #fff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        main {
-            flex: 1;
-        }
-        footer {
-            margin-top: auto;
-        }
-        .bg-primary {
-            background: linear-gradient(45deg, #4e73df, #224abe) !important;
-        }
-    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand text-white" href="{% url 'core:index' %}">
-                <i class="bi bi-envelope-fill me-2"></i>EmailGrid
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container-fluid">
+            <!-- Brand -->
+            <a class="navbar-brand text-white d-flex align-items-center" {% if user.is_authenticated %}href="{% url 'accounts:profile' %}"{% else %}href="{% url 'core:index' %}"{% endif %}>
+                <div class="me-2 p-1 rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <i class="bi bi-grid-3x3-gap-fill text-primary fs-6"></i>
+                </div>
+                <span class="fw-bold">EmailGrid</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
+
+            <!-- Mobile Burger Menu -->
+            <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+                <i class="bi bi-list fs-4 text-white"></i>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- Desktop Navigation (hidden on mobile) -->
+            <div class="collapse navbar-collapse d-none d-lg-flex">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="{% url 'core:index' %}">Home</a>
-                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'core:campaign_list' %}">Campaigns</a>
+                            <a class="nav-link text-white" href="{% url 'accounts:profile' %}">
+                                <i class="bi bi-house-door-fill me-2"></i>Dashboard
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'payments:subscription_plans' %}">Plans</a>
+                            <a class="nav-link text-white" href="{% url 'core:create_campaign' %}">
+                                <i class="bi bi-send-fill me-2"></i>Send Email
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'core:campaign_list' %}">
+                                <i class="bi bi-list-ul me-2"></i>Campaigns
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{% url 'payments:subscription_plans' %}">
+                                <i class="bi bi-gem me-2"></i>Plans
+                            </a>
                         </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">                            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-1"></i>{{ user.username }}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-2"></i>{{ user.email|truncatechars:15 }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                    <i class="bi bi-person-circle me-2"></i>Profile
+                                </a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}">
+                                    <i class="bi bi-shield-lock me-2"></i>Change Password
+                                </a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                                </a></li>
                             </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'accounts:login' %}">
-                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
-                            </a>
+                            <a class="nav-link text-white" href="{% url 'accounts:login' %}">Sign In</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'accounts:register' %}">
-                                <i class="bi bi-person-plus me-1"></i>Register
-                            </a>
+                            <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:register' %}">Get Started</a>
                         </li>
                     {% endif %}
                 </ul>
@@ -124,15 +94,110 @@
         </div>
     </nav>
 
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu">
+        <div class="offcanvas-header bg-primary text-white">
+            <h5 class="offcanvas-title d-flex align-items-center">
+                <div class="me-2 p-1 rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                    <i class="bi bi-grid-3x3-gap-fill text-primary fs-6"></i>
+                </div>
+                EmailGrid
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            {% if user.is_authenticated %}
+                <!-- User Info -->
+                <div class="bg-light p-3 border-bottom">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                            <i class="bi bi-person-fill fs-5"></i>
+                        </div>
+                        <div>
+                            <div class="fw-semibold">{{ user.email|truncatechars:25 }}</div>
+                            <small class="text-muted">Member since {{ user.date_joined|date:"M Y" }}</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-house-door-fill me-3 text-primary fs-5"></i>
+                        <span class="fw-medium">Dashboard</span>
+                    </a>
+                    <a href="{% url 'core:create_campaign' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-send-fill me-3 text-success fs-5"></i>
+                        <span class="fw-medium">Send Email</span>
+                    </a>
+                    <a href="{% url 'core:campaign_list' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-list-ul me-3 text-info fs-5"></i>
+                        <span class="fw-medium">View Campaigns</span>
+                    </a>
+                    <a href="{% url 'payments:subscription_plans' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-gem me-3 text-warning fs-5"></i>
+                        <span class="fw-medium">Subscription Plans</span>
+                    </a>
+                </div>
+
+                <!-- Settings Section -->
+                <div class="border-top mt-3">
+                    <div class="p-3">
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Settings</h6>
+                        <div class="list-group list-group-flush">
+                            <a href="{% url 'accounts:change_password' %}" class="list-group-item list-group-item-action d-flex align-items-center py-2 border-0" data-bs-dismiss="offcanvas">
+                                <i class="bi bi-shield-lock me-3 text-secondary"></i>
+                                <span>Change Password</span>
+                            </a>
+                            <a href="{% url 'accounts:logout' %}" class="list-group-item list-group-item-action d-flex align-items-center py-2 border-0 text-danger" data-bs-dismiss="offcanvas">
+                                <i class="bi bi-box-arrow-right me-3"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <!-- Guest Navigation -->
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'core:index' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-house-door-fill me-3 text-primary fs-5"></i>
+                        <span class="fw-medium">Home</span>
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-box-arrow-in-right me-3 text-success fs-5"></i>
+                        <span class="fw-medium">Sign In</span>
+                    </a>
+                    <a href="{% url 'accounts:register' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-person-plus me-3 text-primary fs-5"></i>
+                        <span class="fw-medium">Get Started</span>
+                    </a>
+                    <a href="{% url 'payments:subscription_plans' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
+                        <i class="bi bi-gem me-3 text-warning fs-5"></i>
+                        <span class="fw-medium">View Plans</span>
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main>
+    <main class="flex-grow-1">
         <!-- Messages -->
         {% if messages %}
-            <div class="container mt-3">
+            <div class="container mt-4">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        <i class="bi bi-info-circle me-2"></i>{{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center" role="alert">
+                        {% if message.tags == 'success' %}
+                            <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="bi bi-exclamation-circle-fill me-3 fs-5"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill me-3 fs-5"></i>
+                        {% endif %}
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             </div>
@@ -143,13 +208,77 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-4 bg-light mt-5">
-        <div class="container text-center">
-            <p class="mb-0">&copy; {% now "Y" %} EmailGrid. All rights reserved.</p>
+    <footer class="py-5 mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="me-3 p-2 rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                            <i class="bi bi-grid-3x3-gap-fill text-primary-blue fs-4"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-1 fw-bold text-light">EmailGrid</h5>
+                            <p class="mb-0 opacity-75 small">Professional Email Marketing Platform</p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-4 opacity-75">
+                        <small>© {% now "Y" %} EmailGrid. All rights reserved.</small>
+                        <small>•</small>
+                        <small>Built with modern technology</small>
+                        <small>•</small>
+                        <small>Secure & Reliable</small>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                    <div class="d-flex justify-content-md-end justify-content-center gap-3">
+                        <a href="#" class="text-light opacity-75 text-decoration-none">
+                            <i class="bi bi-twitter fs-5"></i>
+                        </a>
+                        <a href="#" class="text-light opacity-75 text-decoration-none">
+                            <i class="bi bi-linkedin fs-5"></i>
+                        </a>
+                        <a href="#" class="text-light opacity-75 text-decoration-none">
+                            <i class="bi bi-github fs-5"></i>
+                        </a>
+                    </div>
+                    <small class="d-block mt-3 opacity-75">Made with ❤️ for growth</small>
+                </div>
+            </div>
         </div>
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS for smooth interactions -->
+    <script>
+        // Add smooth scroll behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add loading state to forms
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.classList.add('loading');
+                        submitBtn.disabled = true;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

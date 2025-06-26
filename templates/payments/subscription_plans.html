@@ -1,57 +1,202 @@
 {% extends 'base.html' %}
-{% block title %}Subscription Plans{% endblock %}
+{% block title %}Subscription Plans - EmailGrid{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold">Find the Perfect Plan</h1>
-        <p class="lead text-muted">Simple, transparent pricing for your email marketing needs.</p>
-    </div>
+<div class="py-5" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); min-height: 100vh;">
+    <div class="container">
+        <!-- Sleek Header Section -->
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary bg-gradient text-white mb-4" style="width: 70px; height: 70px;">
+                <i class="bi bi-gem fs-2"></i>
+            </div>
+            <h1 class="fw-bold text-primary mb-2" style="font-size:2.2rem;">Plans & Pricing</h1>
+            <p class="lead text-muted mb-3">Simple, transparent pricing. No hidden fees.</p>
+        </div>
 
-    {% if current_subscription %}
-    <div class="alert alert-info text-center mb-5">
-        You are currently on the <strong>{{ current_subscription.plan.name }}</strong> plan. It is active until <strong>{{ current_subscription.end_date|date:"F d, Y" }}</strong>.
-    </div>
-    {% endif %}
+        <!-- Current Subscription Alert -->
+        {% if current_subscription %}
+            <div class="alert alert-info rounded-4 border-0 shadow-sm mb-5 d-flex align-items-center justify-content-center">
+                <i class="bi bi-info-circle-fill fs-5 me-2"></i>
+                <span>You are on <strong>{{ current_subscription.plan.name }}</strong> until <strong>{{ current_subscription.end_date|date:"F d, Y" }}</strong>.</span>
+            </div>
+        {% endif %}
 
-    <div class="row g-4 justify-content-center">
-        {% for plan in plans %}
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100 shadow-sm {% if plan.name == 'Pro' %}border-primary{% endif %}">
-                <div class="card-header text-center py-3 {% if plan.name == 'Pro' %}bg-primary text-white{% endif %}">
-                    <h4 class="fw-bold mb-0">{{ plan.name }}</h4>
-                    {% if plan.name == 'Pro' %}<span class="badge bg-light text-primary mt-2">Most Popular</span>{% endif %}
-                </div>
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="text-center mb-4">
-                        <h2 class="display-4 fw-bold">${{ plan.price|floatformat:0 }}</h2>
-                        <small class="text-muted">/ {{ plan.duration_days }} days</small>
+        <!-- Sleek Pricing Cards -->
+        <div class="row g-4 justify-content-center mb-5">
+            {% for plan in plans %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 pricing-card border-0 shadow-sm rounded-4 text-center p-4">
+                    <div class="mb-3">
+                        <span class="badge {% if plan.name == 'Pro' %}bg-primary{% else %}bg-light text-dark{% endif %} rounded-pill px-3 py-2">
+                            {% if plan.name == 'Pro' %}<i class="bi bi-star-fill me-1"></i>Most Popular{% else %}{{ plan.name }}{% endif %}
+                        </span>
                     </div>
-                    <ul class="list-unstyled mb-4 flex-grow-1">
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i><strong>{{ plan.max_emails|floatformat:0 }}</strong> emails/month</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Professional Templates</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Campaign Analytics</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>24/7 Email Support</li>
+                    <h4 class="fw-bold mb-2">{{ plan.name }}</h4>
+                    <div class="mb-3">
+                        <span class="display-5 fw-bold text-primary">${{ plan.price|floatformat:0 }}</span>
+                        <span class="text-muted">/ {{ plan.duration_days }} days</span>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>{{ plan.max_emails|floatformat:0 }}</strong> emails/month</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Professional Templates</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Advanced Analytics</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>24/7 Support</li>
                         {% if plan.name != 'Basic' %}
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>A/B Testing</li>
-                        <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Priority Support</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>A/B Testing</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom Domains</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>API Access</li>
                         {% endif %}
                     </ul>
                     {% if current_subscription.plan == plan %}
-                        <button class="btn btn-outline-success w-100 mt-auto" disabled>Your Current Plan</button>
+                        <button class="btn btn-outline-success w-100 rounded-3" disabled>
+                            <i class="bi bi-check-circle-fill me-2"></i>Your Current Plan
+                        </button>
                     {% else %}
-                        <a href="{% url 'payments:checkout' plan.id %}" class="btn btn-primary w-100 mt-auto">Choose Plan</a>
+                        <a href="{% url 'payments:checkout' plan.id %}" class="btn btn-primary w-100 rounded-3">
+                            <i class="bi bi-rocket-takeoff me-2"></i>{% if plan.name == 'Basic' %}Get Started{% else %}Upgrade{% endif %}
+                        </a>
                     {% endif %}
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light text-muted mb-4" style="width: 80px; height: 80px;">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                    <h5 class="text-muted mb-3">No Plans Available</h5>
+                    <p class="text-muted">Our pricing plans are being updated. Please check back soon!</p>
+                </div>
+            </div>
+            {% endfor %}
         </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-warning text-center">
-                No subscription plans are available at this time. Please check back later.
+
+        <!-- Sleek Features Comparison -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-10">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header bg-light text-center py-4 rounded-top-4">
+                        <h4 class="fw-bold mb-0">Why EmailGrid?</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-4 text-center">
+                            <div class="col-md-3">
+                                <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                                    <i class="bi bi-shield-check fs-4"></i>
+                                </div>
+                                <h6 class="fw-semibold mb-2">99.9% Uptime</h6>
+                                <p class="text-muted small mb-0">Enterprise-grade reliability</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="feature-icon bg-success bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                                    <i class="bi bi-lightning-charge fs-4"></i>
+                                </div>
+                                <h6 class="fw-semibold mb-2">Lightning Fast</h6>
+                                <p class="text-muted small mb-0">Send thousands of emails in seconds</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="feature-icon bg-warning bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                                    <i class="bi bi-headset fs-4"></i>
+                                </div>
+                                <h6 class="fw-semibold mb-2">24/7 Support</h6>
+                                <p class="text-muted small mb-0">Expert help, anytime</p>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="feature-icon bg-info bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                                    <i class="bi bi-graph-up fs-4"></i>
+                                </div>
+                                <h6 class="fw-semibold mb-2">Analytics</h6>
+                                <p class="text-muted small mb-0">Optimize your campaigns</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        {% endfor %}
+
+        <!-- FAQ Section -->
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold">Frequently Asked Questions</h3>
+                    <p class="text-muted">Answers to common questions about pricing and features</p>
+                </div>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button rounded-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                Can I change my plan anytime?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any billing differences.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed rounded-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What happens if I exceed my email limit?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                We'll notify you before you reach your limit. You can upgrade your plan or purchase additional credits as needed.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed rounded-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                Is there a setup fee?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                No setup fees, no hidden costs. What you see is what you pay. Start sending emails immediately after signup.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<style>
+.pricing-card {
+    border-radius: 18px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 2px solid transparent;
+    background: #fff;
+}
+.pricing-card:hover {
+    transform: translateY(-6px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(67, 102, 241, 0.10);
+    border-color: #6366f1;
+}
+.badge {
+    font-weight: 500;
+    font-size: 1rem;
+}
+.feature-icon {
+    transition: transform 0.2s;
+}
+.feature-icon:hover {
+    transform: scale(1.1) rotate(3deg);
+}
+.accordion-button {
+    background: #f8fafc;
+    border: none;
+    box-shadow: none;
+}
+.accordion-button:not(.collapsed) {
+    background: #6366f1;
+    color: white;
+}
+.accordion-button:focus {
+    box-shadow: 0 0 0 3px rgba(67, 102, 241, 0.10);
+}
+</style>
 {% endblock %}

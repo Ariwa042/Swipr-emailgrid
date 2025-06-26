@@ -1,97 +1,154 @@
 {% extends 'base.html' %}
-{% block title %}Start Your Free Trial - EmailGrid{% endblock %}
+{% block title %}Create Account - EmailGrid{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card">
-                <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <i class="fas fa-rocket fa-3x text-primary mb-3"></i>
-                        <h3 class="card-title">Start Your Free Trial</h3>
-                        <p class="text-muted">Join thousands of businesses growing with EmailGrid</p>
-                    </div>
-
-                    <form method="post">
-                        {% csrf_token %}
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {{ form.non_field_errors }}
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5 col-xl-4">
+                <div class="card shadow-xl border-0 rounded-4">
+                    <div class="card-body p-5">
+                        <!-- Header -->
+                        <div class="text-center mb-5">
+                            <div class="mb-4">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-gradient text-white mb-3" style="width: 80px; height: 80px; background: var(--primary-gradient);">
+                                    <i class="bi bi-rocket-takeoff-fill fs-1"></i>
+                                </div>
                             </div>
-                        {% endif %}
-
-                        <div class="mb-3">
-                            <label for="{{ form.email.id_for_label }}" class="form-label">
-                                <i class="fas fa-envelope me-2"></i>Email Address
-                            </label>
-                            {{ form.email }}
-                            {% if form.email.errors %}
-                                <div class="text-danger small">{{ form.email.errors }}</div>
-                            {% endif %}
+                            <h2 class="fw-bold text-primary mb-2">Start Your Journey</h2>
+                            <p class="text-muted">Join thousands of businesses growing with EmailGrid</p>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="{{ form.password1.id_for_label }}" class="form-label">
-                                <i class="fas fa-lock me-2"></i>Password
-                            </label>
-                            {{ form.password1 }}
-                            {% if form.password1.errors %}
-                                <div class="text-danger small">{{ form.password1.errors }}</div>
+                        <!-- Registration Form -->
+                        <form method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger d-flex align-items-center rounded-3 mb-4" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-3"></i>
+                                    <div>{{ form.non_field_errors }}</div>
+                                </div>
                             {% endif %}
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="{{ form.password2.id_for_label }}" class="form-label">
-                                <i class="fas fa-lock me-2"></i>Confirm Password
-                            </label>
-                            {{ form.password2 }}
-                            {% if form.password2.errors %}
-                                <div class="text-danger small">{{ form.password2.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input" id="agreeTerms" required>
-                                <label class="form-check-label small" for="agreeTerms">
-                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
-                                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            <!-- Email Field -->
+                            <div class="mb-4">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium text-dark">
+                                    <i class="bi bi-envelope-fill me-2 text-primary"></i>Email Address
                                 </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
+                                        <i class="bi bi-at text-muted"></i>
+                                    </span>
+                                    {{ form.email }}
+                                </div>
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Password Field -->
+                            <div class="mb-4">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-medium text-dark">
+                                    <i class="bi bi-lock-fill me-2 text-primary"></i>Create Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
+                                        <i class="bi bi-key-fill text-muted"></i>
+                                    </span>
+                                    {{ form.password1 }}
+                                </div>
+                                {% if form.password1.errors %}
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Confirm Password Field -->
+                            <div class="mb-4">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-medium text-dark">
+                                    <i class="bi bi-shield-check-fill me-2 text-primary"></i>Confirm Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
+                                        <i class="bi bi-check2-circle text-muted"></i>
+                                    </span>
+                                    {{ form.password2 }}
+                                </div>
+                                {% if form.password2.errors %}
+                                    <div class="invalid-feedback d-block mt-2">
+                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                        {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Terms & Conditions -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                    <label class="form-check-label small text-muted" for="agreeTerms">
+                                        I agree to EmailGrid's 
+                                        <a href="#" class="text-decoration-none text-primary fw-medium">Terms of Service</a> 
+                                        and <a href="#" class="text-decoration-none text-primary fw-medium">Privacy Policy</a>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Create Account Button -->
+                            <div class="d-grid mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg rounded-3 py-3 fw-semibold">
+                                    <i class="bi bi-rocket-takeoff me-2"></i>
+                                    Create Account
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Divider -->
+                        <div class="text-center mb-4">
+                            <div class="d-flex align-items-center">
+                                <hr class="flex-grow-1">
+                                <span class="px-3 text-muted small">or</span>
+                                <hr class="flex-grow-1">
                             </div>
                         </div>
 
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-rocket me-2"></i>Start Free Trial
-                            </button>
+                        <!-- Sign In Link -->
+                        <div class="text-center">
+                            <p class="text-muted mb-0">
+                                Already have an account? 
+                                <a href="{% url 'accounts:login' %}" class="text-decoration-none fw-semibold text-primary">
+                                    Sign in here
+                                    <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </p>
                         </div>
-                    </form>
 
-                    <hr class="my-4">
-
-                    <div class="text-center">
-                        <p class="mb-0">Already have an account? 
-                            <a href="{% url 'accounts:login' %}" class="text-decoration-none">
-                                <i class="fas fa-sign-in-alt me-1"></i>Sign in here
-                            </a>
-                        </p>
-                    </div>
-
-                    <!-- Features Preview -->
-                    <div class="mt-4">
-                        <div class="row text-center">
-                            <div class="col-4">
-                                <i class="fas fa-envelope fa-2x text-primary mb-2"></i>
-                                <small class="d-block text-muted">Email Campaigns</small>
-                            </div>
-                            <div class="col-4">
-                                <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
-                                <small class="d-block text-muted">Analytics</small>
-                            </div>
-                            <div class="col-4">
-                                <i class="fas fa-users fa-2x text-info mb-2"></i>
-                                <small class="d-block text-muted">Contact Management</small>
+                        <!-- Trust Indicators -->
+                        <div class="mt-4 pt-4 border-top">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="text-success mb-1">
+                                        <i class="bi bi-shield-check fs-4"></i>
+                                    </div>
+                                    <small class="text-muted">Secure</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-primary mb-1">
+                                        <i class="bi bi-clock fs-4"></i>
+                                    </div>
+                                    <small class="text-muted">Quick Setup</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-warning mb-1">
+                                        <i class="bi bi-star-fill fs-4"></i>
+                                    </div>
+                                    <small class="text-muted">Trusted</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,4 +157,57 @@
         </div>
     </div>
 </div>
+
+<style>
+.card {
+    backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0.95);
+    transition: var(--transition-smooth);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+}
+
+.form-control {
+    border-left: none;
+    border-radius: 0 12px 12px 0 !important;
+    padding: 12px 16px;
+    font-size: 15px;
+    transition: var(--transition-smooth);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--border-light);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: var(--primary-blue);
+}
+
+.input-group-text {
+    border-color: var(--border-light);
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    border: none;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+}
+</style>
 {% endblock %}

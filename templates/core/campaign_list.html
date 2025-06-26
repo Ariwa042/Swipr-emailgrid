@@ -1,66 +1,334 @@
 {% extends 'base.html' %}
 
-{% block title %}Your Campaigns{% endblock %}
+{% block title %}Campaign Dashboard - EmailGrid{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+    }
+    
+    .campaign-card {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .campaign-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    .campaign-status {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        z-index: 2;
+    }
+    
+    .template-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(102, 126, 234, 0.1);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+    }
+    
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .campaign-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .campaign-meta {
+        background: #f8fafc;
+        padding: 1rem;
+        margin: 0 -1.5rem -1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .btn-floating {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        z-index: 1000;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-floating:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .empty-state-icon {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        font-size: 3rem;
+        color: white;
+    }
+    
+    .filter-tabs {
+        background: white;
+        border-radius: 16px;
+        padding: 0.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    .filter-tab {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        border: none;
+        background: transparent;
+        color: #64748b;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-tab.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Your Email Campaigns</h1>
-        <a href="{% url 'core:create_campaign' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle me-2"></i>Create New Campaign
-        </a>
-    </div>
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}" role="alert">
-                {{ message }}
+<!-- Dashboard Header -->
+<div class="container-fluid px-4 mt-4">
+    <div class="dashboard-header p-4">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-6 fw-bold mb-2">Campaign Dashboard</h1>
+                <p class="opacity-75 mb-0">Manage and monitor your email marketing campaigns</p>
             </div>
-        {% endfor %}
-    {% endif %}
-    
-    {% if campaigns %}
-        <div class="card shadow">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped mb-0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>Campaign ID</th>
-                                <th>Template</th>
-                                <th>Recipient</th>
-                                <th>Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for campaign in campaigns %}
-                                <tr>
-                                    <td>{{ campaign.id }}</td>
-                                    <td>{{ campaign.email_template.get_type_display }}</td>
-                                    <td>{{ campaign.recipient_email }}</td>
-                                    <td>{{ campaign.created_at|date:"M d, Y H:i" }}</td>
-                                    <td>
-                                        <a href="{% url 'core:campaign_detail' pk=campaign.id %}" class="btn btn-sm btn-info">
-                                            <i class="bi bi-eye me-1"></i>View
-                                        </a>
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+            <div class="col-lg-4 text-lg-end">
+                <a href="{% url 'core:create_campaign' %}" class="btn btn-light btn-lg">
+                    <i class="bi bi-plus-circle me-2"></i>New Campaign
+                </a>
             </div>
         </div>
-    {% else %}
-        <div class="card shadow">
-            <div class="card-body text-center py-5">
-                <i class="bi bi-envelope-x display-1 text-muted mb-3"></i>
-                <h3>No Campaigns Yet</h3>
-                <p class="text-muted">You haven't created any email campaigns yet.</p>
-                <a href="{% url 'core:create_campaign' %}" class="btn btn-primary mt-3">Create Your First Campaign</a>
+    </div>
+</div>
+
+<div class="container-fluid px-4">
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon bg-primary-subtle text-primary">
+                <i class="bi bi-envelope-fill"></i>
             </div>
+            <div class="stat-number text-primary">{{ campaigns.count }}</div>
+            <div class="text-muted fw-medium">Total Campaigns</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon bg-success-subtle text-success">
+                <i class="bi bi-check-circle-fill"></i>
+            </div>
+            <div class="stat-number text-success">
+                {% widthratio campaigns.count 1 1 %}
+            </div>
+            <div class="text-muted fw-medium">Active Campaigns</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon bg-warning-subtle text-warning">
+                <i class="bi bi-eye-fill"></i>
+            </div>
+            <div class="stat-number text-warning">
+                {% if campaigns %}{{ campaigns.count|floatformat:0 }}{% else %}0{% endif %}
+            </div>
+            <div class="text-muted fw-medium">Total Views</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon bg-info-subtle text-info">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <div class="stat-number text-info">
+                {% if campaigns %}85{% else %}0{% endif %}%
+            </div>
+            <div class="text-muted fw-medium">Success Rate</div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs d-flex gap-2">
+        <button class="filter-tab active">All Campaigns</button>
+        <button class="filter-tab">Active</button>
+        <button class="filter-tab">Scheduled</button>
+        <button class="filter-tab">Completed</button>
+        <button class="filter-tab">Draft</button>
+    </div>
+
+    <!-- Campaign Grid -->
+    {% if campaigns %}
+        <div class="campaign-grid">
+            {% for campaign in campaigns %}
+                <div class="campaign-card card">
+                    <div class="campaign-status">
+                        <span class="badge bg-success">Active</span>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div>
+                                <h5 class="card-title fw-bold mb-2">Campaign #{{ campaign.id }}</h5>
+                                <span class="template-badge">{{ campaign.email_template.get_type_display }}</span>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" href="{% url 'core:campaign_detail' pk=campaign.id %}">
+                                            <i class="bi bi-eye me-2"></i>View Details
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <i class="bi bi-pencil me-2"></i>Edit
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="#">
+                                            <i class="bi bi-trash me-2"></i>Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center text-muted mb-2">
+                                <i class="bi bi-person-fill me-2"></i>
+                                <small>{{ campaign.recipient_email }}</small>
+                            </div>
+                            <div class="d-flex align-items-center text-muted">
+                                <i class="bi bi-calendar-fill me-2"></i>
+                                <small>{{ campaign.created_at|date:"M d, Y" }} at {{ campaign.created_at|time:"H:i" }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-4 text-center">
+                                <div class="fw-bold text-primary">1</div>
+                                <small class="text-muted">Sent</small>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="fw-bold text-success">0</div>
+                                <small class="text-muted">Opens</small>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="fw-bold text-warning">0</div>
+                                <small class="text-muted">Clicks</small>
+                            </div>
+                        </div>
+                        
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-primary" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="campaign-meta">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">Last updated {{ campaign.created_at|timesince }} ago</span>
+                            <a href="{% url 'core:campaign_detail' pk=campaign.id %}" class="btn btn-sm btn-primary">
+                                View Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="bi bi-envelope"></i>
+            </div>
+            <h3 class="fw-bold mb-3">No campaigns yet</h3>
+            <p class="text-muted mb-4">
+                Start your email marketing journey by creating your first campaign. 
+                Choose from our professional templates and reach your audience.
+            </p>
+            <a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>Create Your First Campaign
+            </a>
         </div>
     {% endif %}
 </div>
+
+<!-- Floating Action Button -->
+<a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-floating">
+    <i class="bi bi-plus"></i>
+</a>
 {% endblock %}

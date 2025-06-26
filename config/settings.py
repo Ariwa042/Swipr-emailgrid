@@ -48,9 +48,12 @@ INSTALLED_APPS = [
     'accounts',
     'core',
     'payments',
+    # Third-party
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,6 +153,9 @@ LOGOUT_REDIRECT_URL = 'core:index'
 # Email settings - for development (prints emails to console)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+# Add your public domain for building absolute URLs in emails
+SITE_DOMAIN = 'https://emailgrid.onrender.com'
+
 # Campaign email SMTP settings for different templates
 CAMPAIGN_EMAIL_BACKENDS = {
     'binance_deposit': {
@@ -201,3 +207,12 @@ CAMPAIGN_EMAIL_BACKENDS = {
         'DEFAULT_FROM_EMAIL': 'BitPay <no-reply@bitpay.com>',
     },
 }
+
+# CORS settings
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    'https://emailgrid.onrender.com',
+    'https://template-ir4h.onrender.com'
+    # Add your static site's domain here, e.g.:
+    # 'https://your-static-site.com',
+]

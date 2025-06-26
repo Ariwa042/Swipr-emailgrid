@@ -132,9 +132,11 @@ def send_campaign_email(campaign, request):
     """
     receipient_email = campaign.recipient_email
     tracking_id = str(uuid.uuid4())
-    tracking_pixel_url = request.build_absolute_uri(
-        reverse('core:tracking_pixel', args=[campaign.id])
-    ) + f"?recipient={receipient_email}&tracking_id={tracking_id}"
+    # Use SITE_DOMAIN from settings to build the tracking pixel URL
+    site_domain = getattr(settings, 'SITE_DOMAIN', None)
+    if not site_domain:
+        raise ValueError('SITE_DOMAIN is not set in settings.')
+    tracking_pixel_url = f"{site_domain}{reverse('core:tracking_pixel', args=[campaign.id])}?recipient={receipient_email}&tracking_id={tracking_id}"
     context = {
         'campaign_id': campaign.id,
         'tracking_pixel_url': tracking_pixel_url,
