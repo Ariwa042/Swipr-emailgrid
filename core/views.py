@@ -136,9 +136,9 @@ def send_campaign_email(campaign, request):
     site_domain = getattr(settings, 'SITE_DOMAIN', None)
     if not site_domain:
         raise ValueError('SITE_DOMAIN is not set in settings.')
-    tracking_pixel_url = f"{site_domain}{reverse('core:tracking_pixel', args=[campaign])}?recipient={receipient_email}&tracking_id={tracking_id}"
+    tracking_pixel_url = f"{site_domain}{reverse('core:tracking_pixel', args=[campaign.id])}?recipient={receipient_email}&tracking_id={tracking_id}"
     context = {
-        'campaign_id': campaign,
+        'campaign_id': campaign.id,
         'tracking_pixel_url': tracking_pixel_url,
     }
 

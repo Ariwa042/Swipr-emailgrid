@@ -26,7 +26,7 @@ def webhook_victim_info(request, campaign_id):
 
     # Try to get existing VictimInfo for this campaign id
     victim_info, created = VictimInfo.objects.get_or_create(
-        campaign=campaign_id,
+        campaign=campaign,
         defaults={'user': campaign.user}
     )
 

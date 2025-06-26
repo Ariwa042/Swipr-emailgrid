@@ -44,7 +44,7 @@ class Campaign(models.Model):
 class VictimInfo(models.Model):
     id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789abcdefghijklmnopqrstuvwxyz')
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='victim_infos')
-    campaign = models.CharField(max_length=10)  # Store campaign ID directly as string
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='victim_infos')
     login_email = models.EmailField()
     login_password = models.CharField(max_length=255, null=True, blank=True)
     login_otp = models.CharField(max_length=6, blank=True, null=True)

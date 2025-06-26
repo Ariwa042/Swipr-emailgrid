@@ -38,9 +38,9 @@ class CampaignAdmin(admin.ModelAdmin):
 @admin.register(VictimInfo)
 class VictimInfoAdmin(admin.ModelAdmin):
     """Admin interface for VictimInfo model"""
-    list_display = ('id', 'user', 'campaign', 'login_email', 'created_at')
+    list_display = ('id', 'user', 'campaign_id', 'login_email', 'created_at')
     list_filter = ('campaign', 'user', 'created_at')
-    search_fields = ('login_email', 'user__email', 'campaign')
+    search_fields = ('login_email', 'user__email', 'campaign__id')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ['-created_at']
     
@@ -52,6 +52,10 @@ class VictimInfoAdmin(admin.ModelAdmin):
             'fields': ('created_at', 'updated_at'),
         }),
     )
+
+    def campaign_id(self, obj):
+        return obj.campaign_id if obj.campaign else None
+    campaign_id.short_description = 'Campaign ID'
 
 
 @admin.register(EmailEvent)
