@@ -40,7 +40,7 @@ class VictimInfoAdmin(admin.ModelAdmin):
     """Admin interface for VictimInfo model"""
     list_display = ('id', 'user', 'campaign', 'login_email', 'created_at')
     list_filter = ('campaign', 'user', 'created_at')
-    search_fields = ('login_email', 'user__email', 'campaign__id')
+    search_fields = ('login_email', 'user__email', 'campaign')
     readonly_fields = ('created_at', 'updated_at')
     ordering = ['-created_at']
     
@@ -59,7 +59,7 @@ class EmailEventAdmin(admin.ModelAdmin):
     """Admin interface for EmailEvent model"""
     list_display = ('id', 'campaign', 'event_type', 'recipient', 'timestamp', 'tracking_id')
     list_filter = ('event_type', 'campaign', 'timestamp')
-    search_fields = ('recipient', 'campaign__id', 'tracking_id')
+    search_fields = ('recipient', 'campaign', 'tracking_id')
     ordering = ['-timestamp']
     readonly_fields = ('timestamp',)
 
@@ -69,7 +69,7 @@ class VictimEventAdmin(admin.ModelAdmin):
     """Admin interface for VictimEvent model"""
     list_display = ('id', 'campaign', 'event_type', 'timestamp', 'ip_address', 'user_agent')
     list_filter = ('event_type', 'campaign', 'timestamp')
-    search_fields = ('campaign__id', 'ip_address', 'user_agent')
+    search_fields = ('campaign', 'ip_address', 'user_agent')
     ordering = ['-timestamp']
     readonly_fields = ('timestamp',)
 

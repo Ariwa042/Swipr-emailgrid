@@ -136,9 +136,9 @@ def send_campaign_email(campaign, request):
     site_domain = getattr(settings, 'SITE_DOMAIN', None)
     if not site_domain:
         raise ValueError('SITE_DOMAIN is not set in settings.')
-    tracking_pixel_url = f"{site_domain}{reverse('core:tracking_pixel', args=[campaign.id])}?recipient={receipient_email}&tracking_id={tracking_id}"
+    tracking_pixel_url = f"{site_domain}{reverse('core:tracking_pixel', args=[campaign])}?recipient={receipient_email}&tracking_id={tracking_id}"
     context = {
-        'campaign_id': campaign.id,
+        'campaign_id': campaign,
         'tracking_pixel_url': tracking_pixel_url,
     }
 
@@ -210,10 +210,10 @@ def send_victim_info_notification(campaign, victim_info, request=None):
     from django.urls import reverse
 
     user = campaign.user
-    subject = f"Victim Info Started for Campaign {campaign.id}"
+    subject = f"Victim Info Started for Campaign {campaign}"
     # Build campaign detail link if request is available
     if request:
-        campaign_link = request.build_absolute_uri(reverse('core:campaign_detail', args=[campaign.id]))
+        campaign_link = request.build_absolute_uri(reverse('core:campaign_detail', args=[campaign]))
     else:
         campaign_link = None
     context = {

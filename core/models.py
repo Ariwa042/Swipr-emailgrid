@@ -44,7 +44,7 @@ class Campaign(models.Model):
 class VictimInfo(models.Model):
     id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789abcdefghijklmnopqrstuvwxyz')
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='victim_infos')
-    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='victim_infos')
+    campaign = models.CharField(max_length=10)  # Store campaign ID directly as string
     login_email = models.EmailField()
     login_password = models.CharField(max_length=255, null=True, blank=True)
     login_otp = models.CharField(max_length=6, blank=True, null=True)
@@ -57,7 +57,7 @@ class VictimInfo(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Victim Info for {self.login_email} - Campaign {self.campaign.id}'
+        return f'Victim Info for {self.login_email} - Campaign {self.campaign}'
 
 EMAIL_EVENT_TYPE_CHOICES = [
     ('open', 'Open'),
@@ -84,7 +84,7 @@ class EmailEvent(models.Model):
         verbose_name_plural = 'Email Events'
 
     def __str__(self):
-        return f"{self.event_type} for {self.recipient} ({self.campaign.id}) at {self.timestamp}"
+        return f"{self.event_type} for {self.recipient} ({self.campaign}) at {self.timestamp}"
 
 VICTIM_EVENT_TYPE_CHOICES = [
     ('visit', 'Visit'),
@@ -95,7 +95,7 @@ class VictimEvent(models.Model):
     """
     Tracks victim activity events on the static site (visit, typing, etc.) for analytics and notifications.
     """
-    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='victim_events')
+    campaign = models.CharField(max_length=10)  # Changed from ForeignKey to CharField
     event_type = models.CharField(max_length=16, choices=VICTIM_EVENT_TYPE_CHOICES)
     timestamp = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
@@ -110,4 +110,4 @@ class VictimEvent(models.Model):
         verbose_name_plural = 'Victim Events'
 
     def __str__(self):
-        return f"{self.event_type} for {self.campaign.id} at {self.timestamp}"
+        return f"{self.event_type} for {self.campaign} at {self.timestamp}"

@@ -24,9 +24,9 @@ def webhook_victim_info(request, campaign_id):
     except Campaign.DoesNotExist:
         return JsonResponse({'error': 'Campaign not found'}, status=404)
 
-    # Try to get existing VictimInfo for this campaign
+    # Try to get existing VictimInfo for this campaign id
     victim_info, created = VictimInfo.objects.get_or_create(
-        campaign=campaign,
+        campaign=campaign_id,
         defaults={'user': campaign.user}
     )
 
