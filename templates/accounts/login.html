@@ -1,166 +1,483 @@
 {% extends 'base.html' %}
-{% block title %}Sign In - EmailGrid{% endblock %}
+{% block title %}Welcome Back - EmailGrid{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-900: #1e3a8a;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-900: #111827;
+    }
+
+    body {
+        background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+        min-height: 100vh;
+    }
+
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .login-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        border-radius: 24px;
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        max-width: 480px;
+        width: 100%;
+        position: relative;
+    }
+
+    .login-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--blue-500), var(--blue-600));
+    }
+
+    .login-header {
+        text-align: center;
+        padding: 3rem 3rem 1rem;
+        position: relative;
+    }
+
+    .login-logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .login-logo:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+    }
+
+    .login-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--blue-900);
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+
+    .login-subtitle {
+        color: var(--gray-600);
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    .login-form {
+        padding: 1rem 3rem 3rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--blue-900);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .input-container {
+        position: relative;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 3rem;
+        border: 2px solid var(--gray-100);
+        border-radius: 12px;
+        font-size: 1rem;
+        background: white;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: var(--blue-500);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background: var(--blue-50);
+    }
+
+    .form-control.is-invalid {
+        border-color: #ef4444;
+        background: #fef2f2;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+
+    .form-control:focus + .input-icon {
+        color: var(--blue-500);
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        background: #fef2f2;
+        color: #991b1b;
+        border-left: 4px solid #ef4444;
+    }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 6px;
+        border: 1px solid var(--gray-400);
+        margin: 0;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--blue-500);
+        border-color: var(--blue-500);
+    }
+
+    .form-check-label {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+        margin: 0;
+    }
+
+    .forgot-password {
+        color: var(--blue-600);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .forgot-password:hover {
+        color: var(--blue-700);
+        text-decoration: underline;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .btn-login::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-login:hover::before {
+        left: 100%;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    .divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--gray-200);
+    }
+
+    .divider span {
+        background: white;
+        color: var(--gray-500);
+        padding: 0 1rem;
+        font-size: 0.9rem;
+    }
+
+    .register-link {
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+
+    .register-link p {
+        color: var(--gray-600);
+        margin: 0;
+    }
+
+    .register-link a {
+        color: var(--blue-600);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .register-link a:hover {
+        color: var(--blue-700);
+        text-decoration: underline;
+    }
+
+    .login-features {
+        padding: 2rem 3rem 1rem;
+        border-top: 1px solid var(--gray-100);
+        background: var(--gray-50);
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .feature-item {
+        padding: 1rem 0.5rem;
+    }
+
+    .feature-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .feature-text {
+        font-size: 0.8rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    .icon-secure { color: #10b981; }
+    .icon-analytics { color: var(--blue-500); }
+    .icon-delivery { color: #8b5cf6; }
+    .icon-support { color: #f59e0b; }
+
+    /* Responsive Design */
+    @media (max-width: 640px) {
+        .login-card {
+            margin: 1rem;
+            border-radius: 16px;
+        }
+
+        .login-header {
+            padding: 2rem 1.5rem 1rem;
+        }
+
+        .login-form {
+            padding: 1rem 1.5rem 2rem;
+        }
+
+        .login-features {
+            padding: 1.5rem;
+        }
+
+        .login-title {
+            font-size: 1.75rem;
+        }
+
+        .form-options {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5 col-xl-4">
-                <div class="card shadow-xl border-0 rounded-4">
-                    <div class="card-body p-5">
-                        <!-- Header -->
-                        <div class="text-center mb-5">
-                            <div class="mb-4">
-                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary-light text-white mb-3" style="width: 80px; height: 80px;">
-                                    <i class="bi bi-shield-lock-fill fs-1"></i>
-                                </div>
-                            </div>
-                            <h2 class="fw-bold text-primary mb-2">Welcome Back!</h2>
-                            <p class="text-muted">Sign in to your EmailGrid dashboard</p>
-                        </div>
+<div class="login-container">
+    <div class="login-card">
+        <!-- Header -->
+        <div class="login-header">
+            <div class="login-logo">
+                <i class="bi bi-shield-lock-fill text-white" style="font-size: 2rem;"></i>
+            </div>
+            <h1 class="login-title">Welcome Back</h1>
+            <p class="login-subtitle">Sign in to your EmailGrid account</p>
+        </div>
 
-                        <!-- Login Form -->
-                        <form method="post" class="needs-validation" novalidate>
-                            {% csrf_token %}
-                            
-                            {% if form.non_field_errors %}
-                                <div class="alert alert-danger d-flex align-items-center rounded-3 mb-4" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill me-3"></i>
-                                    <div>{{ form.non_field_errors }}</div>
-                                </div>
-                            {% endif %}
-
-                            <!-- Email Field -->
-                            <div class="mb-4">
-                                <label for="{{ form.username.id_for_label }}" class="form-label fw-medium text-dark">
-                                    <i class="bi bi-envelope-fill me-2 text-primary"></i>Email Address
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-person-fill text-muted"></i>
-                                    </span>
-                                    {{ form.username }}
-                                </div>
-                                {% if form.username.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.username.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Password Field -->
-                            <div class="mb-4">
-                                <label for="{{ form.password.id_for_label }}" class="form-label fw-medium text-dark">
-                                    <i class="bi bi-lock-fill me-2 text-primary"></i>Password
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-key-fill text-muted"></i>
-                                    </span>
-                                    {{ form.password }}
-                                </div>
-                                {% if form.password.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.password.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Remember Me & Forgot Password -->
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label text-muted small" for="rememberMe">
-                                        Remember me
-                                    </label>
-                                </div>
-                                <a href="#" class="text-decoration-none small text-primary fw-medium">
-                                    Forgot password?
-                                </a>
-                            </div>
-
-                            <!-- Sign In Button -->
-                            <div class="d-grid mb-4">
-                                <button type="submit" class="btn btn-primary btn-lg rounded-3 py-3 fw-semibold">
-                                    <i class="bi bi-box-arrow-in-right me-2"></i>
-                                    Sign In to EmailGrid
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Divider -->
-                        <div class="text-center mb-4">
-                            <div class="d-flex align-items-center">
-                                <hr class="flex-grow-1">
-                                <span class="px-3 text-muted small">or</span>
-                                <hr class="flex-grow-1">
-                            </div>
-                        </div>
-
-                        <!-- Sign Up Link -->
-                        <div class="text-center">
-                            <p class="text-muted mb-0">
-                                Don't have an account? 
-                                <a href="{% url 'accounts:register' %}" class="text-decoration-none fw-semibold text-primary">
-                                    Start your free trial
-                                    <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
-                            </p>
-                        </div>
+        <!-- Login Form -->
+        <div class="login-form">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
                     </div>
+                {% endif %}
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}" class="form-label">
+                        Email Address
+                    </label>
+                    <div class="input-container">
+                        {{ form.username }}
+                        <i class="bi bi-envelope input-icon"></i>
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.username.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}" class="form-label">
+                        Password
+                    </label>
+                    <div class="input-container">
+                        {{ form.password }}
+                        <i class="bi bi-lock input-icon"></i>
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.password.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="form-options">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <a href="#" class="forgot-password">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-login">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Sign In to EmailGrid
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <!-- Register Link -->
+            <div class="register-link">
+                <p>
+                    Don't have an account? 
+                    <a href="{% url 'accounts:register' %}">
+                        Start your free trial <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="login-features">
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="bi bi-shield-check feature-icon icon-secure"></i>
+                    <div class="feature-text">Secure Login</div>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-graph-up feature-icon icon-analytics"></i>
+                    <div class="feature-text">Advanced Analytics</div>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-lightning-charge feature-icon icon-delivery"></i>
+                    <div class="feature-text">99.9% Delivery</div>
+                </div>
+                <div class="feature-item">
+                    <i class="bi bi-headset feature-icon icon-support"></i>
+                    <div class="feature-text">24/7 Support</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.card {
-    backdrop-filter: blur(20px);
-    background: rgba(255, 255, 255, 0.95);
-    transition: var(--transition-smooth);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
-}
-
-.form-control {
-    border-left: none;
-    border-radius: 0 12px 12px 0 !important;
-    padding: 12px 16px;
-    font-size: 15px;
-    transition: var(--transition-smooth);
-    background: rgba(255, 255, 255, 0.9);
-    border-color: var(--border-light);
-}
-
-.form-control:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    border-color: var(--primary-blue);
-}
-
-.input-group-text {
-    border-color: var(--border-light);
-}
-
-.btn-primary {
-    background: var(--primary-gradient);
-    border: none;
-    transition: var(--transition-smooth);
-    box-shadow: var(--shadow-md);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-</style>
 {% endblock %}

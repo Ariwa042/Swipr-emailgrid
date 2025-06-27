@@ -1,55 +1,570 @@
 {% extends 'base.html' %}
 
-{% block title %}Payment Instructions{% endblock %}
+{% block title %}Payment Instructions - EmailGrid{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        --gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+        --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --card-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        --card-shadow-hover: 0 20px 60px rgba(59, 130, 246, 0.15);
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-800: #1e40af;
+        --blue-900: #1e3a8a;
+    }
+
+    .payment-hero {
+        background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .payment-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%233b82f608" points="0,0 1000,200 1000,1000 0,800"/></svg>');
+        pointer-events: none;
+    }
+
+    .payment-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .payment-badge {
+        background: var(--gradient-primary);
+        padding: 10px 20px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .payment-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        border: none;
+        overflow: hidden;
+    }
+
+    .payment-header {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .payment-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="%23ffffff08" cx="50" cy="50" r="40"/></svg>');
+        transform: translate(50px, -50px);
+    }
+
+    .payment-header h2 {
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .payment-id-badge {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-family: monospace;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .payment-details {
+        padding: 2rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--blue-100);
+    }
+
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: var(--blue-700);
+    }
+
+    .detail-value {
+        color: var(--blue-900);
+        font-weight: 500;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .status-pending {
+        background: var(--gradient-warning);
+        color: white;
+    }
+
+    .status-completed {
+        background: var(--gradient-success);
+        color: white;
+    }
+
+    .wallet-section {
+        background: var(--blue-50);
+        border: 2px solid var(--blue-200);
+        border-radius: 20px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+    }
+
+    .crypto-icon {
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-secondary);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .amount-display {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--blue-700);
+        margin-bottom: 0.5rem;
+    }
+
+    .crypto-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--blue-600);
+        margin-bottom: 2rem;
+    }
+
+    .wallet-address-section {
+        background: white;
+        border: 2px solid var(--blue-200);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .address-input {
+        background: var(--blue-50);
+        border: 2px solid var(--blue-200);
+        border-radius: 12px;
+        padding: 1rem;
+        font-family: monospace;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--blue-800);
+        word-break: break-all;
+    }
+
+    .copy-btn {
+        background: var(--gradient-primary);
+        border: none;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .copy-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+        color: white;
+    }
+
+    .alert-custom {
+        border: none;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .alert-info-custom {
+        background: var(--blue-50);
+        color: var(--blue-700);
+        border-left: 4px solid var(--blue-500);
+    }
+
+    .alert-warning-custom {
+        background: #fef3c7;
+        color: #92400e;
+        border-left: 4px solid #f59e0b;
+    }
+
+    .btn-modern {
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-primary-modern {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+
+    .btn-secondary-modern {
+        background: transparent;
+        color: var(--blue-700);
+        border: 2px solid var(--blue-200);
+    }
+
+    .btn-secondary-modern:hover {
+        background: var(--blue-50);
+        border-color: var(--blue-500);
+        color: var(--blue-800);
+    }
+
+    .modal-content {
+        border-radius: 20px;
+        border: none;
+        box-shadow: var(--card-shadow);
+    }
+
+    .modal-header {
+        background: var(--gradient-primary);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        border-bottom: none;
+    }
+
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin: 0 1rem;
+    }
+
+    .step.completed {
+        background: var(--blue-600);
+        color: white;
+    }
+
+    .step.active {
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    .step-line {
+        width: 60px;
+        height: 2px;
+        background: var(--blue-600);
+    }
+
+    .qr-section {
+        background: white;
+        border: 2px solid var(--blue-200);
+        border-radius: 16px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+    }
+
+    .qr-code-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 12px;
+        display: inline-block;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+        margin-bottom: 1rem;
+    }
+
+    .qr-code {
+        width: 200px;
+        height: 200px;
+        border-radius: 8px;
+    }
+
+    .qr-instructions {
+        color: var(--blue-700);
+        font-weight: 500;
+        margin-top: 1rem;
+    }
+
+    .payment-tabs {
+        display: flex;
+        background: var(--blue-50);
+        border-radius: 16px;
+        padding: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .payment-tab {
+        flex: 1;
+        background: transparent;
+        border: none;
+        padding: 1rem;
+        border-radius: 12px;
+        font-weight: 600;
+        color: var(--blue-600);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .payment-tab.active {
+        background: white;
+        color: var(--blue-700);
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .mobile-hint {
+        background: var(--blue-50);
+        border: 1px solid var(--blue-200);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 1rem;
+        color: var(--blue-700);
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 768px) {
+        .payment-details {
+            padding: 1.5rem;
+        }
+        
+        .wallet-section {
+            padding: 1.5rem;
+        }
+        
+        .amount-display {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Payment Instructions</h4>
+<div class="payment-hero">
+    <div class="container payment-content">
+        <div class="py-5">
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <div class="payment-badge">
+                    <i class="bi bi-shield-check me-2"></i>
+                    Secure Payment
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-info">
-                        <p><strong>Important:</strong> Please complete your payment to activate your subscription. Once payment is confirmed, your subscription will be automatically activated.</p>
-                    </div>
-                    
-                    <h5 class="card-title">Payment Details</h5>
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <p><strong>Plan:</strong> {{ plan.name }}</p>
-                            <p><strong>Amount:</strong> ${{ payment.amount }}</p>
-                            <p><strong>Payment ID:</strong> {{ payment.payment_id }}</p>
-                            <p><strong>Status:</strong> <span class="badge bg-warning">{{ payment.get_status_display }}</span></p>
+                <h1 class="display-5 fw-bold text-dark mb-3">Payment Instructions</h1>
+                <p class="lead text-muted">Complete your payment to activate your subscription</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step completed">
+                    <i class="bi bi-check"></i>
+                </div>
+                <div class="step-line"></div>
+                <div class="step completed">
+                    <i class="bi bi-check"></i>
+                </div>
+                <div class="step-line"></div>
+                <div class="step active">3</div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="payment-card">
+                        <!-- Payment Header -->
+                        <div class="payment-header">
+                            <h2>{{ plan.name }} Plan</h2>
+                            <p class="mb-3">Payment pending confirmation</p>
+                            <div class="payment-id-badge">
+                                Payment ID: {{ payment.payment_id }}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <p><strong>Payment Method:</strong> {{ wallet.cryptocurrency }} ({{ wallet.symbol }})</p>
-                            <p><strong>Date:</strong> {{ payment.created_at|date:"F j, Y H:i" }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-instructions border p-4 mb-4 bg-light">
-                        <h5 class="text-center mb-3">Send {{ payment.amount }} USD worth of {{ wallet.cryptocurrency }}</h5>
-                        <div class="mb-3">
-                            <label class="form-label"><strong>To Wallet Address:</strong></label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" value="{{ wallet.wallet_address }}" id="wallet-address" readonly>
-                                <button class="btn btn-outline-secondary" type="button" onclick="copyToClipboard('wallet-address')">
-                                    <i class="fas fa-copy"></i> Copy
+
+                        <!-- Payment Details -->
+                        <div class="payment-details">
+                            <h5 class="fw-bold text-dark mb-4">Payment Summary</h5>
+                            
+                            <div class="detail-row">
+                                <span class="detail-label">Plan</span>
+                                <span class="detail-value">{{ plan.name }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Amount</span>
+                                <span class="detail-value">${{ payment.amount }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Payment Method</span>
+                                <span class="detail-value">{{ wallet.cryptocurrency }} ({{ wallet.symbol }})</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Date</span>
+                                <span class="detail-value">{{ payment.created_at|date:"F j, Y H:i" }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status</span>
+                                <span class="status-badge status-pending">{{ payment.get_status_display }}</span>
+                            </div>
+
+                            <!-- Important Notice -->
+                            <div class="alert-custom alert-info-custom">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                <strong>Important:</strong> Please complete your payment to activate your subscription. 
+                                Once payment is confirmed, your subscription will be automatically activated.
+                            </div>
+
+                            <!-- Payment Method Tabs -->
+                            <div class="payment-tabs">
+                                <button class="payment-tab active" onclick="showTab('manual-tab')">
+                                    <i class="bi bi-keyboard me-2"></i>
+                                    Manual Entry
+                                </button>
+                                <button class="payment-tab" onclick="showTab('qr-tab')">
+                                    <i class="bi bi-qr-code me-2"></i>
+                                    QR Code
                                 </button>
                             </div>
-                            <small class="text-muted">Double-check the address before sending your payment</small>
+
+                            <!-- Manual Payment Tab -->
+                            <div id="manual-tab" class="tab-content active">
+                                <div class="wallet-address-section">
+                                    <label class="form-label fw-bold text-dark mb-3">
+                                        <i class="bi bi-wallet2 me-2"></i>
+                                        Wallet Address:
+                                    </label>
+                                    <div class="row g-2">
+                                        <div class="col">
+                                            <input type="text" class="form-control address-input" 
+                                                   value="{{ wallet.wallet_address }}" 
+                                                   id="wallet-address" readonly>
+                                        </div>
+                                        <div class="col-auto">
+                                            <button class="btn copy-btn" type="button" onclick="copyToClipboard('wallet-address')">
+                                                <i class="bi bi-clipboard me-2"></i>Copy
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted mt-2 d-block">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        Double-check the address before sending your payment
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- QR Code Tab -->
+                            <div id="qr-tab" class="tab-content">
+                                <div class="qr-section">
+                                    <label class="form-label fw-bold text-dark mb-3">
+                                        <i class="bi bi-qr-code me-2"></i>
+                                        Scan QR Code:
+                                    </label>
+                                    <div class="qr-code-container">
+                                        <img id="qr-code" class="qr-code" 
+                                             src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ wallet.wallet_address|urlencode }}&color=1e40af&bgcolor=ffffff" 
+                                             alt="QR Code for wallet address"
+                                             loading="lazy">
+                                    </div>
+                                    <div class="qr-instructions">
+                                        <p><strong>How to use:</strong></p>
+                                        <ol class="text-start d-inline-block">
+                                            <li>Open your {{ wallet.cryptocurrency }} wallet app</li>
+                                            <li>Select "Send" or "Transfer"</li>
+                                            <li>Scan this QR code with your camera</li>
+                                            <li>Enter the amount: <strong>${{ payment.amount }}</strong></li>
+                                            <li>Confirm and send the transaction</li>
+                                        </ol>
+                                    </div>
+                                    <div class="mobile-hint">
+                                        <i class="bi bi-phone me-2"></i>
+                                        <strong>Mobile users:</strong> This QR code contains the wallet address. 
+                                        You'll need to enter the payment amount manually in your wallet app.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Warning Notice -->
+                            <div class="alert-custom alert-warning-custom">
+                                <i class="bi bi-bell-fill me-2"></i>
+                                <strong>Note:</strong> After sending payment, please contact our support team with your Payment ID to expedite verification.
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-3 mt-4">
+                                <a href="{% url 'payments:subscription_plans' %}" class="btn btn-secondary-modern btn-modern flex-grow-1">
+                                    <i class="bi bi-arrow-left me-2"></i>
+                                    Back to Plans
+                                </a>
+                                <button type="button" id="check-status-btn" class="btn btn-primary-modern btn-modern flex-grow-1" 
+                                        data-payment-id="{{ payment.payment_id }}">
+                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    Check Status
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="alert alert-warning">
-                        <p><strong>Note:</strong> After sending payment, please contact our support team with your Payment ID to expedite verification.</p>
-                    </div>
-                    
-                    <div class="text-center mt-4">
-                        <a href="{% url 'payments:subscription_plans' %}" class="btn btn-secondary">Back to Plans</a>
-                        <a href="#" id="check-status-btn" class="btn btn-primary" data-payment-id="{{ payment.payment_id }}">Check Payment Status</a>
                     </div>
                 </div>
             </div>
@@ -57,33 +572,74 @@
     </div>
 </div>
 
+<!-- Payment Status Modal -->
 <div class="modal fade" id="payment-status-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Payment Status</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">
+                    <i class="bi bi-credit-card me-2"></i>
+                    Payment Status
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="payment-status-body">
-                Checking payment status...
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3">Checking payment status...</p>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary-modern btn-modern" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-{% block scripts %}
+{% block extra_js %}
 <script>
+    // Tab switching functionality
+    function showTab(tabId) {
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remove active class from all tabs
+        document.querySelectorAll('.payment-tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        document.getElementById(tabId).classList.add('active');
+        
+        // Add active class to clicked tab
+        event.target.classList.add('active');
+    }
+
     function copyToClipboard(elementId) {
         var copyText = document.getElementById(elementId);
         copyText.select();
         copyText.setSelectionRange(0, 99999);
-        document.execCommand("copy");
         
-        // Show alert or toast
-        alert("Copied: " + copyText.value);
+        try {
+            document.execCommand("copy");
+            // Show success feedback
+            const button = document.querySelector('.copy-btn');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="bi bi-check me-2"></i>Copied!';
+            button.style.background = 'var(--gradient-success)';
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.style.background = 'var(--gradient-primary)';
+            }, 2000);
+        } catch (err) {
+            alert('Copy failed. Please copy manually: ' + copyText.value);
+        }
     }
     
     document.getElementById('check-status-btn').addEventListener('click', function(e) {
@@ -100,18 +656,32 @@
                 var statusBody = document.getElementById('payment-status-body');
                 
                 if (data.completed) {
-                    statusBody.innerHTML = '<div class="alert alert-success">Your payment has been completed! Your subscription is now active.</div>';
+                    statusBody.innerHTML = `
+                        <div class="alert alert-success border-0 rounded-3">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Your payment has been completed! Your subscription is now active.
+                        </div>
+                    `;
                     setTimeout(function() {
-                        window.location.href = '{{ url "accounts:profile" }}';
+                        window.location.href = '/accounts/profile/';
                     }, 3000);
                 } else {
-                    statusBody.innerHTML = '<div class="alert alert-info">Your payment is still being processed. Current status: ' + data.status + '</div>';
+                    statusBody.innerHTML = `
+                        <div class="alert alert-info border-0 rounded-3">
+                            <i class="bi bi-clock me-2"></i>
+                            Your payment is still being processed. Current status: ${data.status}
+                        </div>
+                    `;
                 }
             })
             .catch(error => {
-                document.getElementById('payment-status-body').innerHTML = '<div class="alert alert-danger">Error checking payment status. Please try again later.</div>';
+                document.getElementById('payment-status-body').innerHTML = `
+                    <div class="alert alert-danger border-0 rounded-3">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Error checking payment status. Please try again later.
+                    </div>
+                `;
             });
     });
 </script>
-{% endblock %}
 {% endblock %}

@@ -1,64 +1,455 @@
 {% extends 'base.html' %}
 
-{% block title %}Checkout - {{ plan.name }}{% endblock %}
+{% block title %}Checkout - {{ plan.name }} Plan{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        --gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+        --gradient-accent: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        --card-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        --card-shadow-hover: 0 20px 60px rgba(59, 130, 246, 0.15);
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-800: #1e40af;
+        --blue-900: #1e3a8a;
+    }
+
+    .checkout-hero {
+        background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .checkout-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%233b82f608" points="0,0 1000,200 1000,1000 0,800"/></svg>');
+        pointer-events: none;
+    }
+
+    .checkout-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .checkout-badge {
+        background: var(--gradient-primary);
+        padding: 10px 20px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .checkout-card {
+        background: white;
+        border-radius: 24px;
+        box-shadow: var(--card-shadow);
+        border: none;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .checkout-card:hover {
+        box-shadow: var(--card-shadow-hover);
+    }
+
+    .plan-summary {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .plan-summary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="%23ffffff10" cx="50" cy="50" r="40"/></svg>');
+        transform: translate(30px, -30px);
+    }
+
+    .plan-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .plan-price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+
+    .plan-features {
+        list-style: none;
+        padding: 0;
+        margin: 1.5rem 0 0 0;
+        position: relative;
+        z-index: 2;
+    }
+
+    .plan-features li {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .plan-features .check-icon {
+        width: 20px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .payment-section {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+    }
+
+    .payment-method-card {
+        border: 2px solid var(--blue-100);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        background: white;
+    }
+
+    .payment-method-card:hover {
+        border-color: var(--blue-500);
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+        transform: translateY(-2px);
+    }
+
+    .payment-method-card.selected {
+        border-color: var(--blue-600);
+        background: var(--blue-50);
+    }
+
+    .crypto-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--gradient-secondary);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .form-select {
+        border: 2px solid var(--blue-100);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .form-select:focus {
+        border-color: var(--blue-500);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+    }
+
+    .btn-checkout {
+        background: var(--gradient-primary);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 16px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-checkout:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+
+    .btn-back {
+        background: transparent;
+        border: 2px solid var(--blue-200);
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        color: var(--blue-700);
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background: var(--blue-50);
+        border-color: var(--blue-500);
+        color: var(--blue-800);
+    }
+
+    .security-badge {
+        display: flex;
+        align-items: center;
+        background: var(--blue-50);
+        border: 1px solid var(--blue-200);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-top: 2rem;
+        color: var(--blue-700);
+    }
+
+    .security-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--gradient-accent);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+    }
+
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+    }
+
+    .step {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin: 0 1rem;
+        position: relative;
+    }
+
+    .step.active {
+        background: var(--gradient-primary);
+        color: white;
+    }
+
+    .step.completed {
+        background: var(--blue-600);
+        color: white;
+    }
+
+    .step.inactive {
+        background: var(--blue-100);
+        color: var(--blue-400);
+    }
+
+    .step-line {
+        width: 60px;
+        height: 2px;
+        background: var(--blue-200);
+    }
+
+    .step-line.active {
+        background: var(--blue-600);
+    }
+
+    @media (max-width: 768px) {
+        .plan-price {
+            font-size: 2rem;
+        }
+        
+        .checkout-card {
+            margin: 1rem;
+        }
+        
+        .payment-section {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Complete Your Purchase</h4>
+<div class="checkout-hero">
+    <div class="container checkout-content">
+        <div class="py-5">
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <div class="checkout-badge">
+                    <i class="bi bi-lock-fill me-2"></i>
+                    Secure Checkout
                 </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5 class="card-title">Plan Details</h5>
-                            <div class="plan-details p-3 border rounded">
-                                <h4>{{ plan.name }}</h4>
-                                <p><strong>Price:</strong> ${{ plan.price }}</p>
-                                <p><strong>Email Limit:</strong> {{ plan.max_emails }} emails</p>
-                                <p><strong>Duration:</strong> {{ plan.duration_days }} days</p>
+                <h1 class="display-5 fw-bold text-dark mb-3">Complete Your Purchase</h1>
+                <p class="lead text-muted">You're just one step away from upgrading your email marketing</p>
+            </div>
+
+            <!-- Step Indicator -->
+            <div class="step-indicator">
+                <div class="step completed">
+                    <i class="bi bi-check"></i>
+                </div>
+                <div class="step-line active"></div>
+                <div class="step active">2</div>
+                <div class="step-line"></div>
+                <div class="step inactive">3</div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="checkout-card">
+                        <div class="row g-0">
+                            <!-- Plan Summary -->
+                            <div class="col-lg-5">
+                                <div class="p-4">
+                                    <div class="plan-summary">
+                                        <div class="plan-title">{{ plan.name }} Plan</div>
+                                        <div class="plan-price">${{ plan.price|floatformat:0 }}</div>
+                                        <div class="text-white-50 mb-3">{{ plan.duration_days }} days access</div>
+                                        
+                                        <ul class="plan-features">
+                                            <li>
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check text-white"></i>
+                                                </span>
+                                                <strong>{{ plan.max_emails|floatformat:0 }}</strong> emails per month
+                                            </li>
+                                            <li>
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check text-white"></i>
+                                                </span>
+                                                Professional templates
+                                            </li>
+                                            <li>
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check text-white"></i>
+                                                </span>
+                                                Advanced analytics
+                                            </li>
+                                            <li>
+                                                <span class="check-icon">
+                                                    <i class="bi bi-check text-white"></i>
+                                                </span>
+                                                24/7 priority support
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <h5 class="card-title">Payment Method</h5>
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="{{ form.payment_method.id_for_label }}" class="form-label">Select Cryptocurrency:</label>
-                                    {{ form.payment_method }}
-                                    {% if form.payment_method.errors %}
-                                    <div class="invalid-feedback d-block">
-                                        {{ form.payment_method.errors }}
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                
-                                <div class="payment-methods mt-4">
-                                    <h6>Available Payment Methods:</h6>
-                                    <div class="row">
-                                        {% for method in payment_methods %}
-                                        <div class="col-md-6 mb-2">
-                                            <div class="card">
-                                                <div class="card-body py-2">
-                                                    <small>{{ method.cryptocurrency }} ({{ method.symbol }})</small>
-                                                </div>
+
+                            <!-- Payment Form -->
+                            <div class="col-lg-7">
+                                <div class="payment-section">
+                                    <h4 class="fw-bold text-dark mb-4">
+                                        <i class="bi bi-credit-card me-2"></i>
+                                        Payment Method
+                                    </h4>
+                                    
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        
+                                        <div class="mb-4">
+                                            <label for="{{ form.payment_method.id_for_label }}" class="form-label fw-semibold text-dark">
+                                                Select Cryptocurrency:
+                                            </label>
+                                            {{ form.payment_method }}
+                                            {% if form.payment_method.errors %}
+                                            <div class="text-danger mt-2">
+                                                {{ form.payment_method.errors }}
                                             </div>
+                                            {% endif %}
                                         </div>
-                                        {% empty %}
-                                        <div class="col-12">
-                                            <div class="alert alert-warning">No payment methods available</div>
+
+                                        <!-- Payment Methods Display
+                                        <div class="mb-4">
+                                            <h6 class="fw-semibold text-dark mb-3">Available Cryptocurrencies:</h6>
+                                            <div class="row g-3">
+                                                {% for method in payment_methods %}
+                                                <div class="col-md-6">
+                                                    <div class="payment-method-card">
+                                                        <div class="d-flex align-items-center">
+                                                            <div class="crypto-icon">
+                                                                {{ method.symbol|slice:":2"|upper }}
+                                                            </div>
+                                                            <div>
+                                                                <div class="fw-semibold text-dark">{{ method.cryptocurrency }}</div>
+                                                                <small class="text-muted">{{ method.symbol|upper }}</small>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% empty %}
+                                                <div class="col-12">
+                                                    <div class="alert alert-warning border-0 rounded-3">
+                                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                                        No payment methods available at the moment. Please contact support.
+                                                    </div>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div> -->
+
+                                        <!-- Action Buttons -->
+                                        <div class="d-flex gap-3 mt-4">
+                                            <a href="{% url 'payments:subscription_plans' %}" class="btn btn-back flex-grow-1">
+                                                <i class="bi bi-arrow-left me-2"></i>
+                                                Back to Plans
+                                            </a>
+                                            <button type="submit" class="btn btn-checkout flex-grow-1">
+                                                <i class="bi bi-lock-fill me-2"></i>
+                                                Proceed to Payment
+                                            </button>
                                         </div>
-                                        {% endfor %}
+                                    </form>
+
+                                    <!-- Security Badge -->
+                                    <div class="security-badge">
+                                        <div class="security-icon">
+                                            <i class="bi bi-shield-check"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold">Secure & Encrypted</div>
+                                            <small>Your payment information is protected with enterprise-grade security</small>
+                                        </div>
                                     </div>
                                 </div>
-                                
-                                <div class="text-center mt-4">
-                                    <a href="{% url 'payments:subscription_plans' %}" class="btn btn-secondary">Back to Plans</a>
-                                    <button type="submit" class="btn btn-primary">Proceed to Payment</button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

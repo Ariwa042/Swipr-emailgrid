@@ -3,114 +3,349 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}EmailGrid{% endblock %}</title>
+    <title>{% block title %}EmailGrid - Advanced Email Marketing Platform{% endblock %}</title>
     {% load static %}
+    
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+    
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Custom Modern Theme CSS -->
-    <link rel="stylesheet" href="{% static 'css/modern-theme.css' %}">
-    <!-- Legacy Custom CSS (for backward compatibility) -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Base Styles -->
+    <style>
+        :root {
+            /* Blue Theme Colors */
+            --primary-blue: #3b82f6;
+            --primary-blue-dark: #2563eb;
+            --primary-blue-light: #dbeafe;
+            --secondary-blue: #1e40af;
+            --accent-blue: #60a5fa;
+            
+            /* Neutral Colors */
+            --white: #ffffff;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-400: #94a3b8;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            
+            /* Status Colors */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            
+            /* Transitions */
+            --transition: all 0.2s ease-in-out;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: var(--gray-50);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navigation */
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-blue) !important;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            padding: var(--spacing-md) 0;
+        }
+
+        .nav-link {
+            color: var(--gray-600) !important;
+            font-weight: 500;
+            padding: var(--spacing-sm) var(--spacing-md) !important;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue) !important;
+            background-color: var(--primary-blue-light);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-lg);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-blue-dark);
+            border-color: var(--primary-blue-dark);
+        }
+
+        /* Mobile Menu */
+        .offcanvas {
+            background: var(--white);
+            border: none;
+        }
+
+        .offcanvas-header {
+            background: var(--primary-blue);
+            color: white;
+            padding: var(--spacing-xl);
+        }
+
+        .mobile-menu-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md) var(--spacing-xl);
+            color: var(--gray-700);
+            text-decoration: none;
+            border-bottom: 1px solid var(--gray-100);
+            transition: var(--transition);
+        }
+
+        .mobile-menu-item:hover {
+            background-color: var(--gray-50);
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .mobile-menu-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--gray-100);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: var(--radius-md);
+            border-left: 4px solid;
+        }
+        p.text {
+            color: #adb5bd;
+        }
+
+        .alert-success {
+            background-color: rgba(16, 185, 129, 0.1);
+            border-left-color: var(--success);
+            color: #065f46;
+        }
+
+        .alert-danger {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left-color: var(--error);
+            color: #991b1b;
+        }
+
+        .alert-warning {
+            background-color: rgba(245, 158, 11, 0.1);
+            border-left-color: var(--warning);
+            color: #92400e;
+        }
+
+        .alert-info {
+            background-color: var(--primary-blue-light);
+            border-left-color: var(--primary-blue);
+            color: var(--secondary-blue);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--gray-800);
+            color: var(--gray-300);
+            padding: var(--spacing-2xl) 0 var(--spacing-xl);
+            margin-top: auto;
+        }
+
+        .footer h6 {
+            color: var(--white);
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .footer a {
+            color: var(--gray-400);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Utilities */
+        .text-primary-blue {
+            color: var(--primary-blue) !important;
+        }
+
+        .bg-primary-blue {
+            background-color: var(--primary-blue) !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .navbar-nav {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .navbar-toggler {
+                display: none !important;
+            }
+        }
+    </style>
+    
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
             <!-- Brand -->
-            <a class="navbar-brand text-white d-flex align-items-center" {% if user.is_authenticated %}href="{% url 'accounts:profile' %}"{% else %}href="{% url 'core:index' %}"{% endif %}>
-                <div class="me-2 p-1 rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                    <i class="bi bi-grid-3x3-gap-fill text-primary fs-6"></i>
+            <a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'accounts:profile' %}{% else %}{% url 'core:index' %}{% endif %}">
+                <div class="brand-logo">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
                 </div>
-                <span class="fw-bold">EmailGrid</span>
+                EmailGrid
             </a>
 
-            <!-- Mobile Burger Menu -->
-            <button class="navbar-toggler border-0 shadow-none p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
-                <i class="bi bi-list fs-4 text-white"></i>
+            <!-- Mobile Toggle -->
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
+                <i class="bi bi-list fs-4 text-primary-blue"></i>
             </button>
 
-            <!-- Desktop Navigation (hidden on mobile) -->
-            <div class="collapse navbar-collapse d-none d-lg-flex">
-                <ul class="navbar-nav me-auto">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'accounts:profile' %}">
-                                <i class="bi bi-house-door-fill me-2"></i>Dashboard
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'core:create_campaign' %}">
-                                <i class="bi bi-send-fill me-2"></i>Send Email
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'core:campaign_list' %}">
-                                <i class="bi bi-list-ul me-2"></i>Campaigns
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'payments:subscription_plans' %}">
-                                <i class="bi bi-gem me-2"></i>Plans
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-white d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-circle me-2"></i>{{ user.email|truncatechars:15 }}
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">
-                                    <i class="bi bi-person-circle me-2"></i>Profile
-                                </a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}">
-                                    <i class="bi bi-shield-lock me-2"></i>Change Password
-                                </a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
-                                    <i class="bi bi-box-arrow-right me-2"></i>Sign Out
-                                </a></li>
-                            </ul>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'accounts:login' %}">Sign In</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-light btn-sm ms-2" href="{% url 'accounts:register' %}">Get Started</a>
-                        </li>
-                    {% endif %}
-                </ul>
+            <!-- Desktop Navigation -->
+            <div class="navbar-nav ms-auto d-none d-lg-flex align-items-center">
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'accounts:profile' %}">
+                        <i class="bi bi-house-door me-1"></i>Dashboard
+                    </a>
+                    <a class="nav-link" href="{% url 'core:create_campaign' %}">
+                        <i class="bi bi-plus-circle me-1"></i>Create
+                    </a>
+                    <a class="nav-link" href="{% url 'core:campaign_list' %}">
+                        <i class="bi bi-bar-chart me-1"></i>Campaigns
+                    </a>
+                    <a class="nav-link" href="{% url 'payments:subscription_plans' %}">
+                        <i class="bi bi-gem me-1"></i>Plans
+                    </a>
+                    
+                    <!-- User Dropdown -->
+                    <div class="dropdown ms-3">
+                        <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i>
+                            {{ user.email|truncatechars:12 }}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                <i class="bi bi-person me-2"></i>Profile
+                            </a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:change_password' %}">
+                                <i class="bi bi-shield-lock me-2"></i>Security
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
+                                <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                            </a></li>
+                        </ul>
+                    </div>
+                {% else %}
+                    <a class="nav-link" href="{% url 'core:index' %}">Home</a>
+                    <a class="nav-link" href="{% url 'payments:subscription_plans' %}">Pricing</a>
+                    <a class="nav-link" href="{% url 'accounts:login' %}">Sign In</a>
+                    <a class="btn btn-primary ms-2" href="{% url 'accounts:register' %}">
+                        Get Started
+                    </a>
+                {% endif %}
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Offcanvas Menu -->
+    <!-- Mobile Menu -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu">
-        <div class="offcanvas-header bg-primary text-white">
-            <h5 class="offcanvas-title d-flex align-items-center">
-                <div class="me-2 p-1 rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                    <i class="bi bi-grid-3x3-gap-fill text-primary fs-6"></i>
+        <div class="offcanvas-header">
+            <div class="d-flex align-items-center gap-2">
+                <div class="brand-logo">
+                    <i class="bi bi-grid-3x3-gap-fill"></i>
                 </div>
-                EmailGrid
-            </h5>
+                <h6 class="mb-0 fw-bold">EmailGrid</h6>
+            </div>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
         </div>
+        
         <div class="offcanvas-body p-0">
             {% if user.is_authenticated %}
                 <!-- User Info -->
-                <div class="bg-light p-3 border-bottom">
-                    <div class="d-flex align-items-center">
-                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                <div class="p-4 bg-light border-bottom">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
                             <i class="bi bi-person-fill fs-5"></i>
                         </div>
                         <div>
@@ -120,62 +355,110 @@
                     </div>
                 </div>
 
-                <!-- Navigation Links -->
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-house-door-fill me-3 text-primary fs-5"></i>
-                        <span class="fw-medium">Dashboard</span>
-                    </a>
-                    <a href="{% url 'core:create_campaign' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-send-fill me-3 text-success fs-5"></i>
-                        <span class="fw-medium">Send Email</span>
-                    </a>
-                    <a href="{% url 'core:campaign_list' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-list-ul me-3 text-info fs-5"></i>
-                        <span class="fw-medium">View Campaigns</span>
-                    </a>
-                    <a href="{% url 'payments:subscription_plans' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-gem me-3 text-warning fs-5"></i>
-                        <span class="fw-medium">Subscription Plans</span>
+                <!-- Menu Items -->
+                <a href="{% url 'accounts:profile' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-primary-blue">
+                        <i class="bi bi-house-door-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Dashboard</div>
+                        <small class="text-muted">Overview & analytics</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'core:create_campaign' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-success">
+                        <i class="bi bi-plus-circle-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Create Campaign</div>
+                        <small class="text-muted">Send new email</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'core:campaign_list' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-info">
+                        <i class="bi bi-bar-chart-fill"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Campaigns</div>
+                        <small class="text-muted">View all campaigns</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'payments:subscription_plans' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-warning">
+                        <i class="bi bi-gem"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Subscription</div>
+                        <small class="text-muted">Plans & billing</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'accounts:change_password' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-secondary">
+                        <i class="bi bi-shield-lock"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Security</div>
+                        <small class="text-muted">Password settings</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'accounts:logout' %}" class="mobile-menu-item text-danger" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-danger">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Sign Out</div>
+                        <small class="text-muted">End session</small>
+                    </div>
+                </a>
+            {% else %}
+                <!-- Guest Menu -->
+                <div class="p-4 text-center bg-light border-bottom">
+                    <div class="mb-3">
+                        <div class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width: 64px; height: 64px;">
+                            <i class="bi bi-envelope-heart fs-4"></i>
+                        </div>
+                    </div>
+                    <h6 class="fw-bold mb-2">Welcome to EmailGrid</h6>
+                    <p class="text-muted mb-3 small">Professional email marketing platform</p>
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary" data-bs-dismiss="offcanvas">
+                        Get Started Free
                     </a>
                 </div>
 
-                <!-- Settings Section -->
-                <div class="border-top mt-3">
-                    <div class="p-3">
-                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Settings</h6>
-                        <div class="list-group list-group-flush">
-                            <a href="{% url 'accounts:change_password' %}" class="list-group-item list-group-item-action d-flex align-items-center py-2 border-0" data-bs-dismiss="offcanvas">
-                                <i class="bi bi-shield-lock me-3 text-secondary"></i>
-                                <span>Change Password</span>
-                            </a>
-                            <a href="{% url 'accounts:logout' %}" class="list-group-item list-group-item-action d-flex align-items-center py-2 border-0 text-danger" data-bs-dismiss="offcanvas">
-                                <i class="bi bi-box-arrow-right me-3"></i>
-                                <span>Sign Out</span>
-                            </a>
-                        </div>
+                <a href="{% url 'core:index' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-primary-blue">
+                        <i class="bi bi-house-door-fill"></i>
                     </div>
-                </div>
-            {% else %}
-                <!-- Guest Navigation -->
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'core:index' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-house-door-fill me-3 text-primary fs-5"></i>
-                        <span class="fw-medium">Home</span>
-                    </a>
-                    <a href="{% url 'accounts:login' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-box-arrow-in-right me-3 text-success fs-5"></i>
-                        <span class="fw-medium">Sign In</span>
-                    </a>
-                    <a href="{% url 'accounts:register' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-person-plus me-3 text-primary fs-5"></i>
-                        <span class="fw-medium">Get Started</span>
-                    </a>
-                    <a href="{% url 'payments:subscription_plans' %}" class="list-group-item list-group-item-action d-flex align-items-center py-3" data-bs-dismiss="offcanvas">
-                        <i class="bi bi-gem me-3 text-warning fs-5"></i>
-                        <span class="fw-medium">View Plans</span>
-                    </a>
-                </div>
+                    <div>
+                        <div class="fw-semibold">Home</div>
+                        <small class="text-muted">Platform overview</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'payments:subscription_plans' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-warning">
+                        <i class="bi bi-gem"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Pricing</div>
+                        <small class="text-muted">Plans & features</small>
+                    </div>
+                </a>
+                
+                <a href="{% url 'accounts:login' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-success">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Sign In</div>
+                        <small class="text-muted">Access your account</small>
+                    </div>
+                </a>
             {% endif %}
         </div>
     </div>
@@ -189,7 +472,7 @@
                     <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center" role="alert">
                         {% if message.tags == 'success' %}
                             <i class="bi bi-check-circle-fill me-3 fs-5"></i>
-                        {% elif message.tags == 'error' %}
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
                             <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
                         {% elif message.tags == 'warning' %}
                             <i class="bi bi-exclamation-circle-fill me-3 fs-5"></i>
@@ -197,7 +480,7 @@
                             <i class="bi bi-info-circle-fill me-3 fs-5"></i>
                         {% endif %}
                         <div class="flex-grow-1">{{ message }}</div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             </div>
@@ -208,52 +491,102 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-5 mt-5">
+    {% block footer %}
+    <footer class="footer">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="me-3 p-2 rounded-3 bg-light d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
-                            <i class="bi bi-grid-3x3-gap-fill text-primary-blue fs-4"></i>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="brand-logo me-3">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
                         </div>
                         <div>
-                            <h5 class="mb-1 fw-bold text-light">EmailGrid</h5>
-                            <p class="mb-0 opacity-75 small">Professional Email Marketing Platform</p>
+                            <h6 class="mb-1">EmailGrid</h6>
+                            <small class="text">Advanced Email Marketing Platform</small>
                         </div>
                     </div>
-                    <div class="d-flex flex-wrap gap-4 opacity-75">
-                        <small>© {% now "Y" %} EmailGrid. All rights reserved.</small>
-                        <small>•</small>
-                        <small>Built with modern technology</small>
-                        <small>•</small>
-                        <small>Secure & Reliable</small>
-                    </div>
+                    <p class="text">
+                        © {% now "Y" %} EmailGrid. All rights reserved. | 
+                        Enterprise-grade email marketing solutions | 
+                        Secure & GDPR compliant
+                    </p>
                 </div>
-                <div class="col-md-4 text-md-end mt-4 mt-md-0">
-                    <div class="d-flex justify-content-md-end justify-content-center gap-3">
-                        <a href="#" class="text-light opacity-75 text-decoration-none">
+                <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+                    <div class="d-flex justify-content-lg-end justify-content-center gap-3 mb-3">
+                        <a href="#" class="text-decoration-none" title="Twitter">
                             <i class="bi bi-twitter fs-5"></i>
                         </a>
-                        <a href="#" class="text-light opacity-75 text-decoration-none">
+                        <a href="#" class="text-decoration-none" title="LinkedIn">
                             <i class="bi bi-linkedin fs-5"></i>
                         </a>
-                        <a href="#" class="text-light opacity-75 text-decoration-none">
+                        <a href="#" class="text-decoration-none" title="GitHub">
                             <i class="bi bi-github fs-5"></i>
                         </a>
                     </div>
-                    <small class="d-block mt-3 opacity-75">Made with ❤️ for growth</small>
+                    <small class="text">Built with ❤️ for modern businesses</small>
                 </div>
             </div>
         </div>
     </footer>
+    {% endblock %}
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Custom JS for smooth interactions -->
+    <!-- Custom JavaScript -->
     <script>
-        // Add smooth scroll behavior
         document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide alerts
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    if (alert && alert.classList.contains('show')) {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }
+                }, 5000);
+            });
+
+            // Form loading states
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    if (submitBtn && !submitBtn.disabled) {
+                        const originalText = submitBtn.innerHTML;
+                        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
+                        submitBtn.disabled = true;
+                        
+                        setTimeout(() => {
+                            if (submitBtn.disabled) {
+                                submitBtn.innerHTML = originalText;
+                                submitBtn.disabled = false;
+                            }
+                        }, 3000);
+                    }
+                });
+            });
+
+            // Mobile menu item clicks - Close offcanvas and navigate
+            document.querySelectorAll('.mobile-menu-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Get the offcanvas element
+                    const offcanvasElement = document.getElementById('mobileMenu');
+                    if (offcanvasElement) {
+                        // Hide the offcanvas
+                        const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement) || new bootstrap.Offcanvas(offcanvasElement);
+                        offcanvasInstance.hide();
+                        
+                        // Small delay to ensure offcanvas closes before navigation
+                        setTimeout(() => {
+                            const href = this.getAttribute('href');
+                            if (href && href !== '#') {
+                                window.location.href = href;
+                            }
+                        }, 150);
+                    }
+                });
+            });
+
             // Smooth scroll for anchor links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -267,18 +600,9 @@
                     }
                 });
             });
-
-            // Add loading state to forms
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', function() {
-                    const submitBtn = form.querySelector('button[type="submit"]');
-                    if (submitBtn) {
-                        submitBtn.classList.add('loading');
-                        submitBtn.disabled = true;
-                    }
-                });
-            });
         });
     </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

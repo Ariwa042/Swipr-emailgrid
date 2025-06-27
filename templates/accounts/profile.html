@@ -1,122 +1,557 @@
 {% extends 'base.html' %}
-{% block title %}Profile - {{ user.email }}{% endblock %}
+{% load static %}
+
+{% block title %}{{ user.email }} - Profile{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-900: #1e3a8a;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-900: #111827;
+        --green-500: #10b981;
+        --orange-500: #f59e0b;
+        --purple-500: #8b5cf6;
+        --red-500: #ef4444;
+    }
+
+    body {
+        background: var(--gray-50);
+        min-height: 100vh;
+    }
+
+    .dashboard-container {
+        padding: 2rem 0;
+        min-height: 100vh;
+    }
+
+    .dashboard-header {
+        background: white;
+        border-bottom: 1px solid var(--gray-200);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+    }
+
+    .user-details h1 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0 0 0.25rem 0;
+    }
+
+    .user-meta {
+        color: var(--gray-600);
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .user-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--green-500);
+        padding: 0.375rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .card {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--gray-900);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+        border: 1px solid var(--gray-100);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .stat-item:hover {
+        border-color: var(--blue-200);
+        background: var(--blue-50);
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .action-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem 1rem;
+        border: 2px solid var(--gray-100);
+        border-radius: 12px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        background: white;
+    }
+
+    .action-card:hover {
+        border-color: var(--blue-300);
+        background: var(--blue-50);
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .action-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 0.75rem;
+        font-size: 1.25rem;
+        color: white;
+    }
+
+    .action-icon.primary {
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+    }
+
+    .action-icon.secondary {
+        background: linear-gradient(135deg, var(--purple-500), #a855f7);
+    }
+
+    .action-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--gray-900);
+        margin: 0;
+    }
+
+    .subscription-card {
+        text-align: center;
+    }
+
+    .subscription-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #0d6efd, #86b7fe);
+        border-radius: 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .subscription-status {
+        margin-bottom: 1rem;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .badge-premium {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--green-500);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-free {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--orange-500);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .subscription-meta {
+        color: var(--gray-600);
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+    }
+
+    .btn-upgrade {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-upgrade:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline {
+        background: white;
+        color: var(--blue-600);
+        border: 1px solid var(--blue-200);
+    }
+
+    .btn-outline:hover {
+        background: var(--blue-50);
+        color: var(--blue-700);
+    }
+
+    .recent-activity {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        color: white;
+        flex-shrink: 0;
+    }
+
+    .activity-icon.campaign {
+        background: var(--blue-500);
+    }
+
+    .activity-icon.contact {
+        background: var(--purple-500);
+    }
+
+    .activity-icon.settings {
+        background: var(--gray-500);
+    }
+
+    .activity-content {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--gray-900);
+        margin: 0 0 0.125rem 0;
+    }
+
+    .activity-time {
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: var(--gray-500);
+    }
+
+    .quick-link {
+        color: var(--gray-700);
+        text-decoration: none;
+        font-size: 0.9rem;
+        padding: 0.75rem;
+        border: 1px solid var(--gray-200);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        display: block;
+    }
+
+    .quick-link:hover {
+        background: var(--blue-50);
+        border-color: var(--blue-200);
+        color: var(--blue-700);
+        text-decoration: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+            order: -1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .user-info {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 2 1fr;
+        }
+
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .card {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <!-- Sleek Profile Header -->
-    <div class="d-flex flex-column align-items-center mb-5">
-        <div class="profile-avatar bg-gradient text-white d-flex align-items-center justify-content-center rounded-circle shadow-lg mb-3" style="width: 90px; height: 90px; background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%);">
-            <i class="bi bi-person-fill" style="font-size: 2.5rem;"></i>
-        </div>
-        <h2 class="fw-bold text-dark mb-1 fs-4">{{ user.email }}</h2>
-        <div class="text-muted small mb-2">
-            <i class="bi bi-calendar3 me-1"></i>Member since {{ user.date_joined|date:"M d, Y" }}
-        </div>
-        <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-2">
-            <i class="bi bi-check-circle me-1"></i>Active
-        </span>
-    </div>
-
-    <!-- Sleek Stats & Actions -->
-    <div class="row g-4 justify-content-center mb-5">
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm text-center py-4">
-                <div class="icon-wrapper bg-primary bg-gradient text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                    <i class="bi bi-envelope-paper fs-5"></i>
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="bi bi-person-fill"></i>
                 </div>
-                <div class="fw-bold text-primary fs-4">{{ user.campaigns.count }}</div>
-                <div class="text-muted small">Campaigns</div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="card border-0 shadow-sm text-center py-4">
-                <div class="icon-wrapper bg-info bg-gradient text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                    <i class="bi bi-people fs-5"></i>
+                <div class="user-details">
+                    <h1>{{ user.email }}</h1>
+                    <div class="user-meta">
+                        <i class="bi bi-calendar3 me-1"></i>
+                        Member since {{ user.date_joined|date:"F d, Y" }}
+                    </div>
                 </div>
-                <div class="fw-bold text-info fs-4">{{ user.victim_infos.count }}</div>
-                <div class="text-muted small">Contacts</div>
             </div>
         </div>
     </div>
 
-    <!-- Sleek Main Actions -->
-    <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mb-5">
-        <a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-lg px-4 d-flex align-items-center justify-content-center gap-2">
-            <i class="bi bi-send"></i> Send Email
-        </a>
-        <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-primary btn-lg px-4 d-flex align-items-center justify-content-center gap-2">
-            <i class="bi bi-bar-chart"></i> View Campaigns
-        </a>
-    </div>
-
-    <!-- Sleek Subscription Card -->
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card border-0 shadow-sm text-center p-4">
-                <div class="mb-3">
-                    <i class="bi bi-gem text-warning" style="font-size: 2rem;"></i>
+    <!-- Main Content -->
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Main Content Area -->
+            <div class="main-content">
+                <!-- Statistics Overview -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="bi bi-graph-up" style="color: var(--blue-500);"></i>
+                            Account Overview
+                        </h2>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value">{{ user.campaigns.count|default:0 }}</div>
+                            <div class="stat-label">Total Campaigns</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">{{ user.victim_infos.count|default:0 }}</div>
+                            <div class="stat-label">Contacts</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">99.9%</div>
+                            <div class="stat-label">Delivery Rate</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">83.5%</div>
+                            <div class="stat-label">Open Rate</div>
+                        </div>
+                    </div>
                 </div>
-                {% if user.is_premium|default:False %}
-                    <div class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-2">
-                        <i class="bi bi-check-circle me-1"></i>Premium Active
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="bi bi-lightning-charge" style="color: var(--orange-500);"></i>
+                            Quick Actions
+                        </h2>
                     </div>
-                    <div class="text-muted small mb-2">Expires: June 25, 2025</div>
-                    <a href="{% url 'payments:subscription_plans' %}" class="btn btn-outline-secondary btn-sm mt-2">Manage Plan</a>
-                {% else %}
-                    <div class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill mb-2">
-                        <i class="bi bi-exclamation-triangle me-1"></i>No Active Plan
+                    <div class="quick-actions">
+                        <a href="{% url 'core:create_campaign' %}" class="action-card">
+                            <div class="action-icon primary">
+                                <i class="bi bi-rocket-takeoff"></i>
+                            </div>
+                            <h3 class="action-title">Create Campaign</h3>
+                        </a>
+                        <a href="{% url 'core:campaign_list' %}" class="action-card">
+                            <div class="action-icon secondary">
+                                <i class="bi bi-bar-chart"></i>
+                            </div>
+                            <h3 class="action-title">View Campaigns</h3>
+                        </a>
                     </div>
-                    <div class="text-muted small mb-2">Unlock premium features</div>
-                    <a href="{% url 'payments:subscription_plans' %}" class="btn btn-primary btn-sm mt-2">View Plans</a>
-                {% endif %}
+                </div>
+
+                <!-- Recent Activity -->
+ 
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Subscription Card -->
+                <div class="card subscription-card">
+                    <div class="subscription-icon">
+                        <i class="bi bi-gem"></i>
+                    </div>
+                    
+                    <div class="subscription-status">
+                        {% if current_subscription %}
+                            <div class="status-badge badge-premium">
+                                <i class="bi bi-check-circle-fill"></i>
+                                {{ current_subscription.plan.name }} Active
+                            </div>
+                            <div class="subscription-meta">
+                                Plan expires on {{ current_subscription.end_date|date:"F d, Y" }}
+                            </div>
+                            <a href="{% url 'payments:subscription_plans' %}" class="btn-upgrade btn-outline">
+                                <i class="bi bi-gear"></i>
+                                Manage Subscription
+                            </a>
+                        {% else %}
+                            <div class="status-badge badge-free">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                                Free Plan
+                            </div>
+                            <div class="subscription-meta">
+                                Upgrade to unlock premium features
+                            </div>
+                            <a href="{% url 'payments:subscription_plans' %}" class="btn-upgrade">
+                                <i class="bi bi-arrow-up-circle-fill"></i>
+                                Upgrade Now
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Quick Links Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="bi bi-lightning-charge" style="color: var(--orange-500);"></i>
+                            Quick Links
+                        </h3>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <a href="{% url 'core:create_campaign' %}" class="quick-link">
+                            <i class="bi bi-rocket-takeoff me-2" style="color: var(--blue-500);"></i>Create New Campaign
+                        </a>
+                        <a href="{% url 'core:campaign_list' %}" class="quick-link">
+                            <i class="bi bi-bar-chart me-2" style="color: var(--purple-500);"></i>View All Campaigns
+                        </a>
+                        <a href="{% url 'payments:subscription_plans' %}" class="quick-link">
+                            <i class="bi bi-gem me-2" style="color: var(--orange-500);"></i>Subscription Plans
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.profile-avatar {
-    box-shadow: 0 4px 24px rgba(67, 102, 241, 0.08);
-    transition: transform 0.2s;
-}
-.profile-avatar:hover {
-    transform: scale(1.05);
-}
-.card {
-    border-radius: 18px;
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-.card:hover {
-    box-shadow: 0 8px 32px rgba(67, 102, 241, 0.10);
-    transform: translateY(-2px);
-}
-.btn-lg {
-    border-radius: 12px;
-    font-weight: 500;
-    font-size: 1.1rem;
-    padding: 0.85rem 2.2rem;
-}
-.btn {
-    transition: all 0.2s;
-}
-.btn:active {
-    transform: scale(0.98);
-}
-.icon-wrapper {
-    box-shadow: 0 2px 8px rgba(67, 102, 241, 0.07);
-}
-.badge {
-    font-weight: 500;
-    font-size: 1rem;
-}
-@media (max-width: 768px) {
-    .btn-lg {
-        font-size: 1rem;
-        padding: 0.7rem 1.2rem;
-    }
-    .card {
-        padding: 0.5rem 0.5rem;
-    }
-}
-</style>
 {% endblock %}

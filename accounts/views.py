@@ -3,6 +3,7 @@ from django.contrib.auth import login, authenticate, logout, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, PasswordChangeForm
 from django.conf import settings
 
@@ -55,7 +56,18 @@ def logout_view(request):
 @login_required
 def profile_view(request):
     """User profile view"""
-    return render(request, 'accounts/profile.html', {'user': request.user})
+    # Get the user's active subscription
+    from payments.models import Subscription
+    current_subscription = Subscription.objects.filter(
+        user=request.user,
+        is_active=True,
+        end_date__gt=timezone.now()
+    ).first()
+    
+    return render(request, 'accounts/profile.html', {
+        'user': request.user,
+        'current_subscription': current_subscription
+    })
 
 
 @login_required

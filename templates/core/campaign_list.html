@@ -1,334 +1,575 @@
 {% extends 'base.html' %}
-
-{% block title %}Campaign Dashboard - EmailGrid{% endblock %}
+{% load static %}
+{% block title %}Campaigns - EmailGrid{% endblock %}
 
 {% block extra_css %}
 <style>
-    .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px;
-        margin-bottom: 2rem;
+    .page-wrapper {
+        background: var(--gray-50);
+        min-height: 100vh;
+        padding: 2rem 0;
     }
-    
-    .campaign-card {
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        border: none;
-        border-radius: 16px;
-        overflow: hidden;
+
+    .page-header {
         background: white;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-    
-    .campaign-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
-    
-    .campaign-status {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        z-index: 2;
-    }
-    
-    .template-badge {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        font-size: 0.75rem;
-        font-weight: 600;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        padding: 2rem;
         margin-bottom: 2rem;
+        border: 1px solid var(--gray-200);
     }
-    
-    .stat-card {
-        background: white;
-        border-radius: 16px;
-        padding: 1.5rem;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(102, 126, 234, 0.1);
-    }
-    
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-    }
-    
-    .stat-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 16px;
+
+    .header-content {
         display: flex;
         align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        font-size: 1.5rem;
+        justify-content: space-between;
+        gap: 2rem;
     }
-    
-    .stat-number {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-    
-    .campaign-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+
+    .header-left {
+        display: flex;
+        align-items: center;
         gap: 1.5rem;
     }
-    
-    .campaign-meta {
-        background: #f8fafc;
-        padding: 1rem;
-        margin: 0 -1.5rem -1.5rem;
-        border-top: 1px solid #e2e8f0;
-    }
-    
-    .btn-floating {
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
+
+    .header-icon {
         width: 60px;
         height: 60px;
-        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+        border-radius: var(--radius-lg);
         display: flex;
         align-items: center;
         justify-content: center;
+        color: white;
         font-size: 1.5rem;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        z-index: 1000;
-        transition: all 0.3s ease;
+        box-shadow: var(--shadow-md);
     }
-    
-    .btn-floating:hover {
-        transform: scale(1.1);
-        box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+
+    .header-text h1 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--gray-900);
+        margin: 0 0 0.25rem 0;
     }
-    
+
+    .header-text p {
+        color: var(--gray-600);
+        margin: 0;
+        font-size: 1rem;
+    }
+
+    /* Single Analytics Card */
+    .analytics-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid var(--gray-200);
+        text-align: center;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .analytics-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--success), #059669);
+        border-radius: var(--radius-xl);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .analytics-value {
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--gray-900);
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .analytics-label {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--gray-600);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Campaign List */
+    .campaigns-section {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--gray-200);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 2rem 2rem 1rem;
+        border-bottom: 1px solid var(--gray-100);
+    }
+
+    .section-title {
+        font-size: 1.375rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .campaigns-list {
+        padding: 0;
+    }
+
+    .campaign-item {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 2rem;
+        border-bottom: 1px solid var(--gray-100);
+        transition: var(--transition);
+        background: white;
+        position: relative;
+        text-decoration: none;
+        color: inherit;
+        cursor: pointer;
+    }
+
+    .campaign-item:last-child {
+        border-bottom: none;
+    }
+
+    .campaign-item:hover {
+        background: var(--gray-50);
+        text-decoration: none;
+        color: inherit;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .campaign-item::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0;
+        background: var(--primary-blue);
+        transition: width var(--transition);
+    }
+
+    .campaign-item:hover::before {
+        width: 4px;
+    }
+
+    .campaign-badge {
+        width: 60px;
+        height: 60px;
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .badge-binance {
+        background: linear-gradient(135deg, #f0b90b, #ffc107);
+    }
+
+    .badge-bybit {
+        background: linear-gradient(135deg, #ff6b35, #f7931e);
+    }
+
+    .badge-default {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+    }
+
+    .campaign-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .campaign-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .campaign-meta {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        color: var(--gray-600);
+        font-size: 0.875rem;
+        flex-wrap: wrap;
+    }
+
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        white-space: nowrap;
+    }
+
+    .campaign-status {
+        padding: 0.5rem 1.25rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+        border: 2px solid rgba(16, 185, 129, 0.2);
+        flex-shrink: 0;
+    }
+
+    .campaign-arrow {
+        color: var(--gray-400);
+        font-size: 1.25rem;
+        transition: var(--transition);
+        flex-shrink: 0;
+    }
+
+    .campaign-item:hover .campaign-arrow {
+        color: var(--primary-blue);
+        transform: translateX(4px);
+    }
+
+    /* Empty State */
     .empty-state {
         text-align: center;
         padding: 4rem 2rem;
     }
-    
-    .empty-state-icon {
+
+    .empty-icon {
         width: 120px;
         height: 120px;
+        background: var(--gray-100);
+        border-radius: var(--radius-xl);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2rem;
+        color: var(--gray-400);
+        font-size: 3rem;
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 1rem;
+    }
+
+    .empty-description {
+        color: var(--gray-600);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Floating Action Button */
+    .fab {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+        border: none;
         border-radius: 50%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 1.5rem;
+        box-shadow: var(--shadow-lg);
+        transition: var(--transition);
+        z-index: 1000;
+        text-decoration: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 2rem;
-        font-size: 3rem;
+    }
+
+    .fab:hover {
+        transform: scale(1.1);
+        box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
         color: white;
     }
-    
-    .filter-tabs {
-        background: white;
-        border-radius: 16px;
-        padding: 0.5rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .campaign-meta {
+            gap: 1.5rem;
+        }
     }
-    
-    .filter-tab {
-        padding: 0.75rem 1.5rem;
-        border-radius: 12px;
-        border: none;
-        background: transparent;
-        color: #64748b;
-        font-weight: 500;
-        transition: all 0.3s ease;
+
+    @media (max-width: 992px) {
+        .page-wrapper {
+            padding: 1.5rem 0;
+        }
+
+        .header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .header-left {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .analytics-card {
+            margin: 0 1rem 2rem;
+        }
+
+        .campaign-item {
+            padding: 1.5rem;
+        }
+
+        .campaign-meta {
+            gap: 1rem;
+        }
     }
-    
-    .filter-tab.active {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+
+    @media (max-width: 768px) {
+        .page-wrapper {
+            padding: 1rem 0;
+        }
+
+        .page-header {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .header-icon {
+            width: 48px;
+            height: 48px;
+            font-size: 1.25rem;
+        }
+
+        .header-text h1 {
+            font-size: 1.5rem;
+        }
+
+        .analytics-card {
+            margin: 0 1rem 1.5rem;
+            padding: 1.5rem;
+        }
+
+        .analytics-icon {
+            width: 64px;
+            height: 64px;
+            font-size: 1.5rem;
+        }
+
+        .analytics-value {
+            font-size: 2.5rem;
+        }
+
+        .analytics-label {
+            font-size: 1rem;
+        }
+
+        .campaigns-section {
+            margin: 0 1rem;
+        }
+
+        .section-header {
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+        }
+
+        .campaign-item {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+
+        .campaign-badge {
+            align-self: flex-start;
+            width: 48px;
+            height: 48px;
+            font-size: 1.25rem;
+        }
+
+        .campaign-meta {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .meta-item {
+            font-size: 0.8rem;
+        }
+
+        .campaign-status {
+            align-self: flex-start;
+            margin-top: 0.5rem;
+        }
+
+        .campaign-arrow {
+            align-self: center;
+            margin-top: 0.5rem;
+        }
+
+        .fab {
+            width: 56px;
+            height: 56px;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 1.25rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page-wrapper {
+            padding: 0.5rem 0;
+        }
+
+        .page-header,
+        .campaigns-section {
+            margin: 0 0.5rem;
+        }
+
+        .analytics-card {
+            margin: 0 0.5rem 1rem;
+        }
+
+        .campaign-item {
+            padding: 1rem;
+        }
+
+        .empty-state {
+            padding: 2rem 1rem;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+        }
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- Dashboard Header -->
-<div class="container-fluid px-4 mt-4">
-    <div class="dashboard-header p-4">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="display-6 fw-bold mb-2">Campaign Dashboard</h1>
-                <p class="opacity-75 mb-0">Manage and monitor your email marketing campaigns</p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <a href="{% url 'core:create_campaign' %}" class="btn btn-light btn-lg">
-                    <i class="bi bi-plus-circle me-2"></i>New Campaign
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid px-4">
-    <!-- Statistics Cards -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon bg-primary-subtle text-primary">
-                <i class="bi bi-envelope-fill"></i>
-            </div>
-            <div class="stat-number text-primary">{{ campaigns.count }}</div>
-            <div class="text-muted fw-medium">Total Campaigns</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon bg-success-subtle text-success">
-                <i class="bi bi-check-circle-fill"></i>
-            </div>
-            <div class="stat-number text-success">
-                {% widthratio campaigns.count 1 1 %}
-            </div>
-            <div class="text-muted fw-medium">Active Campaigns</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon bg-warning-subtle text-warning">
-                <i class="bi bi-eye-fill"></i>
-            </div>
-            <div class="stat-number text-warning">
-                {% if campaigns %}{{ campaigns.count|floatformat:0 }}{% else %}0{% endif %}
-            </div>
-            <div class="text-muted fw-medium">Total Views</div>
-        </div>
-        
-        <div class="stat-card">
-            <div class="stat-icon bg-info-subtle text-info">
-                <i class="bi bi-graph-up-arrow"></i>
-            </div>
-            <div class="stat-number text-info">
-                {% if campaigns %}85{% else %}0{% endif %}%
-            </div>
-            <div class="text-muted fw-medium">Success Rate</div>
-        </div>
-    </div>
-
-    <!-- Filter Tabs -->
-    <div class="filter-tabs d-flex gap-2">
-        <button class="filter-tab active">All Campaigns</button>
-        <button class="filter-tab">Active</button>
-        <button class="filter-tab">Scheduled</button>
-        <button class="filter-tab">Completed</button>
-        <button class="filter-tab">Draft</button>
-    </div>
-
-    <!-- Campaign Grid -->
-    {% if campaigns %}
-        <div class="campaign-grid">
-            {% for campaign in campaigns %}
-                <div class="campaign-card card">
-                    <div class="campaign-status">
-                        <span class="badge bg-success">Active</span>
+<div class="page-wrapper">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="header-icon">
+                        <i class="bi bi-collection"></i>
                     </div>
-                    
-                    <div class="card-body p-4">
-                        <div class="d-flex align-items-start justify-content-between mb-3">
-                            <div>
-                                <h5 class="card-title fw-bold mb-2">Campaign #{{ campaign.id }}</h5>
-                                <span class="template-badge">{{ campaign.email_template.get_type_display }}</span>
-                            </div>
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                    <i class="bi bi-three-dots"></i>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item" href="{% url 'core:campaign_detail' pk=campaign.id %}">
-                                            <i class="bi bi-eye me-2"></i>View Details
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="bi bi-pencil me-2"></i>Edit
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="#">
-                                            <i class="bi bi-trash me-2"></i>Delete
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <div class="d-flex align-items-center text-muted mb-2">
-                                <i class="bi bi-person-fill me-2"></i>
-                                <small>{{ campaign.recipient_email }}</small>
-                            </div>
-                            <div class="d-flex align-items-center text-muted">
-                                <i class="bi bi-calendar-fill me-2"></i>
-                                <small>{{ campaign.created_at|date:"M d, Y" }} at {{ campaign.created_at|time:"H:i" }}</small>
-                            </div>
-                        </div>
-                        
-                        <div class="row g-3 mb-3">
-                            <div class="col-4 text-center">
-                                <div class="fw-bold text-primary">1</div>
-                                <small class="text-muted">Sent</small>
-                            </div>
-                            <div class="col-4 text-center">
-                                <div class="fw-bold text-success">0</div>
-                                <small class="text-muted">Opens</small>
-                            </div>
-                            <div class="col-4 text-center">
-                                <div class="fw-bold text-warning">0</div>
-                                <small class="text-muted">Clicks</small>
-                            </div>
-                        </div>
-                        
-                        <div class="progress mb-3" style="height: 6px;">
-                            <div class="progress-bar bg-primary" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="campaign-meta">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-muted small">Last updated {{ campaign.created_at|timesince }} ago</span>
-                            <a href="{% url 'core:campaign_detail' pk=campaign.id %}" class="btn btn-sm btn-primary">
-                                View Report
-                            </a>
-                        </div>
+                    <div class="header-text">
+                        <h1>Campaign Manager</h1>
+                        <p>Monitor and manage your email marketing campaigns</p>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-state">
-            <div class="empty-state-icon">
-                <i class="bi bi-envelope"></i>
+                <div>
+                    <a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-plus-circle me-2"></i>
+                        New Campaign
+                    </a>
+                </div>
+                <div class="analytics-icon">
+                <i class="bi bi-send-check"></i>
+                </div>
+                <div class="analytics-value">{{ campaigns.count }}</div>
+                <div class="analytics-label">Total Campaigns Sent</div>
             </div>
-            <h3 class="fw-bold mb-3">No campaigns yet</h3>
-            <p class="text-muted mb-4">
-                Start your email marketing journey by creating your first campaign. 
-                Choose from our professional templates and reach your audience.
-            </p>
-            <a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-lg">
-                <i class="bi bi-plus-circle me-2"></i>Create Your First Campaign
-            </a>
         </div>
-    {% endif %}
+
+        <!-- Single Analytics Card -->
+
+
+        <!-- Campaigns Section -->
+        <div class="campaigns-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="bi bi-list-task"></i>
+                    Your Campaigns
+                </h2>
+            </div>
+            
+            <div class="campaigns-list">
+                {% if campaigns %}
+                    {% for campaign in campaigns %}
+                        <a href="{% url 'core:campaign_detail' pk=campaign.id %}" class="campaign-item">
+                            <div class="campaign-badge {% if 'binance' in campaign.email_template.name|lower %}badge-binance{% elif 'bybit' in campaign.email_template.name|lower %}badge-bybit{% else %}badge-default{% endif %}">
+                                <i class="bi bi-shield-exclamation"></i>
+                            </div>
+                            
+                            <div class="campaign-details">
+                                <h3 class="campaign-title">{{ campaign.email_template.name }}</h3>
+                                <div class="campaign-meta">
+                                    <div class="meta-item">
+                                        <i class="bi bi-person-fill"></i>
+                                        {{ campaign.recipient_email }}
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-calendar3"></i>
+                                        {{ campaign.created_at|date:"M d, Y" }}
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-clock"></i>
+                                        {{ campaign.created_at|time:"H:i" }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="campaign-status">
+                                Delivered
+                            </div>
+                            
+                            <div class="campaign-arrow">
+                                <i class="bi bi-chevron-right"></i>
+                            </div>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="bi bi-inbox"></i>
+                        </div>
+                        <h3 class="empty-title">No campaigns yet</h3>
+                        <p class="empty-description">
+                            Ready to launch your first email marketing campaign? Create professional, targeted messages that reach your audience effectively and drive engagement.
+                        </p>
+                        <a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-rocket-takeoff me-2"></i>
+                            Create Your First Campaign
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Floating Action Button -->
-<a href="{% url 'core:create_campaign' %}" class="btn btn-primary btn-floating">
-    <i class="bi bi-plus"></i>
+<a href="{% url 'core:create_campaign' %}" class="fab" title="Create New Campaign">
+    <i class="bi bi-plus-lg"></i>
 </a>
 {% endblock %}

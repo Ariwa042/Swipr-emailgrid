@@ -1,286 +1,583 @@
 {% extends 'base.html' %}
 
-{% block title %}Create Email Campaign - EmailGrid{% endblock %}
+{% block title %}Create Campaign - EmailGrid{% endblock %}
+
+{% block extra_css %}
+<style>
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-blue-light) 0%, var(--white) 100%);
+        padding: 3rem 0 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .header-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+        border-radius: var(--radius-xl);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: var(--shadow-lg);
+    }
+
+    .campaign-form-card {
+        background: white;
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        background: var(--primary-blue);
+        color: white;
+        padding: 1.5rem 2rem;
+        text-align: center;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--gray-800);
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: var(--transition);
+        background: white;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1rem;
+        padding-right: 2.5rem;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%233b82f6' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    }
+
+    /* Custom email template dropdown styling */
+    #id_email_template {
+        position: relative;
+    }
+
+    #id_email_template option {
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        color: var(--gray-700);
+        background: white;
+    }
+
+    #id_email_template option:first-child {
+        color: var(--gray-400);
+        font-style: italic;
+    }
+
+    #id_email_template option[value="1"] {
+        background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), white);
+    }
+
+    #id_email_template option[value="2"] {
+        background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), white);
+    }
+
+    #id_email_template option[value="3"] {
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), white);
+    }
+
+    #id_email_template option[value="4"] {
+        background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), white);
+    }
+
+    /* Template preview icons */
+    .template-preview {
+        display: none;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+    }
+
+    .template-preview.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .template-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .template-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.25rem;
+    }
+
+    .template-icon.binance {
+        background: linear-gradient(135deg, #f0b90b, #f8d12f);
+    }
+
+    .template-icon.bybit {
+        background: linear-gradient(135deg, #f7931a, #ffb84d);
+    }
+
+    .template-icon.deposit {
+        background: linear-gradient(135deg, var(--warning), #f59e0b);
+    }
+
+    .template-icon.login {
+        background: linear-gradient(135deg, var(--error), #dc2626);
+    }
+
+    .template-details h6 {
+        margin: 0 0 0.25rem 0;
+        font-weight: 600;
+        color: var(--gray-800);
+    }
+
+    .template-details p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: var(--gray-600);
+    }
+
+    .form-text {
+        color: var(--gray-500);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-blue), var(--primary-blue-dark));
+        border: none;
+        padding: 0.875rem 2rem;
+        font-weight: 600;
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid var(--gray-300);
+        color: var(--gray-600);
+        padding: 0.875rem 1.5rem;
+        font-weight: 500;
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+    }
+
+    .btn-outline-secondary:hover {
+        background: var(--gray-100);
+        border-color: var(--gray-400);
+        color: var(--gray-700);
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: var(--error);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+
+    .help-card {
+        background: var(--gray-50);
+        border: 1px solid var(--gray-200);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-top: 2rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .help-title {
+        color: var(--gray-800);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .help-text {
+        color: var(--gray-600);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .help-btn {
+        background: white;
+        border: 1px solid var(--primary-blue);
+        color: var(--primary-blue);
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        border-radius: var(--radius-md);
+        transition: var(--transition);
+    }
+
+    .help-btn:hover {
+        background: var(--primary-blue);
+        color: white;
+    }
+
+    /* Loading state */
+    .btn-loading {
+        position: relative;
+        color: transparent;
+    }
+
+    .btn-loading::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        border: 2px solid transparent;
+        border-top-color: currentColor;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 2rem 0 1.5rem;
+        }
+
+        .campaign-form-card {
+            margin: 0 1rem;
+        }
+
+        .form-body {
+            padding: 1.5rem;
+        }
+
+        .help-card {
+            margin: 2rem 1rem 0;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="min-vh-100 py-5" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-xl-7">
-                <!-- Header -->
-                <div class="text-center mb-5">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary bg-gradient text-white mb-4" style="width: 80px; height: 80px;">
-                        <i class="bi bi-plus-circle-fill fs-1"></i>
-                    </div>
-                    <h2 class="fw-bold text-primary mb-2">Create New Campaign</h2>
-                    <p class="text-muted fs-5">Launch your next email marketing campaign with precision and style</p>
-                </div>
+<div class="page-header">
+    <div class="container text-center">
+        <div class="header-icon">
+            <i class="bi bi-plus-circle-fill"></i>
+        </div>
+        <h1 class="h2 fw-bold text-primary-blue mb-2">Create New Campaign</h1>
+        <p class="text-muted fs-5">Launch your next email marketing campaign</p>
+    </div>
+</div>
 
-                <!-- Campaign Form -->
-                <div class="card shadow-xl border-0 rounded-4">
-                    <div class="card-header bg-primary bg-gradient text-white p-4 rounded-top-4">
-                        <h5 class="mb-0 d-flex align-items-center">
-                            <i class="bi bi-envelope-paper-fill me-3"></i>Campaign Details
-                        </h5>
-                    </div>
-                    <div class="card-body p-5">
-                        <form method="post" id="campaign-form" class="needs-validation" novalidate>
-                            {% csrf_token %}
-                            
-                            <!-- Recipient Email -->
-                            <div class="mb-4">
-                                <label for="{{ form.recipient_email.id_for_label }}" class="form-label fw-semibold text-dark fs-6">
-                                    <i class="bi bi-person-fill-check me-2 text-primary"></i>Target Recipient
-                                </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-at text-muted"></i>
-                                    </span>
-                                    {{ form.recipient_email }}
-                                </div>
-                                {% if form.recipient_email.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.recipient_email.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                                <small class="text-muted d-block mt-2">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Enter the email address where you want to send this campaign
-                                </small>
-                            </div>
-
-                            <!-- Email Template -->
-                            <div class="mb-5">
-                                <label for="{{ form.email_template.id_for_label }}" class="form-label fw-semibold text-dark fs-6">
-                                    <i class="bi bi-file-earmark-text-fill me-2 text-primary"></i>Email Template
-                                </label>
-                                <div class="input-group input-group-lg">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-layout-text-window-reverse text-muted"></i>
-                                    </span>
-                                    {{ form.email_template }}
-                                </div>
-                                {% if form.email_template.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.email_template.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                                <small class="text-muted d-block mt-2">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Choose from our professionally designed email templates
-                                </small>
-                            </div>
-
-                            <!-- Action Buttons -->
-                            <div class="d-flex gap-3 justify-content-center">
-                                <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-secondary btn-lg rounded-3 px-4">
-                                    <i class="bi bi-arrow-left me-2"></i>Back to Campaigns
-                                </a>
-                                <button type="submit" class="btn btn-primary btn-lg rounded-3 px-5">
-                                    <i class="bi bi-rocket-takeoff me-2"></i>Launch Campaign
-                                </button>
-                            </div>
-                        </form>
+<div class="container pb-5">
+    <div class="campaign-form-card">
+        <div class="form-header">
+            <h3 class="mb-0">
+                <i class="bi bi-envelope-paper me-2"></i>
+                Campaign Details
+            </h3>
+        </div>
+        
+        <div class="form-body">
+            <form method="post" id="campaignForm">
+                {% csrf_token %}
+                
+                <!-- Recipient Email -->
+                <div class="form-group">
+                    <label for="{{ form.recipient_email.id_for_label }}" class="form-label">
+                        <i class="bi bi-person-check text-primary-blue"></i>
+                        Target Recipient
+                    </label>
+                    {{ form.recipient_email }}
+                    {% if form.recipient_email.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.recipient_email.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Enter the email address where you want to send this campaign
                     </div>
                 </div>
 
-                <!-- Help Section -->
-                <div class="card border-0 bg-light rounded-4 mt-4">
-                    <div class="card-body p-4">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <h6 class="fw-semibold mb-2">
-                                    <i class="bi bi-lightbulb-fill text-warning me-2"></i>Need Help?
-                                </h6>
-                                <p class="text-muted mb-0 small">
-                                    Learn how to create effective email campaigns and boost your conversion rates with our comprehensive guides.
-                                </p>
+                <!-- Email Template -->
+                <div class="form-group">
+                    <label for="{{ form.email_template.id_for_label }}" class="form-label">
+                        <i class="bi bi-file-earmark-text text-primary-blue"></i>
+                        Email Template
+                    </label>
+                    {{ form.email_template }}
+                    {% if form.email_template.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.email_template.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="form-text">
+                        <i class="bi bi-info-circle"></i>
+                        Choose from our professionally designed email templates
+                    </div>
+
+                    <!-- Template Previews -->
+                    <div id="template-preview-1" class="template-preview">
+                        <div class="template-info">
+                            <div class="template-icon binance deposit">
+                                <i class="bi bi-exclamation-triangle"></i>
                             </div>
-                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                                <button class="btn btn-outline-primary btn-sm rounded-3" onclick="showHelpModal()">
-                                    <i class="bi bi-question-circle me-2"></i>View Guide
-                                </button>
+                            <div class="template-details">
+                                <h6>Binance Deposit on Hold</h6>
+                                <p>Security alert template for deposit verification issues</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="template-preview-2" class="template-preview">
+                        <div class="template-info">
+                            <div class="template-icon binance login">
+                                <i class="bi bi-shield-exclamation"></i>
+                            </div>
+                            <div class="template-details">
+                                <h6>Binance Unknown Login</h6>
+                                <p>Security notification for suspicious login attempts</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="template-preview-3" class="template-preview">
+                        <div class="template-info">
+                            <div class="template-icon bybit deposit">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="template-details">
+                                <h6>Bybit Deposit on Hold</h6>
+                                <p>Deposit verification and security check template</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="template-preview-4" class="template-preview">
+                        <div class="template-info">
+                            <div class="template-icon bybit login">
+                                <i class="bi bi-person-x"></i>
+                            </div>
+                            <div class="template-details">
+                                <h6>Bybit Unknown Login</h6>
+                                <p>Account security alert for unauthorized access</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
+                    <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back to Campaigns
+                    </a>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="bi bi-rocket-takeoff me-2"></i>
+                        Launch Campaign
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Help Section -->
+    <div class="help-card">
+        <div class="help-title">
+            <i class="bi bi-lightbulb text-warning"></i>
+            Need Help?
+        </div>
+        <div class="help-text">
+            Learn how to create effective email campaigns and boost your conversion rates with our comprehensive guides.
+        </div>
+        <button class="help-btn" onclick="showHelpModal()">
+            <i class="bi bi-question-circle me-1"></i>
+            View Guide
+        </button>
+    </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal fade" id="helpModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0" style="border-radius: var(--radius-xl);">
+            <div class="modal-header bg-primary-blue text-white" style="border-radius: var(--radius-xl) var(--radius-xl) 0 0;">
+                <h5 class="modal-title">
+                    <i class="bi bi-lightbulb me-2"></i>
+                    Campaign Creation Guide
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-primary-blue text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
+                                <span class="fw-bold">1</span>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold">Choose Your Target</h6>
+                                <p class="text-muted small mb-0">Enter the recipient's email address carefully. Double-check for typos.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-primary-blue text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
+                                <span class="fw-bold">2</span>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold">Select Template</h6>
+                                <p class="text-muted small mb-0">Pick from our collection of high-converting email templates.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
+                                <span class="fw-bold">3</span>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold">Review & Launch</h6>
+                                <p class="text-muted small mb-0">Double-check your settings before launching your campaign.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-start">
+                            <div class="bg-warning text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
+                                <span class="fw-bold">4</span>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold">Track Performance</h6>
+                                <p class="text-muted small mb-0">Monitor your campaign's success with detailed analytics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Got it!
+                </button>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
 
-<style>
-.form-control {
-    border-left: none;
-    border-radius: 0 12px 12px 0 !important;
-    padding: 16px 20px;
-    font-size: 16px;
-    transition: var(--transition-smooth);
-    background: rgba(255, 255, 255, 0.9);
-    border-color: var(--border-light);
-}
-
-.form-control:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    border-color: var(--primary-blue);
-    background: #ffffff;
-}
-
-.input-group-text {
-    border-color: var(--border-light);
-    transition: var(--transition-smooth);
-}
-
-.form-control:focus + .input-group-text,
-.input-group:focus-within .input-group-text {
-    border-color: var(--primary-blue);
-}
-
-.btn {
-    transition: var(--transition-smooth);
-    font-weight: 500;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn-primary {
-    background: var(--primary-gradient);
-    border: none;
-    box-shadow: var(--shadow-md);
-}
-
-.btn-primary:hover {
-    box-shadow: var(--shadow-lg);
-}
-
-.card {
-    transition: var(--transition-smooth);
-}
-
-.card:hover {
-    transform: translateY(-2px);
-}
-
-#campaign-form button[type="submit"] {
-    position: relative;
-    overflow: hidden;
-}
-
-#campaign-form button[type="submit"]:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
-}
-
-#campaign-form button[type="submit"]:hover:before {
-    left: 100%;
-}
-</style>
-
+{% block extra_js %}
 <script>
-function showHelpModal() {
-    const modal = document.createElement('div');
-    modal.innerHTML = `
-        <div class="modal fade" id="helpModal" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content border-0 rounded-4">
-                    <div class="modal-header bg-primary bg-gradient text-white rounded-top-4">
-                        <h5 class="modal-title">
-                            <i class="bi bi-lightbulb-fill me-2"></i>Campaign Creation Guide
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <div class="bg-primary bg-gradient text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
-                                        <i class="bi bi-1-circle-fill"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-semibold">Choose Your Target</h6>
-                                        <p class="text-muted small mb-0">Enter the recipient's email address carefully. Double-check for typos.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <div class="bg-primary bg-gradient text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
-                                        <i class="bi bi-2-circle-fill"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-semibold">Select Template</h6>
-                                        <p class="text-muted small mb-0">Pick from our collection of high-converting email templates.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <div class="bg-success bg-gradient text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
-                                        <i class="bi bi-3-circle-fill"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-semibold">Review & Launch</h6>
-                                        <p class="text-muted small mb-0">Double-check your settings before launching your campaign.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <div class="bg-info bg-gradient text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; min-width: 40px;">
-                                        <i class="bi bi-4-circle-fill"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-semibold">Track Performance</h6>
-                                        <p class="text-muted small mb-0">Monitor your campaign's success with detailed analytics.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer border-0">
-                        <button type="button" class="btn btn-primary rounded-3" data-bs-dismiss="modal">
-                            <i class="bi bi-check-circle me-2"></i>Got it!
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-    
-    const modalInstance = new bootstrap.Modal(document.getElementById('helpModal'));
-    modalInstance.show();
-    
-    document.getElementById('helpModal').addEventListener('hidden.bs.modal', function () {
-        document.body.removeChild(modal);
-    });
-}
+    function showHelpModal() {
+        const modal = new bootstrap.Modal(document.getElementById('helpModal'));
+        modal.show();
+    }
 
-// Add form validation and loading states
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('campaign-form');
-    
-    form.addEventListener('submit', function(e) {
-        const submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Launching...';
-        submitBtn.disabled = true;
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('campaignForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const templateSelect = document.getElementById('id_email_template');
         
-        // Re-enable after 5 seconds in case of error
-        setTimeout(() => {
-            submitBtn.innerHTML = '<i class="bi bi-rocket-takeoff me-2"></i>Launch Campaign';
-            submitBtn.disabled = false;
-        }, 5000);
+        // Template preview functionality
+        templateSelect.addEventListener('change', function() {
+            // Hide all previews
+            document.querySelectorAll('.template-preview').forEach(preview => {
+                preview.classList.remove('active');
+            });
+            
+            // Show selected template preview
+            if (this.value) {
+                const preview = document.getElementById(`template-preview-${this.value}`);
+                if (preview) {
+                    preview.classList.add('active');
+                }
+            }
+        });
+
+        // Form submission handling
+        form.addEventListener('submit', function(e) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add('btn-loading');
+            submitBtn.innerHTML = 'Launching...';
+            
+            // Re-enable after 5 seconds in case of error
+            setTimeout(() => {
+                if (submitBtn.disabled) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('btn-loading');
+                    submitBtn.innerHTML = '<i class="bi bi-rocket-takeoff me-2"></i>Launch Campaign';
+                }
+            }, 5000);
+        });
+
+        // Update dropdown option styles dynamically
+        templateSelect.addEventListener('focus', function() {
+            this.style.borderColor = 'var(--primary-blue)';
+        });
+
+        templateSelect.addEventListener('blur', function() {
+            if (!this.value) {
+                this.style.borderColor = 'var(--gray-200)';
+            }
+        });
     });
-});
 </script>
 {% endblock %}

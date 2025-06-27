@@ -4,70 +4,6 @@
 
 {% block extra_css %}
 <style>
-    .analytics-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 20px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .analytics-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        right: -50px;
-        width: 200px;
-        height: 200px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-    }
-    
-    .metric-card {
-        background: white;
-        border-radius: 16px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        transition: all 0.3s ease;
-        border: 1px solid rgba(102, 126, 234, 0.1);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .metric-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 4px;
-        height: 100%;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-    }
-    
-    .metric-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    .metric-value {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-    
     .timeline {
         position: relative;
         padding-left: 2rem;
@@ -91,6 +27,12 @@
         border-radius: 16px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         margin-left: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .timeline-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
     }
     
     .timeline-item::before {
@@ -104,61 +46,55 @@
         border-radius: 50%;
         border: 4px solid white;
         box-shadow: 0 0 0 2px #667eea;
+        transition: all 0.3s ease;
     }
     
     .campaign-status {
         padding: 0.5rem 1rem;
-        border-radius: 20px;
+        border-radius: 25px;
         font-weight: 600;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
     }
     
     .status-delivered {
-        background: #d1fae5;
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
         color: #047857;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
     }
     
     .status-opened {
-        background: #dbeafe;
+        background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
         color: #1d4ed8;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
     }
     
     .status-pending {
-        background: #fef3c7;
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         color: #92400e;
-    }
-    
-    .progress-ring {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto;
-    }
-    
-    .progress-ring-circle {
-        fill: none;
-        stroke: #e5e7eb;
-        stroke-width: 8;
-    }
-    
-    .progress-ring-progress {
-        fill: none;
-        stroke: #667eea;
-        stroke-width: 8;
-        stroke-linecap: round;
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
-        transition: stroke-dasharray 0.3s ease;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
     }
     
     .victim-info-card {
-        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 20%);
+        background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 20%, #f59e0b 100%);
         border: none;
-        border-radius: 16px;
-        padding: 1.5rem;
+        border-radius: 20px;
+        padding: 2rem;
         position: relative;
         overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 32px rgba(245, 158, 11, 0.2);
+        transition: all 0.4s ease;
+    }
+    
+    .victim-info-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(245, 158, 11, 0.3);
     }
     
     .victim-info-card::before {
@@ -168,27 +104,38 @@
         right: -50%;
         width: 100%;
         height: 100%;
-        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        pointer-events: none;
     }
     
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1rem;
-        margin-bottom: 2rem;
+    .victim-info-card::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #f59e0b, #d97706, #92400e);
     }
     
     .breadcrumb-modern {
-        background: rgba(102, 126, 234, 0.1);
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
         border-radius: 50px;
         padding: 0.75rem 1.5rem;
         margin-bottom: 2rem;
+        border: 1px solid rgba(102, 126, 234, 0.2);
+        backdrop-filter: blur(10px);
     }
     
     .breadcrumb-modern .breadcrumb-item a {
         color: #667eea;
         text-decoration: none;
         font-weight: 500;
+        transition: color 0.3s ease;
+    }
+    
+    .breadcrumb-modern .breadcrumb-item a:hover {
+        color: #764ba2;
     }
     
     .breadcrumb-modern .breadcrumb-item.active {
@@ -199,19 +146,181 @@
     .action-buttons {
         display: flex;
         gap: 1rem;
-        margin-top: 2rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 30px;
     }
     
     .btn-action {
-        padding: 0.75rem 1.5rem;
-        border-radius: 12px;
-        font-weight: 500;
+        padding: 13px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.9rem;
         transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border: 2px solid transparent;
+    }
+    
+    .btn-action::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
     }
     
     .btn-action:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .btn-action:hover::before {
+        left: 100%;
+    }
+    
+    .btn-outline-primary {
+    border-color: #2c6def;
+    color: white;
+    background-color: #2c6def;
+}
+    
+    .btn-outline-primary:hover {
+        background: linear-gradient(135deg, #2f71f0 20%, #1e4b8c 80%);
+        border-color: #2c6def;
+        color: white;
+    }
+    
+    .btn-outline-info {
+        border-color: #2f71f0;
+        color: #2f71f0;
+    }
+    
+    .btn-outline-info:hover {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        border-color: #06b6d4;
+        color: white;
+    }
+
+    .real-time-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 1rem;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        color: #047857;
+        border-radius: 25px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .real-time-indicator::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    }
+
+    @keyframes pulse {
+        0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 0.6; 
+            transform: scale(1.1);
+        }
+    }
+    
+    .card {
+        margin-top: 20px;
+        border: none !important;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.08) !important;
+        transition: all 0.3s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 10px 35px rgba(0,0,0,0.12) !important;
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .card-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+        border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    }
+    
+    .victim-details .fw-bold {
+        color: #1e293b;
+        font-size: 0.95rem;
+    }
+    
+    .victim-details .text-muted {
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .floating-notification {
+        animation: slideInRight 0.3s ease-out;
+        border: none !important;
+        border-radius: 15px !important;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .spinner-border {
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .loading-dots::after {
+        content: '';
+        animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+        0%, 20% { content: '.'; }
+        40% { content: '..'; }
+        60%, 100% { content: '...'; }
+    }
+    
+    @media (max-width: 768px) {
+        .action-buttons {
+            justify-content: stretch;
+        }
+        
+        .btn-action {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .victim-info-card {
+            padding: 1.5rem;
+        }
+        
+        .breadcrumb-modern {
+            padding: 0.5rem 1rem;
+        }
     }
 </style>
 {% endblock %}
@@ -229,232 +338,67 @@
             <li class="breadcrumb-item active">Campaign Analytics</li>
         </ol>
     </nav>
-
-    <!-- Header -->
-    <div class="analytics-header">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="me-3">
-                        <span class="campaign-status status-delivered">
-                            <i class="bi bi-check-circle me-1"></i>Active
-                        </span>
-                    </div>
-                    <span class="opacity-75">Campaign ID: #{{ campaign.id }}</span>
-                </div>
-                <h1 class="display-6 fw-bold mb-2">{{ campaign.email_template.get_type_display }} Campaign</h1>
-                <p class="opacity-75 mb-0">
-                    <i class="bi bi-calendar me-2"></i>Created {{ campaign.created_at|date:"F j, Y" }} at {{ campaign.created_at|time:"H:i" }}
-                </p>
-            </div>
-            <div class="col-lg-4 text-lg-end">
-                <div class="progress-ring">
-                    <svg width="120" height="120">
-                        <circle class="progress-ring-circle" cx="60" cy="60" r="52"></circle>
-                        <circle class="progress-ring-progress" cx="60" cy="60" r="52" 
-                                stroke-dasharray="327" stroke-dashoffset="82"></circle>
-                    </svg>
-                    <div class="position-absolute top-50 start-50 translate-middle text-center">
-                        <div class="h4 fw-bold">75%</div>
-                        <small>Success Rate</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Metrics Grid -->
-    <div class="info-grid">
-        <div class="metric-card">
-            <div class="metric-icon bg-primary-subtle text-primary">
-                <i class="bi bi-send-fill"></i>
-            </div>
-            <div class="metric-value text-primary">1</div>
-            <div class="text-muted fw-medium">Emails Sent</div>
-            <small class="text-success">
-                <i class="bi bi-arrow-up"></i> 100% delivery rate
-            </small>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-icon bg-success-subtle text-success">
-                <i class="bi bi-eye-fill"></i>
-            </div>
-            <div class="metric-value text-success">
-                {% if email_event and email_event.event_type == 'open' %}1{% else %}0{% endif %}
-            </div>
-            <div class="text-muted fw-medium">Opens</div>
-            <small class="text-muted">
-                {% if email_event and email_event.event_type == 'open' %}100%{% else %}0%{% endif %} open rate
-            </small>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-icon bg-warning-subtle text-warning">
-                <i class="bi bi-cursor-fill"></i>
-            </div>
-            <div class="metric-value text-warning">0</div>
-            <div class="text-muted fw-medium">Clicks</div>
-            <small class="text-muted">0% click rate</small>
-        </div>
-        
-        <div class="metric-card">
-            <div class="metric-icon bg-info-subtle text-info">
-                <i class="bi bi-people-fill"></i>
-            </div>
-            <div class="metric-value text-info">
-                {% if victim_info %}1{% else %}0{% endif %}
-            </div>
-            <div class="text-muted fw-medium">Responses</div>
-            <small class="text-muted">
-                {% if victim_info %}Victim engaged{% else %}No engagement{% endif %}
-            </small>
-        </div>
-    </div>
-
-    <!-- Content Grid -->
-    <div class="row g-4">
-        <!-- Campaign Timeline -->
-        <div class="col-lg-8">
-            <div class="card border-0 rounded-4 shadow-sm">
-                <div class="card-header bg-transparent border-0 pt-4 px-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="bi bi-clock-history me-2"></i>Campaign Timeline
-                    </h5>
-                </div>
-                <div class="card-body px-4 pb-4">
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="fw-bold mb-1">Campaign Created</h6>
-                                    <p class="text-muted mb-2">Email campaign was successfully created and configured.</p>
-                                    <small class="text-muted">{{ campaign.created_at|date:"F j, Y H:i" }}</small>
-                                </div>
-                                <span class="badge bg-primary">Initial</span>
-                            </div>
-                        </div>
-                        
-                        {% if email_event %}
-                        <div class="timeline-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="fw-bold mb-1">Email {{ email_event.event_type|title }}</h6>
-                                    <p class="text-muted mb-2">
-                                        Email was {{ email_event.event_type }} to {{ email_event.recipient }}.
-                                    </p>
-                                    <small class="text-muted">{{ email_event.timestamp|date:"F j, Y H:i" }}</small>
-                                </div>
-                                <span class="badge 
-                                    {% if email_event.event_type == 'delivered' %}bg-success
-                                    {% elif email_event.event_type == 'open' %}bg-info
-                                    {% else %}bg-warning
-                                    {% endif %}">
-                                    {{ email_event.event_type|title }}
-                                </span>
-                            </div>
-                        </div>
-                        {% endif %}
-                        
-                        {% if victim_info %}
-                        <div class="timeline-item">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="fw-bold mb-1">Victim Engagement</h6>
-                                    <p class="text-muted mb-2">Target user has engaged with the campaign content.</p>
-                                    <small class="text-muted">{{ victim_info.created_at|date:"F j, Y H:i" }}</small>
-                                </div>
-                                <span class="badge bg-warning">Engaged</span>
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+    
+    <div class="row">
         <!-- Campaign Info & Victim Details -->
+        <div class="col-lg-8">
+            <!-- Victim Information Container -->
+            <div id="victim-info-container">
+                <!-- Dynamic content will be loaded here via AJAX -->
+                <div class="card border-0 rounded-4 shadow-sm">
+                    <div class="card-body text-center p-5">
+                        <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 class="fw-bold mb-2">Initializing monitoring<span class="loading-dots"></span></h5>
+                        <p class="text-muted mb-3">Setting up real-time victim tracking</p>
+                        <div class="real-time-indicator">
+                            <span>System Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="col-lg-4">
             <!-- Campaign Info -->
             <div class="card border-0 rounded-4 shadow-sm mb-4">
                 <div class="card-header bg-transparent border-0 pt-4 px-4">
-                    <h5 class="fw-bold mb-0">
-                        <i class="bi bi-info-circle me-2"></i>Campaign Details
+                    <h5 class="fw-bold mb-0 d-flex align-items-center">
+                        <i class="bi bi-info-circle me-2 text-primary"></i>Campaign Details
                     </h5>
                 </div>
                 <div class="card-body px-4 pb-4">
                     <div class="mb-3">
-                        <label class="text-muted small fw-medium">Template Type</label>
-                        <div class="fw-bold">{{ campaign.email_template.get_type_display }}</div>
+                        <label class="text-muted small fw-medium d-block mb-1">Template Type</label>
+                        <div class="fw-bold text-dark">{{ campaign.email_template.get_type_display }}</div>
                     </div>
                     <div class="mb-3">
-                        <label class="text-muted small fw-medium">Target Email</label>
-                        <div class="fw-bold">{{ campaign.recipient_email }}</div>
+                        <label class="text-muted small fw-medium d-block mb-1">Target Email</label>
+                        <div class="fw-bold text-dark font-monospace small">{{ campaign.recipient_email }}</div>
                     </div>
                     <div class="mb-3">
-                        <label class="text-muted small fw-medium">Status</label>
+                        <label class="text-muted small fw-medium d-block mb-2">Status</label>
                         <div>
                             {% if email_event %}
                                 <span class="campaign-status status-{{ email_event.event_type }}">
+                                    <i class="bi bi-check-circle-fill"></i>
                                     {{ email_event.event_type|title }}
                                 </span>
                             {% else %}
-                                <span class="campaign-status status-pending">Pending</span>
+                                <span class="campaign-status status-pending">
+                                    <i class="bi bi-clock-fill"></i>
+                                    Pending
+                                </span>
                             {% endif %}
                         </div>
                     </div>
                     <div>
-                        <label class="text-muted small fw-medium">Created By</label>
-                        <div class="fw-bold">{{ campaign.user.username }}</div>
+                        <label class="text-muted small fw-medium d-block mb-1">Created By</label>
+                        <div class="fw-bold text-dark">{{ campaign.user.username }}</div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Victim Information -->
-            {% if victim_info %}
-            <div class="victim-info-card">
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-exclamation-triangle-fill text-warning me-2 fs-5"></i>
-                    <h5 class="fw-bold mb-0">Victim Information Captured</h5>
-                </div>
-                
-                {% if victim_info.login_email %}
-                <div class="mb-2">
-                    <label class="text-muted small fw-medium">Login Email</label>
-                    <div class="fw-bold">{{ victim_info.login_email }}</div>
-                </div>
-                {% endif %}
-                
-                {% if victim_info.login_password %}
-                <div class="mb-2">
-                    <label class="text-muted small fw-medium">Password</label>
-                    <div class="fw-bold font-monospace">{{ victim_info.login_password }}</div>
-                </div>
-                {% endif %}
-                
-                {% if victim_info.login_otp %}
-                <div class="mb-3">
-                    <label class="text-muted small fw-medium">OTP Code</label>
-                    <div class="fw-bold font-monospace">{{ victim_info.login_otp }}</div>
-                </div>
-                {% endif %}
-                
-                <small class="text-muted">
-                    <i class="bi bi-clock me-1"></i>
-                    Captured {{ victim_info.created_at|date:"F j, Y H:i" }}
-                </small>
-            </div>
-            {% else %}
-            <div class="card border-0 rounded-4 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <i class="bi bi-hourglass-split text-muted display-6 mb-3"></i>
-                    <h6 class="fw-bold mb-2">Waiting for Engagement</h6>
-                    <p class="text-muted small mb-0">
-                        No victim information has been captured yet. The campaign is active and monitoring for responses.
-                    </p>
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
     
@@ -463,61 +407,375 @@
         <a href="{% url 'core:campaign_list' %}" class="btn btn-outline-primary btn-action">
             <i class="bi bi-arrow-left me-2"></i>Back to Campaigns
         </a>
-        <button class="btn btn-primary btn-action">
-            <i class="bi bi-download me-2"></i>Export Report
-        </button>
-        <button class="btn btn-outline-secondary btn-action">
-            <i class="bi bi-share me-2"></i>Share
-        </button>
+        <!-- Refresh button will be added dynamically by JavaScript -->
     </div>
 </div>
 {% endblock %}
-                                    </li>
-                                    <li class="list-group-item d-flex justify-content-between px-0">
-                                        <span class="text-muted">Recipient:</span>
-                                        <span>{{ email_event.recipient }}</span>
-                                    </li>
-                                </ul>
-                            {% else %}
-                                <div class="alert alert-info">No email event recorded yet.</div>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    {% if victim_info %}
-                        <h5 class="mt-4 mb-3">Victim Info</h5>
-                        <div class="table-responsive">
-                            <table class="table table-striped border">
-                                <thead class="bg-light">
-                                    <tr>
-                                        <th>Email</th>
-                                        <th>Password</th>
-                                        <th>OTP</th>
-                                        <th>Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>{{ victim_info.login_email }}</td>
-                                        <td>{{ victim_info.login_password }}</td>
-                                        <td>{{ victim_info.login_otp|default:"—" }}</td>
-                                        <td>{{ victim_info.created_at|date:"M d, Y H:i" }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <div class="alert alert-warning mt-4">
-                            <p class="mb-0">Victim info will be available when the victim responds.</p>
-                        </div>
-                    {% endif %}
-                    
-                    <div class="mt-4 text-end">
-                        <a href="{% url 'core:campaign_list' %}" class="btn btn-secondary">Back to List</a>
-                    </div>
+
+{% block footer %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let lastVictimCount = 0;
+let lastEventCount = 0;
+let pollInterval;
+let isLoading = false;
+let consecutiveErrors = 0;
+
+// Function to show loading state
+function showLoadingState() {
+    const container = document.getElementById('victim-info-container');
+    container.innerHTML = `
+        <div class="card border-0 rounded-4 shadow-sm">
+            <div class="card-body text-center p-5">
+                <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h5 class="fw-bold mb-2">Loading victim information<span class="loading-dots"></span></h5>
+                <p class="text-muted mb-3">Checking for new responses</p>
+                <div class="real-time-indicator">
+                    <span>Scanning for data</span>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    `;
+}
+
+// Function to fetch and update victim info
+function updateVictimInfo() {
+    if (isLoading) return;
+    
+    isLoading = true;
+    
+    fetch(window.location.href, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        consecutiveErrors = 0; // Reset error counter on success
+        
+        if (data.status === 'error') {
+            throw new Error(data.message || 'Server returned error');
+        }
+        
+        const container = document.getElementById('victim-info-container');
+        
+        if (data.has_victims && data.victim_infos.length > 0) {
+            // Update metrics if there are new victims
+            if (data.total_victims > lastVictimCount) {
+                updateMetrics(data);
+                updateTimeline(data);
+                lastVictimCount = data.total_victims;
+            }
+            
+            // Display victim information
+            displayVictimInfo(data.victim_infos);
+        } else {
+            // Show waiting message
+            showWaitingState();
+        }
+        
+        // Update email events count for timeline updates
+        if (data.email_events && data.email_events.length > lastEventCount) {
+            lastEventCount = data.email_events.length;
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching victim info:', error);
+        consecutiveErrors++;
+        
+        // Continue polling but show a brief error indication
+        showBriefError();
+    })
+    .finally(() => {
+        isLoading = false;
+    });
+}
+
+// Function to show waiting state
+function showWaitingState() {
+    const container = document.getElementById('victim-info-container');
+    container.innerHTML = `
+        <div class="card border-0 rounded-4 shadow-sm">
+            <div class="card-body text-center p-5">
+                <i class="bi bi-hourglass-split text-muted mb-3" style="font-size: 3rem;"></i>
+                <h5 class="fw-bold mb-2">Waiting for Engagement</h5>
+                <p class="text-muted mb-4">
+                    No victim information has been captured yet. The campaign is active and monitoring for responses.
+                </p>
+                <div class="real-time-indicator">
+                    <span>Monitoring active</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Function to show brief error
+function showBriefError() {
+    const container = document.getElementById('victim-info-container');
+    const currentContent = container.innerHTML;
+    
+    container.innerHTML = `
+        <div class="card border-0 rounded-4 shadow-sm" style="border: 2px solid #fbbf24 !important;">
+            <div class="card-body text-center p-4">
+                <i class="bi bi-exclamation-triangle text-warning mb-2" style="font-size: 1.5rem;"></i>
+                <h6 class="fw-bold text-warning mb-1">Connection Issue</h6>
+                <small class="text-muted">Retrying in a moment...</small>
+            </div>
+        </div>
+    `;
+    
+    // Restore previous content after 2 seconds
+    setTimeout(() => {
+        if (container.innerHTML.includes('Connection Issue')) {
+            container.innerHTML = currentContent;
+        }
+    }, 2000);
+}
+
+// Function to show persistent error state
+function showErrorState() {
+    const container = document.getElementById('victim-info-container');
+    container.innerHTML = `
+        <div class="card border-0 rounded-4 shadow-sm" style="border: 2px solid #ef4444 !important;">
+            <div class="card-body text-center p-5">
+                <i class="bi bi-exclamation-triangle text-danger mb-3" style="font-size: 3rem;"></i>
+                <h5 class="fw-bold mb-2 text-danger">Connection Error</h5>
+                <p class="text-muted mb-4">
+                    Failed to load victim information after multiple attempts. 
+                    Please check your connection and try again.
+                </p>
+                <button class="btn btn-outline-primary btn-action" onclick="restartMonitoring()">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Restart Monitoring
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Function to restart monitoring
+function restartMonitoring() {
+    consecutiveErrors = 0;
+    showLoadingState();
+    updateVictimInfo();
+    
+    if (!pollInterval) {
+        pollInterval = setInterval(updateVictimInfo, 3000);
+    }
+    
+    showNotification('Monitoring restarted', 'info');
+}
+
+// Function to display victim information
+function displayVictimInfo(victimInfos) {
+    const container = document.getElementById('victim-info-container');
+    
+    if (!victimInfos || victimInfos.length === 0) {
+        showWaitingState();
+        return;
+    }
+    
+    let victimHTML = '';
+    
+    victimInfos.forEach((victim, index) => {
+        const isLatest = index === 0;
+        const hasData = victim.login_email || victim.login_password || victim.login_otp;
+        
+        if (!hasData) return; // Skip empty entries
+        
+        victimHTML += `
+            <div class="victim-info-card ${isLatest ? '' : 'mt-3'}">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill text-warning me-2" style="font-size: 1.5rem;"></i>
+                        <h5 class="fw-bold mb-0 text-dark">
+                            ${isLatest ? 'Latest ' : ''}Victim Data Captured
+                        </h5>
+                    </div>
+                    ${victimInfos.length > 1 ? `<span class="badge bg-dark text-light px-3 py-2 rounded-pill">${index + 1} of ${victimInfos.length}</span>` : ''}
+                </div>
+                
+                <div class="victim-details">
+        `;
+        
+        if (victim.login_email) {
+            victimHTML += `
+                <div class="mb-3">
+                    <label class="text-muted small fw-medium d-block mb-1">
+                        <i class="bi bi-envelope me-1"></i>Login Email
+                    </label>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded">${escapeHtml(victim.login_email)}</div>
+                </div>
+            `;
+        }
+        
+        if (victim.login_password) {
+            victimHTML += `
+                <div class="mb-3">
+                    <label class="text-muted small fw-medium d-block mb-1">
+                        <i class="bi bi-key me-1"></i>Password
+                    </label>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded">${escapeHtml(victim.login_password)}</div>
+                </div>
+            `;
+        }
+        
+        if (victim.login_otp) {
+            victimHTML += `
+                <div class="mb-3">
+                    <label class="text-muted small fw-medium d-block mb-1">
+                        <i class="bi bi-shield-check me-1"></i>OTP Code
+                    </label>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded text-center" style="font-size: 1.1rem; letter-spacing: 2px;">${escapeHtml(victim.login_otp)}</div>
+                </div>
+            `;
+        }
+        
+        victimHTML += `
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = victimHTML;
+}
+
+// Utility function to escape HTML for safe display
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Function to update timeline with new events
+function updateTimeline(data) {
+    if (data.victim_infos && data.victim_infos.length > 0) {
+        const latestVictim = data.victim_infos[0];
+        const email = latestVictim.login_email || 'Unknown email';
+        showNotification(`New victim data captured from: ${email}`, 'warning');
+    }
+}
+
+// Function to update metrics on the page
+function updateMetrics(data) {
+    // Show notification for new victim info
+    if (data.total_victims > lastVictimCount) {
+        showNotification('New victim information captured!', 'success');
+    }
+}
+
+// Function to show notifications
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll('.floating-notification');
+    existingNotifications.forEach(notif => notif.remove());
+    
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type} alert-dismissible fade show position-fixed floating-notification`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; box-shadow: 0 8px 25px rgba(0,0,0,0.15);';
+    
+    let icon = 'bi-info-circle';
+    if (type === 'success') icon = 'bi-check-circle';
+    else if (type === 'warning') icon = 'bi-exclamation-triangle';
+    else if (type === 'danger') icon = 'bi-x-circle';
+    
+    notification.innerHTML = `
+        <i class="bi ${icon} me-2"></i>
+        ${escapeHtml(message)}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+// Function to handle page visibility changes
+function handleVisibilityChange() {
+    if (document.hidden) {
+        if (pollInterval) {
+            clearInterval(pollInterval);
+            pollInterval = null;
+        }
+    } else {
+        if (!pollInterval) {
+            consecutiveErrors = 0; // Reset errors when coming back
+            pollInterval = setInterval(updateVictimInfo, 3000);
+        }
+    }
+}
+
+// Function to add refresh button
+function addRefreshButton() {
+    const actionButtons = document.querySelector('.action-buttons');
+    if (actionButtons && !document.querySelector('.refresh-btn')) {
+        const refreshBtn = document.createElement('button');
+        refreshBtn.className = 'btn btn-outline-info btn-action refresh-btn';
+        refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Refresh Data';
+        refreshBtn.onclick = () => {
+            showLoadingState();
+            updateVictimInfo();
+        };
+        actionButtons.appendChild(refreshBtn);
+    }
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Add refresh button
+    setTimeout(addRefreshButton, 1000);
+    
+    // Show initial loading state
+    showLoadingState();
+    
+    // Initial load with delay to show loading state
+    setTimeout(updateVictimInfo, 800);
+    
+    // Start polling every 3 seconds
+    pollInterval = setInterval(updateVictimInfo, 3000);
+    
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    // Show initial notification
+    setTimeout(() => {
+        showNotification('Real-time victim monitoring active', 'info');
+    }, 1500);
+});
+
+// Clean up on page unload
+window.addEventListener('beforeunload', function() {
+    if (pollInterval) {
+        clearInterval(pollInterval);
+    }
+});
+
+// Handle network status changes
+window.addEventListener('online', function() {
+    if (!pollInterval) {
+        restartMonitoring();
+    }
+});
+
+window.addEventListener('offline', function() {
+    showNotification('Connection lost. Monitoring paused.', 'warning');
+});
+</script>
 {% endblock %}

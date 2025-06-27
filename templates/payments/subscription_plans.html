@@ -1,160 +1,458 @@
 {% extends 'base.html' %}
 {% block title %}Subscription Plans - EmailGrid{% endblock %}
 
+{% block extra_css %}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        --gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+        --gradient-accent: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        --card-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        --card-shadow-hover: 0 20px 60px rgba(59, 130, 246, 0.15);
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-800: #1e40af;
+        --blue-900: #1e3a8a;
+    }
+
+    .pricing-hero {
+        background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pricing-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%233b82f608" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .pricing-badge {
+        background: var(--gradient-primary);
+        padding: 12px 24px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+
+    .pricing-card {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        border: 2px solid transparent;
+        box-shadow: var(--card-shadow);
+        height: 100%;
+    }
+
+    .pricing-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: var(--card-shadow-hover);
+        border-color: var(--blue-500);
+    }
+
+    .pricing-card.featured {
+        background: var(--gradient-primary);
+        color: white;
+        border-color: var(--blue-600);
+        transform: scale(1.05);
+    }
+
+    .pricing-card.featured:hover {
+        transform: translateY(-12px) scale(1.07);
+    }
+
+    .plan-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--blue-600);
+        color: white;
+        padding: 8px 24px;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .price-display {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1;
+        margin: 1.5rem 0;
+    }
+
+    .price-period {
+        font-size: 1rem;
+        opacity: 0.7;
+        font-weight: 500;
+    }
+
+    .feature-list {
+        list-style: none;
+        padding: 0;
+        margin: 2rem 0;
+    }
+
+    .feature-list li {
+        padding: 0.75rem 0;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+    }
+
+    .feature-list .check-icon {
+        width: 24px;
+        height: 24px;
+        background: var(--gradient-secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .cta-button {
+        background: var(--gradient-primary);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        text-decoration: none;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+
+    .cta-button.current {
+        background: var(--blue-600);
+        cursor: not-allowed;
+    }
+
+    .features-section {
+        background: white;
+        border-radius: 32px;
+        padding: 3rem 2rem;
+        margin: 4rem 0;
+        box-shadow: var(--card-shadow);
+    }
+
+    .feature-icon-box {
+        width: 80px;
+        height: 80px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .feature-icon-box:hover {
+        transform: translateY(-4px) rotate(5deg);
+    }
+
+    .feature-1 { background: var(--gradient-primary); }
+    .feature-2 { background: var(--gradient-secondary); }
+    .feature-3 { background: var(--gradient-accent); }
+    .feature-4 { background: linear-gradient(135deg, var(--blue-700) 0%, var(--blue-900) 100%); }
+
+    .faq-section {
+        background: white;
+        border-radius: 32px;
+        padding: 3rem 2rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    .accordion-item {
+        border: none;
+        margin-bottom: 1rem;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.05);
+    }
+
+    .accordion-button {
+        background: var(--blue-50);
+        border: none;
+        padding: 1.5rem 2rem;
+        font-weight: 600;
+        color: var(--blue-900);
+        border-radius: 16px;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: none;
+    }
+
+    .accordion-body {
+        padding: 1.5rem 2rem;
+        background: #fafbfc;
+        color: #6b7280;
+        line-height: 1.6;
+    }
+
+    .current-plan-alert {
+        background: var(--gradient-secondary);
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin-bottom: 3rem;
+        box-shadow: 0 8px 32px rgba(96, 165, 250, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .pricing-card {
+            margin-bottom: 2rem;
+        }
+        
+        .pricing-card.featured {
+            transform: none;
+        }
+        
+        .price-display {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="py-5" style="background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); min-height: 100vh;">
-    <div class="container">
-        <!-- Sleek Header Section -->
-        <div class="text-center mb-5">
-            <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-primary bg-gradient text-white mb-4" style="width: 70px; height: 70px;">
-                <i class="bi bi-gem fs-2"></i>
+<div class="pricing-hero">
+    <div class="container hero-content">
+        <!-- Hero Section -->
+        <div class="text-center py-5">
+            <div class="pricing-badge">
+                <i class="bi bi-lightning-charge me-2"></i>
+                Choose Your Perfect Plan
             </div>
-            <h1 class="fw-bold text-primary mb-2" style="font-size:2.2rem;">Plans & Pricing</h1>
-            <p class="lead text-muted mb-3">Simple, transparent pricing. No hidden fees.</p>
+            <h1 class="display-4 fw-bold text-dark mb-4">
+                Simple, Transparent Pricing
+            </h1>
+            <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
+                Scale your email marketing with confidence. No hidden fees, no surprises. 
+                Just powerful tools to grow your business.
+            </p>
         </div>
 
         <!-- Current Subscription Alert -->
         {% if current_subscription %}
-            <div class="alert alert-info rounded-4 border-0 shadow-sm mb-5 d-flex align-items-center justify-content-center">
-                <i class="bi bi-info-circle-fill fs-5 me-2"></i>
-                <span>You are on <strong>{{ current_subscription.plan.name }}</strong> until <strong>{{ current_subscription.end_date|date:"F d, Y" }}</strong>.</span>
-            </div>
+        <div class="current-plan-alert text-center">
+            <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+            <strong>Active Plan:</strong> {{ current_subscription.plan.name }} 
+            <span class="opacity-75">• Expires {{ current_subscription.end_date|date:"M d, Y" }}</span>
+        </div>
         {% endif %}
 
-        <!-- Sleek Pricing Cards -->
+        <!-- Pricing Cards -->
         <div class="row g-4 justify-content-center mb-5">
             {% for plan in plans %}
             <div class="col-lg-4 col-md-6">
-                <div class="card h-100 pricing-card border-0 shadow-sm rounded-4 text-center p-4">
-                    <div class="mb-3">
-                        <span class="badge {% if plan.name == 'Pro' %}bg-primary{% else %}bg-light text-dark{% endif %} rounded-pill px-3 py-2">
-                            {% if plan.name == 'Pro' %}<i class="bi bi-star-fill me-1"></i>Most Popular{% else %}{{ plan.name }}{% endif %}
-                        </span>
+                <div class="pricing-card {% if plan.name == 'Pro' %}featured{% endif %}">
+                    {% if plan.name == 'Pro' %}
+                    <div class="plan-badge">
+                        <i class="bi bi-star-fill me-1"></i>
+                        Most Popular
                     </div>
-                    <h4 class="fw-bold mb-2">{{ plan.name }}</h4>
-                    <div class="mb-3">
-                        <span class="display-5 fw-bold text-primary">${{ plan.price|floatformat:0 }}</span>
-                        <span class="text-muted">/ {{ plan.duration_days }} days</span>
-                    </div>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>{{ plan.max_emails|floatformat:0 }}</strong> emails/month</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Professional Templates</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Advanced Analytics</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>24/7 Support</li>
-                        {% if plan.name != 'Basic' %}
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>A/B Testing</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Custom Domains</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>API Access</li>
-                        {% endif %}
-                    </ul>
-                    {% if current_subscription.plan == plan %}
-                        <button class="btn btn-outline-success w-100 rounded-3" disabled>
-                            <i class="bi bi-check-circle-fill me-2"></i>Your Current Plan
-                        </button>
-                    {% else %}
-                        <a href="{% url 'payments:checkout' plan.id %}" class="btn btn-primary w-100 rounded-3">
-                            <i class="bi bi-rocket-takeoff me-2"></i>{% if plan.name == 'Basic' %}Get Started{% else %}Upgrade{% endif %}
-                        </a>
                     {% endif %}
+                    
+                    <div class="text-center">
+                        <h3 class="fw-bold mb-2 {% if plan.name != 'Pro' %}text-dark{% endif %}">
+                            {{ plan.name }}
+                        </h3>
+                        
+                        <div class="price-display {% if plan.name != 'Pro' %}text-primary{% endif %}">
+                            ${{ plan.price|floatformat:0 }}
+                            <span class="price-period">
+                                /{{ plan.duration_days }} days
+                            </span>
+                        </div>
+                        
+                        <ul class="feature-list">
+                            <li>
+                                <span class="check-icon">
+                                    <i class="bi bi-check text-white"></i>
+                                </span>
+                                <strong>{{ plan.max_emails|floatformat:0 }}</strong> emails per month
+                            </li>
+                            
+                            <li>
+                                <span class="check-icon">
+                                    <i class="bi bi-check text-white"></i>
+                                </span>
+                                24/7 priority support
+                            </li>
+                            {% if plan.name != 'Basic' %}
+                            <li>
+                                <span class="check-icon">
+                                    <i class="bi bi-check text-white"></i>
+                                </span>
+                                A/B testing capabilities
+                            </li>
+                            
+                            {% endif %}
+                        </ul>
+                        
+                        {% if current_subscription.plan == plan %}
+                        <button class="cta-button current" disabled>
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Current Plan
+                        </button>
+                        {% else %}
+                        <a href="{% url 'payments:checkout' plan.id %}" class="cta-button">
+                            <i class="bi bi-rocket-takeoff me-2"></i>
+                            {% if plan.name == 'Basic' %}Start Free{% else %}Upgrade Now{% endif %}
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
             {% empty %}
             <div class="col-12">
                 <div class="text-center py-5">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-light text-muted mb-4" style="width: 80px; height: 80px;">
-                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    <div class="feature-icon-box feature-1 mx-auto">
+                        <i class="bi bi-exclamation-triangle fs-1 text-white"></i>
                     </div>
-                    <h5 class="text-muted mb-3">No Plans Available</h5>
-                    <p class="text-muted">Our pricing plans are being updated. Please check back soon!</p>
+                    <h4 class="text-dark mb-3">No Plans Available</h4>
+                    <p class="text-muted">We're updating our pricing plans. Check back soon for amazing deals!</p>
                 </div>
             </div>
             {% endfor %}
         </div>
 
-        <!-- Sleek Features Comparison -->
-        <div class="row justify-content-center mt-5">
-            <div class="col-lg-10">
-                <div class="card shadow-sm border-0 rounded-4">
-                    <div class="card-header bg-light text-center py-4 rounded-top-4">
-                        <h4 class="fw-bold mb-0">Why EmailGrid?</h4>
+        <!-- Features Section -->
+        <div class="features-section">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark mb-3">Why Choose EmailGrid?</h2>
+                <p class="text-muted">Powerful features that drive results for your business</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="feature-icon-box feature-1">
+                        <i class="bi bi-shield-check fs-1 text-white"></i>
                     </div>
-                    <div class="card-body p-4">
-                        <div class="row g-4 text-center">
-                            <div class="col-md-3">
-                                <div class="feature-icon bg-primary bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                                    <i class="bi bi-shield-check fs-4"></i>
-                                </div>
-                                <h6 class="fw-semibold mb-2">99.9% Uptime</h6>
-                                <p class="text-muted small mb-0">Enterprise-grade reliability</p>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="feature-icon bg-success bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                                    <i class="bi bi-lightning-charge fs-4"></i>
-                                </div>
-                                <h6 class="fw-semibold mb-2">Lightning Fast</h6>
-                                <p class="text-muted small mb-0">Send thousands of emails in seconds</p>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="feature-icon bg-warning bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                                    <i class="bi bi-headset fs-4"></i>
-                                </div>
-                                <h6 class="fw-semibold mb-2">24/7 Support</h6>
-                                <p class="text-muted small mb-0">Expert help, anytime</p>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="feature-icon bg-info bg-gradient text-white rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
-                                    <i class="bi bi-graph-up fs-4"></i>
-                                </div>
-                                <h6 class="fw-semibold mb-2">Analytics</h6>
-                                <p class="text-muted small mb-0">Optimize your campaigns</p>
-                            </div>
-                        </div>
+                    <h5 class="fw-bold mb-2">99.9% Uptime</h5>
+                    <p class="text-muted small">Enterprise-grade infrastructure ensures your emails always reach their destination</p>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="feature-icon-box feature-2">
+                        <i class="bi bi-lightning-charge fs-1 text-white"></i>
                     </div>
+                    <h5 class="fw-bold mb-2">Lightning Fast</h5>
+                    <p class="text-muted small">Send thousands of emails in seconds with our optimized delivery system</p>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="feature-icon-box feature-3">
+                        <i class="bi bi-headset fs-1 text-white"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">24/7 Support</h5>
+                    <p class="text-muted small">Expert support team ready to help you succeed, anytime you need</p>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="feature-icon-box feature-4">
+                        <i class="bi bi-graph-up fs-1 text-white"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Smart Analytics</h5>
+                    <p class="text-muted small">Detailed insights and analytics to optimize your email campaigns</p>
                 </div>
             </div>
         </div>
 
         <!-- FAQ Section -->
-        <div class="row justify-content-center mt-5">
-            <div class="col-lg-8">
-                <div class="text-center mb-4">
-                    <h3 class="fw-bold">Frequently Asked Questions</h3>
-                    <p class="text-muted">Answers to common questions about pricing and features</p>
-                </div>
-                <div class="accordion" id="faqAccordion">
-                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button rounded-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                Can I change my plan anytime?
-                            </button>
-                        </h2>
-                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Yes! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll prorate any billing differences.
+        <div class="faq-section">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark mb-3">Frequently Asked Questions</h2>
+                <p class="text-muted">Everything you need to know about our pricing and plans</p>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    Can I change my plan anytime?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Absolutely! You can upgrade or downgrade your plan at any time. Changes take effect immediately, and we'll handle all billing adjustments automatically.
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed rounded-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                What happens if I exceed my email limit?
-                            </button>
-                        </h2>
-                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                We'll notify you before you reach your limit. You can upgrade your plan or purchase additional credits as needed.
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    What happens if I exceed my email limit?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We'll send you notifications as you approach your limit. You can easily upgrade your plan or purchase additional email credits without any service interruption.
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item border-0 rounded-3 mb-3 shadow-sm">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed rounded-3 fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                Is there a setup fee?
-                            </button>
-                        </h2>
-                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                No setup fees, no hidden costs. What you see is what you pay. Start sending emails immediately after signup.
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Are there any hidden fees?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    No hidden fees, ever. What you see is what you pay. No setup costs, no cancellation fees, and no surprise charges.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    Do you offer refunds?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes! We offer a 30-day money-back guarantee. If you're not completely satisfied, we'll refund your purchase, no questions asked.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -163,40 +461,4 @@
         </div>
     </div>
 </div>
-
-<style>
-.pricing-card {
-    border-radius: 18px;
-    transition: box-shadow 0.2s, transform 0.2s;
-    border: 2px solid transparent;
-    background: #fff;
-}
-.pricing-card:hover {
-    transform: translateY(-6px) scale(1.03);
-    box-shadow: 0 8px 32px rgba(67, 102, 241, 0.10);
-    border-color: #6366f1;
-}
-.badge {
-    font-weight: 500;
-    font-size: 1rem;
-}
-.feature-icon {
-    transition: transform 0.2s;
-}
-.feature-icon:hover {
-    transform: scale(1.1) rotate(3deg);
-}
-.accordion-button {
-    background: #f8fafc;
-    border: none;
-    box-shadow: none;
-}
-.accordion-button:not(.collapsed) {
-    background: #6366f1;
-    color: white;
-}
-.accordion-button:focus {
-    box-shadow: 0 0 0 3px rgba(67, 102, 241, 0.10);
-}
-</style>
 {% endblock %}

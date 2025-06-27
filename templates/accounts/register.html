@@ -1,213 +1,483 @@
 {% extends 'base.html' %}
-{% block title %}Create Account - EmailGrid{% endblock %}
+{% block title %}Join EmailGrid - Create Your Account{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-900: #1e3a8a;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-900: #111827;
+    }
+
+    body {
+        background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+        min-height: 100vh;
+    }
+
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+    }
+
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+        border-radius: 24px;
+        box-shadow: 
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        max-width: 480px;
+        width: 100%;
+        position: relative;
+    }
+
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--blue-500), var(--blue-600));
+    }
+
+    .register-header {
+        text-align: center;
+        padding: 3rem 3rem 1rem;
+        position: relative;
+    }
+
+    .register-logo {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        border-radius: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .register-logo:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+    }
+
+    .register-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--blue-900);
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+    }
+
+    .register-subtitle {
+        color: var(--gray-600);
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
+
+    .register-form {
+        padding: 1rem 3rem 3rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--blue-900);
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .input-container {
+        position: relative;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 3rem;
+        border: 2px solid var(--gray-100);
+        border-radius: 12px;
+        font-size: 1rem;
+        background: white;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: var(--blue-500);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background: var(--blue-50);
+    }
+
+    .form-control.is-invalid {
+        border-color: #ef4444;
+        background: #fef2f2;
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+
+    .form-control:focus + .input-icon {
+        color: var(--blue-500);
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        padding-left: 0.5rem;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        background: #fef2f2;
+        color: #991b1b;
+        border-left: 4px solid #ef4444;
+    }
+
+    .checkbox-container {
+        margin-bottom: 2rem;
+    }
+
+    .form-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 6px;
+        border: 2px solid var(--gray-400);
+        margin: 0;
+        flex-shrink: 0;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--blue-500);
+        border-color: var(--blue-500);
+    }
+
+    .form-check-label {
+        font-size: 0.9rem;
+        color: var(--gray-600);
+        line-height: 1.4;
+    }
+
+    .form-check-label a {
+        color: var(--blue-600);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .form-check-label a:hover {
+        text-decoration: underline;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--blue-500), var(--blue-600));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-register:hover::before {
+        left: 100%;
+    }
+
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-register:active {
+        transform: translateY(0);
+    }
+
+    .divider {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--gray-200);
+    }
+
+    .divider span {
+        background: white;
+        color: var(--gray-500);
+        padding: 0 1rem;
+        font-size: 0.9rem;
+    }
+
+    .login-link {
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+
+    .login-link p {
+        color: var(--gray-600);
+        margin: 0;
+    }
+
+    .login-link a {
+        color: var(--blue-600);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+        color: var(--blue-700);
+        text-decoration: underline;
+    }
+
+    .trust-indicators {
+        padding: 2rem 3rem 1rem;
+        border-top: 1px solid var(--gray-100);
+        background: var(--gray-50);
+    }
+
+    .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .trust-item {
+        padding: 1rem 0.5rem;
+    }
+
+    .trust-icon {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .trust-text {
+        font-size: 0.8rem;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    .icon-secure { color: #10b981; }
+    .icon-fast { color: var(--blue-500); }
+    .icon-trusted { color: #f59e0b; }
+
+    /* Responsive Design */
+    @media (max-width: 640px) {
+        .register-card {
+            margin: 1rem;
+            border-radius: 16px;
+        }
+
+        .register-header {
+            padding: 2rem 1.5rem 1rem;
+        }
+
+        .register-form {
+            padding: 1rem 1.5rem 2rem;
+        }
+
+        .trust-indicators {
+            padding: 1.5rem;
+        }
+
+        .register-title {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5 col-xl-4">
-                <div class="card shadow-xl border-0 rounded-4">
-                    <div class="card-body p-5">
-                        <!-- Header -->
-                        <div class="text-center mb-5">
-                            <div class="mb-4">
-                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-gradient text-white mb-3" style="width: 80px; height: 80px; background: var(--primary-gradient);">
-                                    <i class="bi bi-rocket-takeoff-fill fs-1"></i>
-                                </div>
-                            </div>
-                            <h2 class="fw-bold text-primary mb-2">Start Your Journey</h2>
-                            <p class="text-muted">Join thousands of businesses growing with EmailGrid</p>
-                        </div>
+<div class="register-container">
+    <div class="register-card">
+        <!-- Header -->
+        <div class="register-header">
+            <div class="register-logo">
+                <i class="bi bi-rocket-takeoff-fill text-white" style="font-size: 2rem;"></i>
+            </div>
+            <h1 class="register-title">Join EmailGrid</h1>
+            <p class="register-subtitle">Start your email marketing journey today</p>
+        </div>
 
-                        <!-- Registration Form -->
-                        <form method="post" class="needs-validation" novalidate>
-                            {% csrf_token %}
-                            
-                            {% if form.non_field_errors %}
-                                <div class="alert alert-danger d-flex align-items-center rounded-3 mb-4" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill me-3"></i>
-                                    <div>{{ form.non_field_errors }}</div>
-                                </div>
-                            {% endif %}
-
-                            <!-- Email Field -->
-                            <div class="mb-4">
-                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium text-dark">
-                                    <i class="bi bi-envelope-fill me-2 text-primary"></i>Email Address
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-at text-muted"></i>
-                                    </span>
-                                    {{ form.email }}
-                                </div>
-                                {% if form.email.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.email.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Password Field -->
-                            <div class="mb-4">
-                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-medium text-dark">
-                                    <i class="bi bi-lock-fill me-2 text-primary"></i>Create Password
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-key-fill text-muted"></i>
-                                    </span>
-                                    {{ form.password1 }}
-                                </div>
-                                {% if form.password1.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.password1.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Confirm Password Field -->
-                            <div class="mb-4">
-                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-medium text-dark">
-                                    <i class="bi bi-shield-check-fill me-2 text-primary"></i>Confirm Password
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 rounded-start-3">
-                                        <i class="bi bi-check2-circle text-muted"></i>
-                                    </span>
-                                    {{ form.password2 }}
-                                </div>
-                                {% if form.password2.errors %}
-                                    <div class="invalid-feedback d-block mt-2">
-                                        <i class="bi bi-exclamation-circle me-1"></i>
-                                        {% for error in form.password2.errors %}{{ error }}{% endfor %}
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <!-- Terms & Conditions -->
-                            <div class="mb-4">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" id="agreeTerms" required>
-                                    <label class="form-check-label small text-muted" for="agreeTerms">
-                                        I agree to EmailGrid's 
-                                        <a href="#" class="text-decoration-none text-primary fw-medium">Terms of Service</a> 
-                                        and <a href="#" class="text-decoration-none text-primary fw-medium">Privacy Policy</a>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Create Account Button -->
-                            <div class="d-grid mb-4">
-                                <button type="submit" class="btn btn-primary btn-lg rounded-3 py-3 fw-semibold">
-                                    <i class="bi bi-rocket-takeoff me-2"></i>
-                                    Create Account
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- Divider -->
-                        <div class="text-center mb-4">
-                            <div class="d-flex align-items-center">
-                                <hr class="flex-grow-1">
-                                <span class="px-3 text-muted small">or</span>
-                                <hr class="flex-grow-1">
-                            </div>
-                        </div>
-
-                        <!-- Sign In Link -->
-                        <div class="text-center">
-                            <p class="text-muted mb-0">
-                                Already have an account? 
-                                <a href="{% url 'accounts:login' %}" class="text-decoration-none fw-semibold text-primary">
-                                    Sign in here
-                                    <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
-                            </p>
-                        </div>
-
-                        <!-- Trust Indicators -->
-                        <div class="mt-4 pt-4 border-top">
-                            <div class="row text-center">
-                                <div class="col-4">
-                                    <div class="text-success mb-1">
-                                        <i class="bi bi-shield-check fs-4"></i>
-                                    </div>
-                                    <small class="text-muted">Secure</small>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-primary mb-1">
-                                        <i class="bi bi-clock fs-4"></i>
-                                    </div>
-                                    <small class="text-muted">Quick Setup</small>
-                                </div>
-                                <div class="col-4">
-                                    <div class="text-warning mb-1">
-                                        <i class="bi bi-star-fill fs-4"></i>
-                                    </div>
-                                    <small class="text-muted">Trusted</small>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Registration Form -->
+        <div class="register-form">
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                    <div class="alert" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
                     </div>
+                {% endif %}
+
+                <!-- Email Field -->
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="form-label">
+                        Email Address
+                    </label>
+                    <div class="input-container">
+                        {{ form.email }}
+                        <i class="bi bi-envelope input-icon"></i>
+                    </div>
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.email.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}" class="form-label">
+                        Create Password
+                    </label>
+                    <div class="input-container">
+                        {{ form.password1 }}
+                        <i class="bi bi-lock input-icon"></i>
+                    </div>
+                    {% if form.password1.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Confirm Password Field -->
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label">
+                        Confirm Password
+                    </label>
+                    <div class="input-container">
+                        {{ form.password2 }}
+                        <i class="bi bi-shield-check input-icon"></i>
+                    </div>
+                    {% if form.password2.errors %}
+                        <div class="invalid-feedback">
+                            <i class="bi bi-exclamation-circle me-1"></i>
+                            {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Terms & Conditions -->
+                <div class="checkbox-container">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                        <label class="form-check-label" for="agreeTerms">
+                            I agree to EmailGrid's 
+                            <a href="#" target="_blank">Terms of Service</a> 
+                            and <a href="#" target="_blank">Privacy Policy</a>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-register">
+                    <i class="bi bi-rocket-takeoff me-2"></i>
+                    Create My Account
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>or</span>
+            </div>
+
+            <!-- Login Link -->
+            <div class="login-link">
+                <p>
+                    Already have an account? 
+                    <a href="{% url 'accounts:login' %}">
+                        Sign in here <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Trust Indicators -->
+        <div class="trust-indicators">
+            <div class="trust-grid">
+                <div class="trust-item">
+                    <i class="bi bi-shield-check trust-icon icon-secure"></i>
+                    <div class="trust-text">Bank-level Security</div>
+                </div>
+                <div class="trust-item">
+                    <i class="bi bi-lightning-charge trust-icon icon-fast"></i>
+                    <div class="trust-text">Quick Setup</div>
+                </div>
+                <div class="trust-item">
+                    <i class="bi bi-star-fill trust-icon icon-trusted"></i>
+                    <div class="trust-text">10K+ Users</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-.card {
-    backdrop-filter: blur(20px);
-    background: rgba(255, 255, 255, 0.95);
-    transition: var(--transition-smooth);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-xl);
-}
-
-.form-control {
-    border-left: none;
-    border-radius: 0 12px 12px 0 !important;
-    padding: 12px 16px;
-    font-size: 15px;
-    transition: var(--transition-smooth);
-    background: rgba(255, 255, 255, 0.9);
-    border-color: var(--border-light);
-}
-
-.form-control:focus {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    border-color: var(--primary-blue);
-}
-
-.input-group-text {
-    border-color: var(--border-light);
-}
-
-.btn-primary {
-    background: var(--primary-gradient);
-    border: none;
-    transition: var(--transition-smooth);
-    box-shadow: var(--shadow-md);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-primary:active {
-    transform: translateY(0);
-}
-
-.form-check-input:checked {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
-}
-</style>
 {% endblock %}
