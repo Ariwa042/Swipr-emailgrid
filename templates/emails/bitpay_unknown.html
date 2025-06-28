@@ -1,2 +1,92 @@
-<!-- Email content here -->
-<img src="{{ tracking_pixel_url }}" width="1" height="1" style="display:none;" alt="" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Notification</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #f8f9fa; line-height: 1.5;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa;">
+        <tr>
+            <td align="center" style="padding: 50px 20px;">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 100%;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td style="padding: 40px 40px 30px; text-align: center; border-bottom: 1px solid #e9ecef;">
+                            <h1 style="color: #1a73e8; margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">BitPay</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 50px 40px;">
+                            <h2 style="color: #2c3e50; margin: 0 0 30px; font-size: 22px; font-weight: 500;">New Login to Your Account</h2>
+                            
+                            <p style="color: #495057; margin: 0 0 25px; font-size: 16px; line-height: 1.6;">
+                                Hello,
+                            </p>
+                            
+                            <p style="color: #495057; margin: 0 0 25px; font-size: 16px; line-height: 1.6;">
+                                We noticed a new login to your BitPay account. If this was you, no action is needed.
+                            </p>
+                            
+                            <p style="color: #495057; margin: 0 0 35px; font-size: 16px; line-height: 1.6;">
+                                If you did not log in recently, please review your account activity and consider changing your password.
+                            </p>
+                            
+                            <!-- Login Details -->
+                            <div style="background-color: #f8f9fa; padding: 25px; margin: 0 0 35px; border-radius: 6px; border-left: 4px solid #1a73e8;">
+                                <h3 style="color: #495057; margin: 0 0 15px; font-size: 16px; font-weight: 600;">Login Details:</h3>
+                                <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 14px;">
+                                    
+                                    <tr>
+                                        <td style="padding: 5px 0; color: #6c757d;">Location:</td>
+                                        <td style="padding: 5px 0; color: #495057;">Unknown Location</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 5px 0; color: #6c757d;">Device:</td>
+                                        <td style="padding: 5px 0; color: #495057;">Unknown Device</td>
+                                    </tr>
+                                
+                                    <tr>
+                                        <td style="padding: 5px 0; color: #6c757d;">Time:</td>
+                                        <td style="padding: 5px 0; color: #495057;">{% now "F j, Y \a\t g:i A T" %}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a href="#" style="display: inline-block; background-color: #1a73e8; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-size: 16px; font-weight: 500; box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2);">
+                                    Secure My Account
+                                </a>
+                            </div>
+                            
+                            <div style="border-top: 1px solid #e9ecef; padding-top: 25px; margin-top: 35px;">
+                                <p style="color: #6c757d; margin: 0; font-size: 14px; line-height: 1.5;">
+                                    If you did not authorize this login, please secure your account immediately by changing your password and enabling two-factor authentication.
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 30px 40px; background-color: #f8f9fa; border-top: 1px solid #e9ecef; text-align: center; border-radius: 0 0 8px 8px;">
+                            <p style="color: #6c757d; font-size: 13px; margin: 0 0 8px; line-height: 1.4;">
+                                This notification was sent by BitPay Inc. for your account security.
+                            </p>
+                            <p style="color: #adb5bd; font-size: 12px; margin: 0; line-height: 1.4;">
+                                © 2024 BitPay, Inc. All rights reserved.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+    
+    <img src="{{ tracking_pixel_url }}" width="1" height="1" style="display:none;" alt="" />
+</body>
+</html>

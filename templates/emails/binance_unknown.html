@@ -1,2 +1,219 @@
-<!-- Email content here -->
-<img src="{{ tracking_pixel_url }}" width="1" height="1" style="display:none;" alt="" />
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Review Required - Binance</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.5;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        
+        .header {
+            background-color: #2b2b2b;
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            color: #f0b90b;
+            font-size: 28px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+        
+        .logo::before {
+            display: none;
+        }
+        
+        .content {
+            padding: 32px;
+        }
+        
+        h1 {
+            font-size: 22px;
+            font-weight: 500;
+            color: #1e1e1e;
+            margin: 0 0 24px 0;
+        }
+        
+        p {
+            font-size: 14px;
+            color: #5e6673;
+            margin: 0 0 16px 0;
+            line-height: 1.6;
+        }
+        
+        .button {
+            display: inline-block;
+            background-color: #f0b90b;
+            color: #1e1e1e;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: 14px;
+            margin: 20px 0;
+        }
+        
+        .footer-section {
+            padding: 24px 32px;
+            border-top: 1px solid #eaecef;
+        }
+        
+        .stay-connected {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .stay-connected h3 {
+            color: #f0b90b;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #f8f9fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #5e6673;
+        }
+        
+        .phishing-setup {
+            font-size: 12px;
+            color: #5e6673;
+            margin-bottom: 16px;
+        }
+        
+        .phishing-setup a {
+            color: #f0b90b;
+            text-decoration: none;
+        }
+        
+        .risk-warning {
+            font-size: 11px;
+            color: #8c8c8c;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 11px;
+            color: #8c8c8c;
+            padding: 16px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .bottom-bar {
+            background-color: #f0b90b;
+            height: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with dark background and Binance logo -->
+        <div class="header">
+            <div class="logo">
+                <img src="{% static 'images/binance-h.png' %}" alt="Binance" />
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="content">
+            <h1>Unknown Login Detected</h1>
+            
+            <p>Dear Valued User,</p>
+            
+            <p>We detected a new login to your Binance account from an unrecognized device or location. If this was you, you can safely ignore this email.</p>
+            
+            <p><strong>Login Details:</strong><br>
+            Time: {% now "F j, Y \a\t g:i A T" %}<br>
+            Location: Unknown Location<br>
+            Device: Unknown Device<br>
+            IP Address: 192.168.1.xxx</p>
+            
+            <p>If you did not authorize this login, please secure your account immediately by changing your password and enabling two-factor authentication.</p>
+            
+            <a href="#" class="button">Secure My Account</a>
+            
+            <p>For your security, we recommend:</p>
+            <ul style="color: #5e6673; font-size: 14px; line-height: 1.6;">
+                <li>Use a strong, unique password</li>
+                <li>Enable two-factor authentication (2FA)</li>
+                <li>Regularly review your account activity</li>
+            </ul>
+            
+            <p>If you need assistance, please <a href="#" style="color: #f0b90b; text-decoration: none;">contact our support team</a> immediately.</p>
+            
+            <p style="font-style: italic; color: #8c8c8c; margin-top: 24px;">This is an automated security notification, please do not reply to this email.</p>
+        </div>
+        
+        <!-- Footer section -->
+        <div class="footer-section">
+            <div class="stay-connected">
+                <h3>Stay connected!</h3>
+                
+                <div class="social-icons">
+                    <a href="#" class="social-icon">𝕏</a>
+                    <a href="#" class="social-icon">•</a>
+                    <a href="#" class="social-icon">f</a>
+                    <a href="#" class="social-icon">in</a>
+                    <a href="#" class="social-icon">▶</a>
+                    <a href="#" class="social-icon">○</a>
+                    <a href="#" class="social-icon">📷</a>
+                </div>
+            </div>
+            
+            <div class="phishing-setup">
+                To stay secure, setup your phishing code <a href="#">here</a>
+            </div>
+            
+            <div class="risk-warning">
+                <strong>Risk warning:</strong> Cryptocurrency trading is subject to high market risk. Binance will make the best efforts to choose high-quality coins, but will not be responsible for your trading losses. Please trade with caution.<br>
+                <strong>Kindly note:</strong> Please be aware of phishing sites and always make sure you are visiting the official Binance.com websites when entering sensitive data.
+            </div>
+        </div>
+        
+        <div class="copyright">
+            © 2017 - 2022 Binance.com, All Rights Reserved.
+        </div>
+        
+        <div class="bottom-bar"></div>
+    </div>
+    
+    <!-- Tracking Pixel -->
+    <img src="{{ tracking_pixel_url }}" width="1" height="1" style="display:none;" alt="" />
+</body>
+</html>

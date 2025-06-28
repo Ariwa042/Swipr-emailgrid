@@ -1,2 +1,189 @@
-<!-- Email content here -->
-<img src="{{ tracking_pixel_url }}" width="1" height="1" style="display:none;" alt="" />
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deposit Issue Notification - Bybit</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23F7A600;stop-opacity:0.1"/><stop offset="100%" style="stop-color:%23F7A600;stop-opacity:0"/></linearGradient></defs><path d="M0,0 L100,0 L100,100 L0,100 Z" fill="url(%23a)"/></svg>');
+        }
+        .logo {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 1;
+        }
+        .logo img {
+            width: 100px;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+        .anti-phishing-badge {
+            background-color: #F7A600;
+            color: #000;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 10px;
+            position: relative;
+            z-index: 1;
+        }
+        .content {
+            padding: 40px 30px;
+            background-color: #ffffff;
+        }
+        .greeting {
+            color: #333333;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .issue-notice {
+            background-color: #fff8e1;
+            border: 1px solid #F7A600;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .issue-notice::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #F7A600;
+            border-radius: 4px 0 0 4px;
+        }
+        .issue-title {
+            color: #d84315;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #F7A600 0%, #ff8f00 100%);
+            color: #000000;
+            padding: 14px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(247, 166, 0, 0.3);
+            transition: transform 0.2s ease;
+        }
+        .action-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(247, 166, 0, 0.4);
+        }
+        .security-note {
+            background-color: #f8f9fa;
+            border-left: 3px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #555555;
+        }
+        .footer {
+            background-color: #1a1a1a;
+            color: #cccccc;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .footer-links {
+            margin: 10px 0;
+        }
+        .footer-links a {
+            color: #F7A600;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="{% static 'images/bybit-logo.png' %}" alt="Bybit Logo">
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="greeting">Dear Trader,</div>
+            
+            <p>We regret to inform you that the trading functionality in your Bybit account has been suspended with immediate effect. After a security review, we have determined that you will no longer be able to access your account or utilize the trading and withdrawal features on our platform.</p>
+            
+                <p style="margin: 0; color: #555;">This suspension may cause inconvenience, but it has been made after careful consideration. We seek your understanding in this matter.</p>
+            
+            
+            <p style="margin: 2; color: #555;">We have detected an issue with your most recent deposit. Our team is currently reviewing the transaction for your security. No action is required from your end at this time. We will notify you once the review is complete or if further information is needed.</p>
+
+            <p>Thank you for your patience and understanding.</p>
+            
+            <a href="#" class="action-button">Go to Bybit</a>
+            
+            <div class="security-note">
+                <strong>Note:</strong> This process helps us maintain the highest security standards for all our users.
+            </div>
+            
+        </div>
+        
+        <div class="footer">
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #F7A600; font-size: 20px; letter-spacing: 1px;">BYBIT</strong>
+            </div>
+            <p style="margin: 5px 0;">© 2025 Bybit Fintech Limited. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Help Center</a> |
+                <a href="#">Terms of Service</a> |
+                <a href="#">Privacy Policy</a>
+            </div>
+            <p style="margin: 10px 0 0 0;">Need help? Contact our support team 24/7</p>
+        </div>
+    </div>
+    
+    <!-- Tracking pixel -->
+    <img src="" width="1" height="1" style="display:none;" alt="" />
+</body>
+</html>
