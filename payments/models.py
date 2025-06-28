@@ -93,7 +93,7 @@ class PaymentInfo(models.Model):
 
 
 class Payment(models.Model):
-    payment_id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789abcdefghijklmnopqrstuvwxyz')
+    payment_id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789ABCDEF')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments')
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)

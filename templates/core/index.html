@@ -6,465 +6,389 @@
 {% block extra_css %}
 <style>
     :root {
-        --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-        --secondary-gradient: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
-        --accent-gradient: linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%);
-        --dark-gradient: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-        --glass-bg: rgba(255, 255, 255, 0.1);
-        --glass-border: rgba(255, 255, 255, 0.2);
-        --white-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        --primary: #2563eb;
+        --primary-light: #3b82f6;
+        --primary-dark: #1d4ed8;
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --white: #ffffff;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --gray-900: #111827;
     }
 
-    .hero-section {
-        background: var(--primary-gradient);
-        position: relative;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        overflow: hidden;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
-    .hero-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: 
-            radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.3) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(147, 197, 253, 0.3) 0%, transparent 50%);
-        animation: pulse 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes pulse {
-        0% { opacity: 0.5; }
-        100% { opacity: 1; }
-    }
-
-    .hero-content {
-        position: relative;
-        z-index: 2;
-    }
-
-    .hero-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: 50px;
-        padding: 0.75rem 1.5rem;
-        color: white;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 2rem;
-        animation: slideInDown 1s ease-out;
-    }
-
-    .hero-title {
-        font-size: 4rem;
-        font-weight: 900;
-        line-height: 1.1;
-        color: white;
-        margin-bottom: 1.5rem;
-        animation: slideInLeft 1s ease-out 0.2s both;
-    }
-
-    .hero-gradient-text {
-        background: linear-gradient(135deg, #ffffff, #93c5fd);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .hero-subtitle {
-        font-size: 1.3rem;
-        color: rgba(255, 255, 255, 0.9);
+    body {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
         line-height: 1.6;
-        margin-bottom: 3rem;
-        max-width: 600px;
-        animation: slideInLeft 1s ease-out 0.4s both;
+        color: var(--gray-800);
+        background: var(--white);
     }
 
-    .btn-modern {
-        padding: 1rem 2rem;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1.1rem;
-        border: none;
-        cursor: pointer;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .btn-modern::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        transition: left 0.5s;
-    }
-
-    .btn-modern:hover::before {
-        left: 100%;
-    }
-
-    .btn-primary-modern {
-        background: var(--white-gradient);
-        color: #1e40af;
-        box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
-        font-weight: 700;
-    }
-
-    .btn-primary-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
-        color: #1e40af;
-        text-decoration: none;
-        background: linear-gradient(135deg, #ffffff 0%, #dbeafe 100%);
-    }
-
-    .btn-outline-modern {
-        background: var(--glass-bg);
-        color: white;
-        border: 2px solid var(--glass-border);
-        backdrop-filter: blur(20px);
-    }
-
-    .btn-outline-modern:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.4);
-        transform: translateY(-3px);
-        color: white;
-        text-decoration: none;
-    }
-
-    .hero-buttons {
-        animation: slideInUp 1s ease-out 0.6s both;
-    }
-
-    .hero-visual {
-        position: relative;
-        z-index: 2;
-        animation: slideInRight 1s ease-out 0.8s both;
-    }
-
-    .dashboard-mockup {
-        background: var(--glass-bg);
-        backdrop-filter: blur(30px);
-        border: 1px solid var(--glass-border);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-        transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
-        transition: transform 0.3s ease;
-    }
-
-    .dashboard-mockup:hover {
-        transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
-    }
-
-    .mockup-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .mockup-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-    }
-
-    .dot-red { background: #ff5f56; }
-    .dot-yellow { background: #ffbd2e; }
-    .dot-green { background: #27ca3f; }
-
-    .mockup-content {
-        background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-        border-radius: 12px;
-        height: 250px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: rgba(255,255,255,0.8);
-        text-align: center;
-    }
-
-    .stats-section {
-        margin-top: 5rem;
-        animation: slideInUp 1s ease-out 1s both;
-    }
-
-    .stat-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(20px);
-        border: 1px solid var(--glass-border);
-        border-radius: 16px;
-        padding: 2rem 1.5rem;
-        text-align: center;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-10px);
-        background: rgba(255, 255, 255, 0.15);
-    }
-
-    .stat-number {
-        font-size: 2.5rem;
-        font-weight: 900;
-        color: white;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .stat-label {
-        color: rgba(255, 255, 255, 0.8);
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .features-section {
-        padding: 8rem 0;
-        background: var(--white-gradient);
+    /* Hero Section */
+    .hero {
+        background: var(--white);
+        padding: 120px 0 100px;
         position: relative;
     }
 
-    .section-header {
-        text-align: center;
-        margin-bottom: 5rem;
-    }
-
-    .section-badge {
-        background: var(--secondary-gradient);
-        color: white;
-        padding: 0.5rem 1.5rem;
-        border-radius: 50px;
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        display: inline-block;
-    }
-
-    .section-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: #1e40af;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
-    }
-
-    .section-subtitle {
-        font-size: 1.25rem;
-        color: #475569;
-        max-width: 700px;
-        margin: 0 auto;
-        line-height: 1.6;
-    }
-
-    .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 2rem;
-        margin-top: 4rem;
-    }
-
-    .feature-card {
-        background: white;
-        border-radius: 24px;
-        padding: 3rem 2.5rem;
-        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
-        border: 1px solid rgba(59, 130, 246, 0.1);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .feature-card::before {
+    .hero::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 4px;
-        background: var(--secondary-gradient);
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
+        bottom: 0;
+        background: linear-gradient(135deg, var(--blue-50) 0%, transparent 50%);
+        z-index: 1;
+    }
+
+    .hero-container {
+        position: relative;
+        z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .hero-content {
+        max-width: 1000px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--blue-100);
+        color: var(--primary);
+        padding: 8px 16px;
+        border-radius: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 32px;
+        border: 1px solid var(--blue-100);
+    }
+
+    .hero-title {
+        font-size: 56px;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--gray-900);
+        margin-bottom: 24px;
+        letter-spacing: -0.02em;
+    }
+
+    .hero-highlight {
+        color: var(--primary);
+    }
+
+    .hero-description {
+        font-size: 20px;
+        color: var(--gray-600);
+        line-height: 1.6;
+        margin-bottom: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
+        margin-bottom: 80px;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 14px 24px;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 16px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: var(--white);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        color: var(--white);
+        text-decoration: none;
+        box-shadow: 0 4px 8px 0 rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-secondary {
+        background: var(--white);
+        color: var(--gray-700);
+        border: 1px solid var(--gray-200);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-secondary:hover {
+        background: var(--gray-50);
+        color: var(--gray-700);
+        text-decoration: none;
+        border-color: var(--gray-300);
+    }
+
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 48px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .stat {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 8px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: var(--gray-600);
+        font-weight: 500;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 100px 0;
+        background: var(--gray-50);
+    }
+
+    .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .features-header {
+        text-align: center;
+        margin-bottom: 80px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .features-badge {
+        display: inline-block;
+        background: var(--blue-100);
+        color: var(--primary);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 16px;
+    }
+
+    .features-title {
+        font-size: 36px;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+    }
+
+    .features-description {
+        font-size: 18px;
+        color: var(--gray-600);
+        line-height: 1.6;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 32px;
+    }
+
+    .feature-card {
+        background: var(--white);
+        padding: 32px 24px;
+        border-radius: 12px;
+        border: 1px solid var(--gray-200);
+        transition: all 0.2s ease;
     }
 
     .feature-card:hover {
-        transform: translateY(-15px);
-        box-shadow: 0 20px 60px rgba(59, 130, 246, 0.15);
-        border-color: rgba(59, 130, 246, 0.2);
-    }
-
-    .feature-card:hover::before {
-        transform: scaleX(1);
+        box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.1);
+        border-color: var(--blue-100);
     }
 
     .feature-icon {
-        width: 80px;
-        height: 80px;
-        background: var(--secondary-gradient);
-        border-radius: 20px;
+        width: 48px;
+        height: 48px;
+        background: var(--primary);
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 2rem;
-        transition: all 0.3s ease;
-    }
-
-    .feature-card:hover .feature-icon {
-        transform: scale(1.1) rotate(-5deg);
+        margin-bottom: 16px;
+        color: var(--white);
+        font-size: 20px;
     }
 
     .feature-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1e40af;
-        margin-bottom: 1rem;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--gray-900);
+        margin-bottom: 8px;
     }
 
     .feature-description {
-        color: #475569;
-        line-height: 1.7;
-        font-size: 1rem;
+        font-size: 16px;
+        color: var(--gray-600);
+        line-height: 1.5;
     }
 
-    .cta-section {
-        background: var(--dark-gradient);
-        padding: 8rem 0;
-        position: relative;
-        overflow: hidden;
+    /* CTA Section */
+    .cta {
+        padding: 100px 0;
+        background: var(--primary);
+        color: var(--white);
     }
 
-    .cta-section::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: 
-            radial-gradient(circle at 30% 40%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
-            radial-gradient(circle at 70% 60%, rgba(30, 64, 175, 0.2) 0%, transparent 50%);
-    }
-
-    .cta-content {
-        position: relative;
-        z-index: 2;
+    .cta-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 24px;
         text-align: center;
     }
 
     .cta-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 1.5rem;
-        line-height: 1.2;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
     }
 
-    .cta-subtitle {
-        font-size: 1.3rem;
-        color: rgba(255, 255, 255, 0.8);
-        margin-bottom: 3rem;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
+    .cta-description {
+        font-size: 18px;
+        opacity: 0.9;
+        margin-bottom: 32px;
         line-height: 1.6;
     }
 
-    /* Animations */
-    @keyframes slideInDown {
-        from {
-            opacity: 0;
-            transform: translateY(-30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .cta-actions {
+        display: flex;
+        gap: 16px;
+        justify-content: center;
     }
 
-    @keyframes slideInLeft {
-        from {
-            opacity: 0;
-            transform: translateX(-50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    .btn-white {
+        background: var(--white);
+        color: var(--primary);
+        border: 1px solid var(--white);
     }
 
-    @keyframes slideInRight {
-        from {
-            opacity: 0;
-            transform: translateX(50px);
-        }
-        to {
-            opacity: 1;
-            transform: translateX(0);
-        }
+    .btn-white:hover {
+        background: var(--gray-50);
+        color: var(--primary);
+        text-decoration: none;
     }
 
-    @keyframes slideInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .btn-outline {
+        background: transparent;
+        color: var(--white);
+        border: 1px solid var(--white);
     }
 
-    /* Responsive Design */
+    .btn-outline:hover {
+        background: var(--white);
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
+        .hero {
+            padding: 80px 0 60px;
+        }
+
         .hero-title {
-            font-size: 2.5rem;
+            font-size: 40px;
         }
-        
-        .section-title {
-            font-size: 2.5rem;
+
+        .hero-description {
+            font-size: 18px;
         }
-        
+
+        .hero-actions {
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 60px;
+        }
+
+        .hero-stats {
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        .features-title {
+            font-size: 28px;
+        }
+
         .cta-title {
-            font-size: 2.5rem;
+            font-size: 28px;
         }
-        
-        .feature-grid {
+
+        .cta-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-container,
+        .features-container,
+        .cta-container {
+            padding: 0 16px;
+        }
+
+        .hero-title {
+            font-size: 32px;
+        }
+
+        .hero-description {
+            font-size: 16px;
+        }
+
+        .features-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .feature-card {
-            padding: 2rem 1.5rem;
-        }
-        
-        .dashboard-mockup {
-            transform: none;
-        }
-        
-        .hero-buttons {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        
-        .btn-modern {
-            justify-content: center;
+            padding: 24px 20px;
         }
     }
 </style>
@@ -472,91 +396,203 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6 hero-content">
-                <div class="hero-badge">
-                    <i class="bi bi-star-fill"></i>
-                    <span>Trusted by 10,000+ businesses worldwide</span>
-                </div>
-                
-                <h1 class="hero-title">
-                    Next-Generation<br>
-                    <span class="hero-gradient-text">Email Marketing</span><br>
-                    Platform
-                </h1>
-                
-                <p class="hero-subtitle">
-                    Transform your email campaigns with AI-powered insights, stunning templates, 
-                    and enterprise-grade deliverability. Built for teams that demand exceptional results.
-                </p>
-                
-                <div class="d-flex flex-wrap gap-4 hero-buttons">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'core:create_campaign' %}" class="btn btn-primary-modern btn-modern">
-                            <i class="bi bi-rocket-takeoff"></i>
-                            Create Campaign
-                        </a>
-                        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-modern btn-modern">
-                            <i class="bi bi-graph-up"></i>
-                            View Dashboard
-                        </a>
-                    {% else %}
-                        <a href="{% url 'accounts:register' %}" class="btn btn-primary-modern btn-modern">
-                            <i class="bi bi-arrow-right-circle"></i>
-                            Start Free Trial
-                        </a>
-                        <a href="{% url 'accounts:login' %}" class="btn btn-outline-modern btn-modern">
-                            <i class="bi bi-box-arrow-in-right"></i>
-                            Sign In
-                        </a>
-                    {% endif %}
-                </div>
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <i class="bi bi-star-fill"></i>
+                <span>Trusted by 10,000+ businesses</span>
             </div>
             
-            <div class="col-lg-6 hero-visual">
-                <div class="dashboard-mockup">
-                    <div class="mockup-header">
-                        <div class="mockup-dot dot-red"></div>
-                        <div class="mockup-dot dot-yellow"></div>
-                        <div class="mockup-dot dot-green"></div>
-                        <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-left: 1rem;">EmailGrid Dashboard</span>
-                    </div>
-                    <div class="mockup-content">
-                        <i class="bi bi-graph-up-arrow" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.7;"></i>
-                        <h5 style="color: white; margin-bottom: 0.5rem;">Campaign Analytics</h5>
-                        <p style="margin: 0; opacity: 0.7;">Real-time insights & performance metrics</p>
-                    </div>
+            <h1 class="hero-title">
+                Professional <span class="hero-highlight">Email Marketing</span><br>
+                That Actually Works
+            </h1>
+            
+            <p class="hero-description">
+                Create beautiful email campaigns, manage your contacts, and track performance 
+                with our easy-to-use platform designed for businesses of all sizes.
+            </p>
+            
+            <div class="hero-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'core:create_campaign' %}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Create Campaign
+                    </a>
+                    <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">
+                        <i class="bi bi-graph-up"></i>
+                        View Dashboard
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-right"></i>
+                        Start Free Trial
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-secondary">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">99.9%</span>
+                    <div class="stat-label">Delivery Rate</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">24/7</span>
+                    <div class="stat-label">Support</div>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">150M+</span>
+                    <div class="stat-label">Emails Sent</div>
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="features-container">
+        <div class="features-header">
+            <div class="features-badge">Features</div>
+            <h2 class="features-title">Everything You Need to Succeed</h2>
+            <p class="features-description">
+                Powerful tools and features designed to help you create effective email campaigns 
+                that engage your audience and drive results.
+            </p>
+        </div>
         
-        <!-- Stats Section -->
-        <div class="stats-section">
-            <div class="row g-4">
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card">
-                        <span class="stat-number">99.9%</span>
-                        <div class="stat-label">Delivery Rate</div>
-                    </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-palette"></i>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card">
-                        <span class="stat-number">24/7</span>
-                        <div class="stat-label">Expert Support</div>
-                    </div>
+                <h3 class="feature-title">Email Builder</h3>
+                <p class="feature-description">
+                    Create beautiful emails with our intuitive drag-and-drop editor. 
+                    Choose from professional templates or build from scratch.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-people"></i>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card">
+                <h3 class="feature-title">Contact Management</h3>
+                <p class="feature-description">
+                    Organize and segment your contacts easily. Import from various sources 
+                    and create targeted lists for better engagement.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-graph-up"></i>
+                </div>
+                <h3 class="feature-title">Analytics</h3>
+                <p class="feature-description">
+                    Track opens, clicks, and conversions with detailed analytics. 
+                    Get insights to optimize your campaigns for better results.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-lightning"></i>
+                </div>
+                <h3 class="feature-title">Fast Delivery</h3>
+                <p class="feature-description">
+                    Reliable infrastructure ensures your emails reach inboxes quickly 
+                    with industry-leading deliverability rates.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-gear"></i>
+                </div>
+                <h3 class="feature-title">Automation</h3>
+                <p class="feature-description">
+                    Set up automated email sequences and workflows to nurture leads 
+                    and maintain consistent communication.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3 class="feature-title">Secure & Compliant</h3>
+                <p class="feature-description">
+                    Enterprise-grade security with GDPR compliance and data encryption 
+                    to protect your campaigns and customer data.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta">
+    <div class="cta-container">
+        <h2 class="cta-title">Ready to Get Started?</h2>
+        <p class="cta-description">
+            Join thousands of businesses using EmailGrid to create successful email campaigns. 
+            Start your free trial today and see the difference.
+        </p>
+        
+        <div class="cta-actions">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'accounts:register' %}" class="btn btn-white">
+                    <i class="bi bi-rocket-takeoff"></i>
+                    Start Free Trial
+                </a>
+                <a href="{% url 'payments:subscription_plans' %}" class="btn btn-outline">
+                    <i class="bi bi-credit-card"></i>
+                    View Pricing
+                </a>
+            {% else %}
+                <a href="{% url 'core:create_campaign' %}" class="btn btn-white">
+                    <i class="bi bi-plus-circle"></i>
+                    Create Campaign
+                </a>
+                <a href="{% url 'accounts:profile' %}" class="btn btn-outline">
+                    <i class="bi bi-person-gear"></i>
+                    Account Settings
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+                    </div>
+                    <div class="stat-item">
                         <span class="stat-number">150M+</span>
-                        <div class="stat-label">Emails Delivered</div>
+                        <div class="stat-label">Emails Sent</div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="stat-card">
-                        <span class="stat-number">10k+</span>
-                        <div class="stat-label">Active Users</div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="hero-visual">
+                    <div class="dashboard-preview">
+                        <div class="preview-header">
+                            <div class="preview-dot dot-red"></div>
+                            <div class="preview-dot dot-yellow"></div>
+                            <div class="preview-dot dot-green"></div>
+                            <span style="color: var(--gray-500); font-size: 0.875rem; margin-left: 1rem;">EmailGrid</span>
+                        </div>
+                        <div class="preview-content">
+                            <div class="preview-icon">
+                                <i class="bi bi-envelope-check"></i>
+                            </div>
+                            <h5 style="color: var(--gray-800); margin-bottom: 0.5rem; font-weight: 600;">Campaign Dashboard</h5>
+                            <p style="color: var(--gray-600); margin: 0; font-size: 0.875rem;">Monitor performance in real-time</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -568,113 +604,110 @@
 <section class="features-section">
     <div class="container">
         <div class="section-header">
-            <div class="section-badge">
-                <i class="bi bi-gem"></i>
-                Premium Features
-            </div>
+            <div class="section-badge">Features</div>
             <h2 class="section-title">Everything You Need to Succeed</h2>
-            <p class="section-subtitle">
-                Powerful, intuitive tools designed to help you create, send, and optimize 
-                email campaigns that drive real business results.
+            <p class="section-description">
+                Powerful tools and features designed to help you create effective email campaigns 
+                that engage your audience and drive conversions.
             </p>
         </div>
         
-        <div class="feature-grid">
+        <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="bi bi-palette text-white" style="font-size: 2rem;"></i>
+                    <i class="bi bi-palette"></i>
                 </div>
-                <h4 class="feature-title">Drag & Drop Builder</h4>
+                <h4 class="feature-title">Visual Email Builder</h4>
                 <p class="feature-description">
-                    Create stunning emails with our intuitive visual editor. Choose from 
-                    100+ professional templates or build from scratch with advanced customization options.
+                    Create stunning emails with our drag-and-drop editor. Choose from professional 
+                    templates or design from scratch with complete customization control.
                 </p>
             </div>
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="bi bi-robot text-white" style="font-size: 2rem;"></i>
+                    <i class="bi bi-people"></i>
                 </div>
-                <h4 class="feature-title">AI-Powered Optimization</h4>
+                <h4 class="feature-title">Contact Management</h4>
                 <p class="feature-description">
-                    Leverage machine learning to optimize send times, subject lines, and content 
-                    for maximum engagement based on your audience's behavior patterns.
+                    Organize and segment your contacts efficiently. Import from various sources 
+                    and create targeted lists for personalized campaigns.
                 </p>
             </div>
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="bi bi-lightning-charge text-white" style="font-size: 2rem;"></i>
-                </div>
-                <h4 class="feature-title">Lightning Fast Delivery</h4>
-                <p class="feature-description">
-                    Global infrastructure with dedicated IPs ensures your emails reach inboxes 
-                    instantly with industry-leading deliverability rates.
-                </p>
-            </div>
-            
-            <div class="feature-card">
-                <div class="feature-icon">
-                    <i class="bi bi-graph-up text-white" style="font-size: 2rem;"></i>
+                    <i class="bi bi-graph-up"></i>
                 </div>
                 <h4 class="feature-title">Advanced Analytics</h4>
                 <p class="feature-description">
-                    Deep insights with real-time tracking, A/B testing, conversion attribution, 
-                    and comprehensive reporting to measure and improve performance.
+                    Track opens, clicks, conversions, and more. Get detailed insights to optimize 
+                    your campaigns and improve performance over time.
                 </p>
             </div>
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="bi bi-people text-white" style="font-size: 2rem;"></i>
+                    <i class="bi bi-lightning-charge"></i>
                 </div>
-                <h4 class="feature-title">Smart Segmentation</h4>
+                <h4 class="feature-title">Fast Delivery</h4>
                 <p class="feature-description">
-                    Target the right audience with advanced segmentation based on behavior, 
-                    demographics, engagement history, and custom attributes.
+                    Reliable infrastructure ensures your emails reach inboxes quickly with 
+                    industry-leading deliverability rates and spam protection.
                 </p>
             </div>
             
             <div class="feature-card">
                 <div class="feature-icon">
-                    <i class="bi bi-shield-check text-white" style="font-size: 2rem;"></i>
+                    <i class="bi bi-gear"></i>
                 </div>
-                <h4 class="feature-title">Enterprise Security</h4>
+                <h4 class="feature-title">Automation</h4>
                 <p class="feature-description">
-                    Bank-level encryption, SOC 2 compliance, GDPR ready, and advanced 
-                    authentication to keep your data and campaigns secure.
+                    Set up automated email sequences and workflows. Save time while maintaining 
+                    consistent communication with your audience.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h4 class="feature-title">Secure & Compliant</h4>
+                <p class="feature-description">
+                    Enterprise-grade security with GDPR compliance, data encryption, and 
+                    secure authentication to protect your campaigns and data.
                 </p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Call to Action Section -->
+<!-- CTA Section -->
 <section class="cta-section">
     <div class="container">
         <div class="cta-content">
-            <h2 class="cta-title">Ready to Transform Your Email Marketing?</h2>
+            <h2 class="cta-title">Ready to Get Started?</h2>
             <p class="cta-subtitle">
-                Join thousands of successful businesses using EmailGrid to create campaigns 
-                that engage, convert, and drive sustainable growth.
+                Join thousands of businesses using EmailGrid to create successful email campaigns. 
+                Start your free trial today and see the difference.
             </p>
             
-            <div class="d-flex flex-wrap justify-content-center gap-4">
+            <div class="cta-buttons">
                 {% if not user.is_authenticated %}
-                    <a href="{% url 'accounts:register' %}" class="btn btn-primary-modern btn-modern">
+                    <a href="{% url 'accounts:register' %}" class="btn-cta btn-white">
                         <i class="bi bi-rocket-takeoff"></i>
                         Start Free Trial
                     </a>
-                    <a href="{% url 'payments:subscription_plans' %}" class="btn btn-outline-modern btn-modern">
-                        <i class="bi bi-gem"></i>
+                    <a href="{% url 'payments:subscription_plans' %}" class="btn-cta btn-outline-white">
+                        <i class="bi bi-credit-card"></i>
                         View Pricing
                     </a>
                 {% else %}
-                    <a href="{% url 'core:create_campaign' %}" class="btn btn-primary-modern btn-modern">
+                    <a href="{% url 'core:create_campaign' %}" class="btn-cta btn-white">
                         <i class="bi bi-plus-circle"></i>
                         Create Campaign
                     </a>
-                    <a href="{% url 'accounts:profile' %}" class="btn btn-outline-modern btn-modern">
+                    <a href="{% url 'accounts:profile' %}" class="btn-cta btn-outline-white">
                         <i class="bi bi-person-gear"></i>
                         Account Settings
                     </a>
@@ -683,4 +716,4 @@
         </div>
     </div>
 </section>
-{% endblock %}
+

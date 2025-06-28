@@ -1,0 +1,88 @@
+/* EmailGrid Custom Styles */
+
+/* General Styles */
+:root {
+  --primary-color: #4e73df;
+  --primary-dark: #224abe;
+  --secondary-color: #f8f9fa;
+  --text-color: #444;
+  --border-radius: 15px;
+  --box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+body {
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Card Animations */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+/* Button Styles */
+.btn {
+  border-radius: 50px;
+  padding: 10px 25px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
+  transform: translateY(-2px);
+}
+
+/* Form Controls */
+.form-control {
+  border-radius: 10px;
+  padding: 12px 15px;
+  border: 2px solid #e9ecef;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+/* Campaign Cards */
+.campaign-card {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.campaign-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow);
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(120deg, var(--primary-color), var(--primary-dark));
+  padding: 100px 0;
+  margin-bottom: 50px;
+}
+
+/* Custom Icon Backgrounds */
+.icon-bg {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(45deg, var(--primary-color), var(--primary-dark));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  margin-bottom: 20px;
+}

@@ -48,6 +48,12 @@ def payment(request, plan_id):
     # Get available cryptocurrencies from NOWPayments
     currencies_data = nowpayments.get_available_currencies()
     available_currencies = currencies_data.get('currencies', []) if currencies_data else []
+    # Sort currencies alphabetically
+    available_currencies = sorted(available_currencies)
+    
+    # Define popular cryptocurrencies and filter only those available
+    popular_crypto_list = ['btc', 'eth','sol', 'usdttrc20', 'ada','matic']
+    popular_currencies = [crypto for crypto in popular_crypto_list if crypto in available_currencies]
     
     if request.method == 'POST':
         pay_currency = request.POST.get('pay_currency')
@@ -57,6 +63,7 @@ def payment(request, plan_id):
             return render(request, 'payments/checkout.html', {
                 'plan': plan,
                 'available_currencies': available_currencies,
+                'popular_currencies': popular_currencies,
             })
         
         # Create payment record
@@ -100,6 +107,7 @@ def payment(request, plan_id):
     return render(request, 'payments/checkout.html', {
         'plan': plan,
         'available_currencies': available_currencies,
+        'popular_currencies': popular_currencies,
     })
 
 @login_required
