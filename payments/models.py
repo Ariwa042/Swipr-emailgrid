@@ -9,12 +9,15 @@ from shortuuid.django_fields import ShortUUIDField
 
 
 STATUS_CHOICES = [
-    ('PENDING', 'Pending'),
-    ('COMPLETED', 'Completed'),
-    ('FAILED', 'Failed'),
-    ('WAITING', 'Waiting for Payment'),
-    ('CONFIRMING', 'Confirming Payment'),
-    ('SENDING', 'Sending to Merchant'),
+    ('waiting', 'Waiting for Payment'),
+    ('confirming', 'Confirming Payment'),
+    ('confirmed', 'Confirmed'),
+    ('sending', 'Sending to Merchant'),
+    ('partially_paid', 'Partially Paid'),
+    ('finished', 'Finished'),
+    ('failed', 'Failed'),
+    ('refunded', 'Refunded'),
+    ('expired', 'Expired'),
 ]
 
 class SubscriptionPlan(models.Model):
@@ -90,20 +93,30 @@ class PaymentInfo(models.Model):
 
 
 class Payment(models.Model):
-    payment_id =   ShortUUIDField(primary_key=True, length=10, alphabet='0123456789abcdefghijklmnopqrstuvwxyz')
+    payment_id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789abcdefghijklmnopqrstuvwxyz')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments')
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name='payments')
-    payment_wallet = models.ForeignKey(PaymentInfo, on_delete=models.CASCADE, related_name='payments', null=True, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='waiting')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    # NOWPayments fields
+    nowpayments_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    pay_address = models.CharField(max_length=255, null=True, blank=True)
+    pay_amount = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
+    pay_currency = models.CharField(max_length=10, null=True, blank=True)
+    price_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price_currency = models.CharField(max_length=10, default='USD')
+    ipn_callback_url = models.URLField(null=True, blank=True)
+    order_id = models.CharField(max_length=100, null=True, blank=True)
+    order_description = models.TextField(null=True, blank=True)
+    purchase_id = models.CharField(max_length=100, null=True, blank=True)
+    outcome_amount = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
+    outcome_currency = models.CharField(max_length=10, null=True, blank=True)
     class Meta:
         verbose_name = 'Payment'
         verbose_name_plural = 'Payments'
         ordering = ['-created_at']
-
     def __str__(self):
         return f"Payment {self.payment_id} - {self.user.email} - {self.plan.name} - ${self.amount} - {self.status}"
 
@@ -113,8 +126,8 @@ from django.dispatch import receiver
 
 @receiver(post_save, sender=Payment)
 def create_subscription_on_payment(sender, instance, created, **kwargs):
-    # Only act if status is COMPLETED and (either just created or just changed to COMPLETED)
-    if instance.status == 'COMPLETED':
+    # Only act if status is finished (NOWPayments completed status)
+    if instance.status == 'finished':
         # Check for existing active subscription for this user and plan
         existing = Subscription.objects.filter(
             user=instance.user,

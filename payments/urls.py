@@ -9,4 +9,6 @@ urlpatterns = [
     path('payment/<int:plan_id>/', views.payment, name='payment'),
     path('payment-instructions/<str:payment_id>/', views.payment_instructions, name='payment_instructions'),
     path('check-status/<str:payment_id>/', views.check_payment_status, name='check_payment_status'),
+    path('nowpayments/ipn/', views.nowpayments_ipn, name='nowpayments_ipn'),
+    path('exchange-rate/', views.get_exchange_rate, name='get_exchange_rate'),
 ]

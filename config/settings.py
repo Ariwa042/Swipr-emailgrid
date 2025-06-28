@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -216,3 +217,44 @@ CORS_ALLOWED_ORIGINS = [
     # Add your static site's domain here, e.g.:
     # 'https://your-static-site.com',
 ]
+
+# NOWPayments Configuration
+NOWPAYMENTS_API_KEY = 'VY9T8H5-5E2M3D1-KDB0P5X-72RKFGR'
+NOWPAYMENTS_IPN_SECRET = 'MBNu2YxsyTM5wXX6HRkGUqMQPOwE0+2s'
+NOWPAYMENTS_SANDBOX = False  # Set to False for production API
+
+# Create logs directory if it doesn't exist
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': LOGS_DIR / 'nowpayments.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'payments.nowpayments': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

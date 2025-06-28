@@ -385,45 +385,46 @@
                                         {% csrf_token %}
                                         
                                         <div class="mb-4">
-                                            <label for="{{ form.payment_method.id_for_label }}" class="form-label fw-semibold text-dark">
+                                            <label for="pay_currency" class="form-label fw-semibold text-dark">
                                                 Select Cryptocurrency:
                                             </label>
-                                            {{ form.payment_method }}
-                                            {% if form.payment_method.errors %}
-                                            <div class="text-danger mt-2">
-                                                {{ form.payment_method.errors }}
-                                            </div>
+                                            <select name="pay_currency" id="pay_currency" class="form-control" required>
+                                                <option value="">Choose a cryptocurrency...</option>
+                                                {% for currency in available_currencies %}
+                                                    <option value="{{ currency }}">{{ currency|upper }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            {% if not available_currencies %}
+                                                <div class="alert alert-warning mt-2">
+                                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                                    Unable to load cryptocurrencies. Please try again later.
+                                                </div>
                                             {% endif %}
                                         </div>
 
-                                        <!-- Payment Methods Display
+                                        <!-- Popular Cryptocurrencies Display -->
+                                        {% if available_currencies %}
                                         <div class="mb-4">
-                                            <h6 class="fw-semibold text-dark mb-3">Available Cryptocurrencies:</h6>
+                                            <h6 class="fw-semibold text-dark mb-3">Popular Cryptocurrencies:</h6>
                                             <div class="row g-3">
-                                                {% for method in payment_methods %}
-                                                <div class="col-md-6">
-                                                    <div class="payment-method-card">
+                                                {% for currency in available_currencies|slice:":6" %}
+                                                <div class="col-md-4 col-sm-6">
+                                                    <div class="payment-method-card" onclick="selectCurrency('{{ currency }}')">
                                                         <div class="d-flex align-items-center">
                                                             <div class="crypto-icon">
-                                                                {{ method.symbol|slice:":2"|upper }}
+                                                                {{ currency|slice:":3"|upper }}
                                                             </div>
                                                             <div>
-                                                                <div class="fw-semibold text-dark">{{ method.cryptocurrency }}</div>
-                                                                <small class="text-muted">{{ method.symbol|upper }}</small>
+                                                                <div class="fw-semibold text-dark">{{ currency|upper }}</div>
+                                                                <small class="text-muted">Click to select</small>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {% empty %}
-                                                <div class="col-12">
-                                                    <div class="alert alert-warning border-0 rounded-3">
-                                                        <i class="bi bi-exclamation-triangle me-2"></i>
-                                                        No payment methods available at the moment. Please contact support.
-                                                    </div>
-                                                </div>
                                                 {% endfor %}
                                             </div>
-                                        </div> -->
+                                        </div>
+                                        {% endif %}
 
                                         <!-- Action Buttons -->
                                         <div class="d-flex gap-3 mt-4">
@@ -457,4 +458,39 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function selectCurrency(currency) {
+    document.getElementById('pay_currency').value = currency;
+    // Remove active class from all cards
+    document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.classList.remove('active');
+    });
+    // Add active class to clicked card
+    event.currentTarget.classList.add('active');
+}
+
+// Add some styling for active currency selection
+document.addEventListener('DOMContentLoaded', function() {
+    const style = document.createElement('style');
+    style.textContent = `
+        .payment-method-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .payment-method-card:hover {
+            border-color: var(--blue-500);
+            transform: translateY(-2px);
+        }
+        .payment-method-card.active {
+            border-color: var(--blue-600);
+            background: var(--blue-50);
+        }
+    `;
+    document.head.appendChild(style);
+});
+</script>
 {% endblock %}

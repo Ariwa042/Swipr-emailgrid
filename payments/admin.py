@@ -28,17 +28,26 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('payment_id', 'user', 'plan', 'amount', 'status', 'created_at')
-    list_filter = ('status', 'created_at', 'plan')
-    search_fields = ('payment_id', 'user__email')
-    readonly_fields = ('payment_id', 'created_at', 'updated_at')
+    list_display = ('payment_id', 'user', 'plan', 'amount', 'pay_currency', 'status', 'created_at')
+    list_filter = ('status', 'pay_currency', 'created_at', 'plan')
+    search_fields = ('payment_id', 'user__email', 'nowpayments_id')
+    readonly_fields = ('payment_id', 'created_at', 'updated_at', 'nowpayments_id', 'pay_address')
     
     fieldsets = (
         ('Payment Information', {
             'fields': ('payment_id', 'user', 'plan', 'amount', 'status')
         }),
-        ('Payment Details', {
-            'fields': ('payment_wallet',)
+        ('NOWPayments Details', {
+            'fields': ('nowpayments_id', 'pay_currency', 'pay_amount', 'pay_address', 'price_amount', 'price_currency'),
+            'classes': ('collapse',)
+        }),
+        ('Order Information', {
+            'fields': ('order_id', 'order_description', 'purchase_id'),
+            'classes': ('collapse',)
+        }),
+        ('Outcome Details', {
+            'fields': ('outcome_amount', 'outcome_currency', 'ipn_callback_url'),
+            'classes': ('collapse',)
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
