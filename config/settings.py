@@ -176,6 +176,15 @@ LOGOUT_REDIRECT_URL = 'core:index'
 # Email settings - for development (prints emails to console)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = f'EmailGrid <{os.getenv("EMAIL_HOST_USER")}>'
+
+
 # Add your public domain for building absolute URLs in emails
 SITE_DOMAIN = os.getenv('SITE_DOMAIN')
 
