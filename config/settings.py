@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+import dj_database_url
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,13 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#)fe^y=_c4n2f#7u9w2f6^dmynu_o(59wz@qhvaz&+(0lebzyx'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['*', 'https://emailgrid.onrender.com', 'emailgrid.onrender.com']
-
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # CSRF trusted origins (for deployment, e.g. Render, custom domains)
 CSRF_TRUSTED_ORIGINS = [
@@ -39,6 +43,7 @@ CSRF_TRUSTED_ORIGINS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -56,6 +61,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -88,12 +94,25 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Use DATABASE_URL if available (for production), otherwise use individual components
+if os.getenv('DATABASE_URL'):
+    DATABASES = {
+        'default': dj_database_url.parse(os.getenv('DATABASE_URL'))
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+        }
+    }
 
 
 # Password validation
@@ -134,6 +153,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# Whitenoise settings for production static file serving
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Media files (User uploaded files)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
@@ -155,76 +177,16 @@ LOGOUT_REDIRECT_URL = 'core:index'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # Add your public domain for building absolute URLs in emails
-SITE_DOMAIN = 'https://emailgrid.onrender.com'
-
-# Campaign email SMTP settings for different templates
-CAMPAIGN_EMAIL_BACKENDS = {
-    'binance_deposit': {
-        'EMAIL_HOST': 'smtp.hostinger.com',
-        'EMAIL_PORT': 465,
-        'EMAIL_HOST_USER': 'mail@notifytxx.com',
-        'EMAIL_HOST_PASSWORD': 'ZnfuK5m&',
-        'EMAIL_USE_SSL': True,
-        'DEFAULT_FROM_EMAIL': 'Binance <mail@notifytxx.com>',
-    },
-    'binance_unknown': {
-        'EMAIL_HOST': 'smtp.hostinger.com',
-        'EMAIL_PORT': 465,
-        'EMAIL_HOST_USER': 'mail@notifytxx.com',
-        'EMAIL_HOST_PASSWORD': 'ZnfuK5m&',
-        'EMAIL_USE_SSL': True,
-        'DEFAULT_FROM_EMAIL': 'Binance <mail@notifytxx.com>',
-    },
-    'bybit_deposit': {
-        'EMAIL_HOST': 'smtp.hostinger.com',
-        'EMAIL_PORT': 465,
-        'EMAIL_HOST_USER': 'mail@notifytxx.com',
-        'EMAIL_HOST_PASSWORD': 'ZnfuK5m&',
-        'EMAIL_USE_SSL': True,
-        'DEFAULT_FROM_EMAIL': 'Bybit <mail@notifytxx.com>',
-    },
-    'bybit_unknown': {
-        'EMAIL_HOST': 'smtp.example.com',
-        'EMAIL_PORT': 465,
-        'EMAIL_HOST_USER': 'bybit@example.com',
-        'EMAIL_HOST_PASSWORD': 'ZnfuK5m&',
-        'EMAIL_USE_SSL': True,
-        'DEFAULT_FROM_EMAIL': 'Bybit <mail@notifytxx.com>',
-    },
-    'bitpay_deposit': {
-        'EMAIL_HOST': 'smtp.example.com',
-        'EMAIL_PORT': 587,
-        'EMAIL_HOST_USER': 'bitpay@example.com',
-        'EMAIL_HOST_PASSWORD': 'your-password',
-        'EMAIL_USE_TLS': True,
-        'DEFAULT_FROM_EMAIL': 'BitPay <no-reply@bitpay.com>',
-    },
-    'bitpay_unknown': {
-        'EMAIL_HOST': 'smtp.example.com',
-        'EMAIL_PORT': 587,
-        'EMAIL_HOST_USER': 'bitpay@example.com',
-        'EMAIL_HOST_PASSWORD': 'your-password',
-        'EMAIL_USE_TLS': True,
-        'DEFAULT_FROM_EMAIL': 'BitPay <no-reply@bitpay.com>',
-    },
-}
+SITE_DOMAIN = os.getenv('SITE_DOMAIN')
 
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = [
-    'https://emailgrid.onrender.com',
-    'https://bitpay-account.onrender.com',
-    'https://binance-accounts.onrender.com',
-    'https://bybit-account.onrender.com',
-
-    # Add your static site's domain here, e.g.:
-    # 'https://your-static-site.com',
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
 
 # NOWPayments Configuration
-NOWPAYMENTS_API_KEY = 'VY9T8H5-5E2M3D1-KDB0P5X-72RKFGR'
-NOWPAYMENTS_IPN_SECRET = 'MBNu2YxsyTM5wXX6HRkGUqMQPOwE0+2s'
-NOWPAYMENTS_SANDBOX = False  # Set to False for production API
+NOWPAYMENTS_API_KEY = os.getenv('NOWPAYMENTS_API_KEY')
+NOWPAYMENTS_IPN_SECRET = os.getenv('NOWPAYMENTS_IPN_SECRET')
+NOWPAYMENTS_SANDBOX = os.getenv('NOWPAYMENTS_SANDBOX', 'False').lower() == 'true'
 
 # Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'
@@ -260,4 +222,193 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+# Production Security Settings
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_REDIRECT_EXEMPT = []
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    USE_TZ = True
+
+# Jazzmin Configuration
+JAZZMIN_SETTINGS = {
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    "site_title": "EmailGrid Admin",
+    
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_header": "EmailGrid",
+    
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    "site_brand": "EmailGrid",
+    
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    "site_logo": "images/logo.png",
+    
+    # Logo to use for your site, must be present in static files, used for login form logo
+    "login_logo": None,
+    
+    # Logo to use for login form in dark themes
+    "login_logo_dark": None,
+    
+    # CSS classes that are applied to the logo above
+    "site_logo_classes": "img-circle",
+    
+    # Relative path to a favicon for your site, will default to site_logo if absent (ideally 32x32 px)
+    "site_icon": None,
+    
+    # Welcome text on the login screen
+    "welcome_sign": "Welcome to EmailGrid Admin",
+    
+    # Copyright on the footer
+    "copyright": "EmailGrid © 2024",
+    
+    # List of model admins to search from the search bar, search bar omitted if excluded
+    "search_model": ["auth.User", "accounts.CustomUser"],
+    
+    # Field name on user model that contains avatar ImageField/URLField/Charfield or a callable that receives the user
+    "user_avatar": None,
+    
+    ############
+    # Top Menu #
+    ############
+    
+    # Links to put along the top menu
+    "topmenu_links": [
+        # Url that gets reversed (Permissions can be added)
+        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
+        
+        # external url that opens in a new window (Permissions can be added)
+        {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+        
+        # model admin to link to (Permissions checked against model)
+        {"model": "auth.User"},
+        
+        # App with dropdown menu to all its models pages (Permissions checked against models)
+        {"app": "payments"},
+    ],
+    
+    #############
+    # User Menu #
+    #############
+    
+    # Additional links to include in the user menu on the top right ("app" url type is not allowed)
+    "usermenu_links": [
+        {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+        {"model": "auth.user"}
+    ],
+    
+    #############
+    # Side Menu #
+    #############
+    
+    # Whether to display the side menu
+    "show_sidebar": True,
+    
+    # Whether to auto expand the menu
+    "navigation_expanded": True,
+    
+    # Hide these apps when generating side menu
+    "hide_apps": [],
+    
+    # Hide these models when generating side menu (e.g hide auth.user)
+    "hide_models": [],
+    
+    # List of apps (and other models if needed) to base side menu ordering off of (does not need to contain all apps)
+    "order_with_respect_to": ["auth", "accounts", "core", "payments"],
+    
+    # Custom links to append to app groups, keyed on app name
+    "custom_links": {
+        "payments": [{
+            "name": "Payment Reports", 
+            "url": "payments_reports", 
+            "icon": "fas fa-chart-line",
+            "permissions": ["payments.view_payment"]
+        }]
+    },
+    
+    # Custom icons for side menu apps/models See https://fontawesome.com/icons?d=gallery&m=free&v=5.0.0,5.0.1,5.0.10,5.0.11,5.0.12,5.0.13,5.0.2,5.0.3,5.0.4,5.0.5,5.0.6,5.0.7,5.0.8,5.0.9,5.1.0,5.1.1,5.2.0,5.3.0,5.3.1,5.4.0,5.4.1,5.4.2,5.5.0,5.6.0,5.6.1,5.6.3,5.7.0,5.7.1,5.7.2,5.8.0,5.8.1,5.8.2,5.9.0,5.10.0,5.10.1,5.10.2,5.11.0,5.11.1,5.11.2,5.12.0,5.12.1,5.13.0,5.13.1,5.14.0,5.15.0,5.15.1,5.15.2,5.15.3,5.15.4&s=solid%2Cregular%2Cbrands
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.Group": "fas fa-users",
+        "accounts": "fas fa-user-circle",
+        "accounts.customuser": "fas fa-user-shield",
+        "core": "fas fa-cogs",
+        "payments": "fas fa-credit-card",
+    },
+    
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    
+    #################
+    # Related Modal #
+    #################
+    # Use modals instead of popups
+    "related_modal_active": False,
+    
+    #############
+    # UI Tweaks #
+    #############
+    # Relative paths to custom CSS/JS scripts (must be present in static files)
+    "custom_css": None,
+    "custom_js": None,
+    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    "use_google_fonts_cdn": True,
+    # Whether to show the UI customizer on the sidebar
+    "show_ui_builder": True,
+    
+    ###############
+    # Change view #
+    ###############
+    # Render out the change view as a single form, or in tabs, current options are
+    # - single
+    # - horizontal_tabs (default)
+    # - vertical_tabs
+    # - collapsible
+    # - carousel
+    "changeform_format": "horizontal_tabs",
+    # override change forms on a per modeladmin basis
+    "changeform_format_overrides": {"auth.user": "collapsible", "auth.group": "vertical_tabs"},
+    # Add a language dropdown into the admin
+    "language_chooser": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "brand_colour": "navbar-primary",
+    "accent": "accent-primary",
+    "navbar": "navbar-primary navbar-dark",
+    "no_navbar_border": False,
+    "navbar_fixed": False,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": False,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_nav_small_text": False,
+    "sidebar_nav_flat_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_accordion": True,
+    "theme": "default",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success"
+    }
 }

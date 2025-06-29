@@ -2,10 +2,10 @@ Django>=4.2.0
 Pillow>=10.0.0
 gunicorn
 django-cors-headers>=3.13.0
-django-environ>=0.9.0
-python-decouple>=3.8.0
-psycopg2
-dj_database-url>=0.5.0
+python-dotenv>=1.0.0
+dj-database-url>=2.1.0
+psycopg2-binary>=2.9.9
 django-shortuuidfield
-django-cors-headers
 requests>=2.31.0
+whitenoise>=6.6.0
+django-jazzmin>=2.6.0
