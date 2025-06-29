@@ -213,7 +213,10 @@ CAMPAIGN_EMAIL_BACKENDS = {
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     'https://emailgrid.onrender.com',
-    'https://template-ir4h.onrender.com'
+    'https://bitpay-account.onrender.com',
+    'https://binance-accounts.onrender.com',
+    'https://bybit-account.onrender.com',
+
     # Add your static site's domain here, e.g.:
     # 'https://your-static-site.com',
 ]
