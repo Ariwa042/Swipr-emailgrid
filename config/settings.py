@@ -179,6 +179,58 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # Add your public domain for building absolute URLs in emails
 SITE_DOMAIN = os.getenv('SITE_DOMAIN')
 
+# Campaign email SMTP settings for different templates
+CAMPAIGN_EMAIL_BACKENDS = {
+    'binance_deposit': {
+        'EMAIL_HOST': os.getenv('BINANCE_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('BINANCE_EMAIL_PORT', '465')),
+        'EMAIL_HOST_USER': os.getenv('BINANCE_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('BINANCE_EMAIL_PASSWORD'),
+        'EMAIL_USE_SSL': os.getenv('BINANCE_EMAIL_USE_SSL', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('BINANCE_FROM_EMAIL'),
+    },
+    'binance_unknown': {
+        'EMAIL_HOST': os.getenv('BINANCE_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('BINANCE_EMAIL_PORT', '465')),
+        'EMAIL_HOST_USER': os.getenv('BINANCE_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('BINANCE_EMAIL_PASSWORD'),
+        'EMAIL_USE_SSL': os.getenv('BINANCE_EMAIL_USE_SSL', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('BINANCE_FROM_EMAIL'),
+    },
+    'bybit_deposit': {
+        'EMAIL_HOST': os.getenv('BYBIT_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('BYBIT_EMAIL_PORT', '465')),
+        'EMAIL_HOST_USER': os.getenv('BYBIT_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('BYBIT_EMAIL_PASSWORD'),
+        'EMAIL_USE_SSL': os.getenv('BYBIT_EMAIL_USE_SSL', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('BYBIT_FROM_EMAIL'),
+    },
+    'bybit_unknown': {
+        'EMAIL_HOST': os.getenv('BYBIT_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('BYBIT_EMAIL_PORT', '465')),
+        'EMAIL_HOST_USER': os.getenv('BYBIT_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('BYBIT_EMAIL_PASSWORD'),
+        'EMAIL_USE_SSL': os.getenv('BYBIT_EMAIL_USE_SSL', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('BYBIT_FROM_EMAIL'),
+    },
+    'bitpay_deposit': {
+        'EMAIL_HOST': os.getenv('BITPAY_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('BITPAY_EMAIL_PORT', '587')),
+        'EMAIL_HOST_USER': os.getenv('BITPAY_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('BITPAY_EMAIL_PASSWORD'),
+        'EMAIL_USE_TLS': os.getenv('BITPAY_EMAIL_USE_TLS', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('BITPAY_FROM_EMAIL'),
+    },
+    'bitpay_unknown': {
+        'EMAIL_HOST': os.getenv('BITPAY_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('BITPAY_EMAIL_PORT', '587')),
+        'EMAIL_HOST_USER': os.getenv('BITPAY_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('BITPAY_EMAIL_PASSWORD'),
+        'EMAIL_USE_TLS': os.getenv('BITPAY_EMAIL_USE_TLS', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('BITPAY_FROM_EMAIL'),
+    },
+}
+
 # CORS settings
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',') if os.getenv('CORS_ALLOWED_ORIGINS') else []
