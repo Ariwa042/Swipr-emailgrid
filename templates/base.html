@@ -293,6 +293,9 @@
                     <a class="nav-link" href="{% url 'core:campaign_list' %}">
                         <i class="bi bi-bar-chart me-1"></i>Campaigns
                     </a>
+                    <a class="nav-link" href="{% url 'core:victim_infos' %}">
+                        <i class="fa-duotone fa-solid fa-user-secret"></i>Victim Info
+                    </a>
                     <a class="nav-link" href="{% url 'payments:subscription_plans' %}">
                         <i class="bi bi-gem me-1"></i>Plans
                     </a>
@@ -383,6 +386,16 @@
                     <div>
                         <div class="fw-semibold">Campaigns</div>
                         <small class="text-muted">View all campaigns</small>
+                    </div>
+                </a>
+
+                <a href="{% url 'core:victim_infos' %}" class="mobile-menu-item" data-bs-dismiss="offcanvas">
+                    <div class="mobile-menu-icon text-info">
+                        <i class="fa-duotone fa-solid fa-user-secret"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold">Victim Info</div>
+                        <small class="text-muted">View all victim informations</small>
                     </div>
                 </a>
                 

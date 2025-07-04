@@ -300,22 +300,30 @@ def send_victim_info_notification(campaign, victim_info, request=None):
 @login_required
 def view_victim_info(request):
     """
-    Display all VictimInfo entries for the current user's campaigns.
+    Display all campaigns with victim infos, each as a card, sorted from latest.
+    Each card includes the template used, victim infos, and date. Compact layout.
     """
-    victim_infos = VictimInfo.objects.filter(campaign__user=request.user).select_related('campaign').order_by('-created_at')
-    return render(request, 'core/victim_info_list.html', {'victim_infos': victim_infos})
-
-@login_required
-def campaign_victims(request, campaign_id):
-    """
-    Display all VictimInfo entries for a specific campaign (only if the user owns the campaign).
-    """
-    campaign = get_object_or_404(Campaign, id=campaign_id, user=request.user)
-    victim_infos = VictimInfo.objects.filter(campaign=campaign).order_by('-created_at')
-    return render(request, 'core/campaign_victims.html', {
-        'campaign': campaign,
-        'victim_infos': victim_infos
-    })
+    from django.db.models import Prefetch
+    # Get campaigns with at least one victim info, sorted by latest victim info
+    campaigns = (
+        Campaign.objects.filter(user=request.user, victim_infos__isnull=False)
+        .prefetch_related(
+            Prefetch(
+                'victim_infos',
+                queryset=VictimInfo.objects.order_by('-created_at'),
+                to_attr='victims_sorted'
+            ),
+            'email_template'
+        )
+        .distinct()
+    )
+    # Sort campaigns by latest victim info date
+    campaigns = sorted(
+        campaigns,
+        key=lambda c: c.victims_sorted[0].created_at if c.victims_sorted else c.created_at,
+        reverse=True
+    )
+    return render(request, 'core/victim_infos.html', {'campaigns': campaigns})
 
 def tracking_pixel(request, campaign_id):
     """

