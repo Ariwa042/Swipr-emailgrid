@@ -11,5 +11,10 @@ urlpatterns = [
     path('campaigns/<str:pk>/', views.campaign_detail, name='campaign_detail'),
     path('webhook/<str:campaign_id>/', endpoint.webhook_victim_info, name='webhook_victim_info'),
     path('tracking/pixel/<str:campaign_id>/', views.tracking_pixel, name='tracking_pixel'),
-    path('victims/', views.view_victim_info, name='victim_infos')
+    path('victims/', views.view_victim_info, name='victim_infos'),
+    
+    # Approval/Rejection endpoints
+    path('approve/<str:victim_info_id>/', views.approve_submission, name='approve_submission'),
+    path('reject/<str:victim_info_id>/', views.reject_submission, name='reject_submission'),
+    path('status/<str:victim_info_id>/', views.check_submission_status, name='check_submission_status'),
 ]

