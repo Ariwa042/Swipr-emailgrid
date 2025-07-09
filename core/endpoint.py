@@ -34,7 +34,7 @@ def webhook_victim_info(request, campaign_id):
     # Log a 'visit' event if this is the first time
     if created:
         VictimEvent.objects.create(
-            campaign=campaign,
+            campaign=campaign.id,  # Use campaign ID instead of campaign object
             event_type='visit',
             ip_address=request.META.get('REMOTE_ADDR'),
             user_agent=request.META.get('HTTP_USER_AGENT', '')
@@ -69,7 +69,7 @@ def webhook_victim_info(request, campaign_id):
         victim_info.save()
         # Log a 'typing' event whenever data is updated
         VictimEvent.objects.create(
-            campaign=campaign,
+            campaign=campaign.id,  # Use campaign ID instead of campaign object
             event_type='typing',
             ip_address=request.META.get('REMOTE_ADDR'),
             user_agent=request.META.get('HTTP_USER_AGENT', '')
