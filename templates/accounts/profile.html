@@ -436,6 +436,29 @@
         <div class="dashboard-grid">
             <!-- Main Content Area -->
             <div class="main-content">
+                                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="bi bi-lightning-charge" style="color: var(--orange-500);"></i>
+                            Quick Actions
+                        </h2>
+                    </div>
+                    <div class="quick-actions">
+                        <a href="{% url 'core:create_campaign' %}" class="action-card">
+                            <div class="action-icon primary">
+                                <i class="bi bi-rocket-takeoff"></i>
+                            </div>
+                            <h3 class="action-title">Create Campaign</h3>
+                        </a>
+                        <a href="{% url 'core:campaign_list' %}" class="action-card">
+                            <div class="action-icon secondary">
+                                <i class="bi bi-bar-chart"></i>
+                            </div>
+                            <h3 class="action-title">View Campaigns</h3>
+                        </a>
+                    </div>
+                </div>
                 <!-- Statistics Overview -->
                 <div class="card">
                     <div class="card-header">
@@ -503,29 +526,6 @@
                                 Upgrade Now
                             </a>
                         {% endif %}
-                    </div>
-                </div>
-                                <!-- Quick Actions -->
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">
-                            <i class="bi bi-lightning-charge" style="color: var(--orange-500);"></i>
-                            Quick Actions
-                        </h2>
-                    </div>
-                    <div class="quick-actions">
-                        <a href="{% url 'core:create_campaign' %}" class="action-card">
-                            <div class="action-icon primary">
-                                <i class="bi bi-rocket-takeoff"></i>
-                            </div>
-                            <h3 class="action-title">Create Campaign</h3>
-                        </a>
-                        <a href="{% url 'core:campaign_list' %}" class="action-card">
-                            <div class="action-icon secondary">
-                                <i class="bi bi-bar-chart"></i>
-                            </div>
-                            <h3 class="action-title">View Campaigns</h3>
-                        </a>
                     </div>
                 </div>
                 
