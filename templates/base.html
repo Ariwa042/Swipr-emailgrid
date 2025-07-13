@@ -266,6 +266,9 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Website Notifications -->
+    <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999; width: 350px;"></div>
+
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light sticky-top">
         <div class="container">
@@ -615,6 +618,187 @@
                 });
             });
         });
+    </script>
+    
+    <!-- Notification System -->
+    <style>
+        .notification-item {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .notification-item.show {
+            transform: translateX(0);
+        }
+        
+        .notification-item.hide {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .notification-title {
+            font-weight: 600;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-body {
+            font-size: 13px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .notification-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+        
+        .notification-timer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            width: 100%;
+            transform-origin: left;
+            animation: timer 60s linear forwards;
+        }
+        
+        @keyframes timer {
+            from { transform: scaleX(1); }
+            to { transform: scaleX(0); }
+        }
+    </style>
+    
+    <script>
+        // Notification System
+        function showNotification(message, campaignId, campaignUrl) {
+            const container = document.getElementById('notification-container');
+            const notificationId = 'notification-' + Date.now();
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification-item';
+            notification.id = notificationId;
+            notification.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-title">🚨 URGENT ALERT</div>
+                    <button class="notification-close" onclick="closeNotification('${notificationId}')">×</button>
+                </div>
+                <div class="notification-body">
+                    ${message}
+                </div>
+                <a href="${campaignUrl}" class="notification-button">
+                    🚀 View Campaign
+                </a>
+                <div class="notification-timer"></div>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Show notification with animation
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Auto-close after 1 minute
+            setTimeout(() => {
+                closeNotification(notificationId);
+            }, 60000);
+        }
+        
+        function closeNotification(notificationId) {
+            const notification = document.getElementById(notificationId);
+            if (notification) {
+                notification.classList.add('hide');
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }
+        }
+        
+        // Check for notifications periodically (only for authenticated users)
+        {% if user.is_authenticated %}
+        let lastNotificationCheck = new Date().toISOString();
+        
+        function checkNotifications() {
+            fetch('{% url "core:get_notifications" %}', {
+                method: 'GET',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || '',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success' && data.notifications.length > 0) {
+                    data.notifications.forEach(notification => {
+                        if (notification.created_at > lastNotificationCheck) {
+                            showNotification(
+                                notification.message,
+                                notification.campaign_id,
+                                notification.campaign_url
+                            );
+                        }
+                    });
+                    lastNotificationCheck = new Date().toISOString();
+                }
+            })
+            .catch(error => {
+                console.error('Error checking notifications:', error);
+            });
+        }
+        
+        // Check notifications every 10 seconds
+        setInterval(checkNotifications, 10000);
+        
+        // Check immediately when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkNotifications, 2000);
+        });
+        {% endif %}
     </script>
     
     {% block extra_js %}{% endblock %}

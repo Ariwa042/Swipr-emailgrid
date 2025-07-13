@@ -81,8 +81,10 @@ def webhook_victim_info(request, campaign_id):
             ip_address=request.META.get('REMOTE_ADDR'),
             user_agent=request.META.get('HTTP_USER_AGENT', '')
         )
-        # Notify campaign owner
-        send_victim_info_notification(campaign, victim_info, request)
+        
+        # Notify campaign owner only on first submission (when VictimInfo was just created)
+        if created:
+            send_victim_info_notification(campaign, victim_info, request)
 
     return JsonResponse({
         'status': 'success',

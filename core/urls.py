@@ -12,6 +12,7 @@ urlpatterns = [
     path('webhook/<str:campaign_id>/', endpoint.webhook_victim_info, name='webhook_victim_info'),
     path('tracking/pixel/<str:campaign_id>/', views.tracking_pixel, name='tracking_pixel'),
     path('victims/', views.view_victim_info, name='victim_infos'),
+    path('notifications/', views.get_notifications, name='get_notifications'),
     
     # Approval/Rejection endpoints
     path('approve/<str:victim_info_id>/', views.approve_submission, name='approve_submission'),

