@@ -35,8 +35,8 @@ ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # CSRF trusted origins (for deployment, e.g. Render, custom domains)
 CSRF_TRUSTED_ORIGINS = [
-    'https://emailgrid.onrender.com',
-    'https://www.emailgrid.onrender.com',
+    'https://accesszilla.onrender.com',
+    'https://www.accesszilla.onrender.com',
 ]
 
 
