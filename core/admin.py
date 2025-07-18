@@ -79,6 +79,6 @@ class VictimEventAdmin(admin.ModelAdmin):
 
 
 # Customize admin site header
-admin.site.site_header = "EmailGrid Admin"
-admin.site.site_title = "EmailGrid Admin Portal"
-admin.site.index_title = "Welcome to EmailGrid Administration"
+admin.site.site_header = "Accesszilla Admin"
+admin.site.site_title = "Accesszilla Admin Portal"
+admin.site.index_title = "Welcome to Accesszilla Administration"

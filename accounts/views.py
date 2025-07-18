@@ -19,7 +19,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Automatically log in the user after registration
-            messages.success(request, 'Registration successful! Welcome to EmailGrid.')
+            messages.success(request, 'Registration successful! Welcome to Accesszilla.')
             return redirect('accounts:profile')
     else:
         form = CustomUserCreationForm()

@@ -182,7 +182,7 @@ EMAIL_PORT = os.getenv('EMAIL_PORT')
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL') == 'True'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = f'EmailGrid <{os.getenv("EMAIL_HOST_USER")}>'
+DEFAULT_FROM_EMAIL = f'Accesszilla <{os.getenv("EMAIL_HOST_USER")}>'
 
 
 # Add your public domain for building absolute URLs in emails
@@ -300,13 +300,13 @@ if not DEBUG:
 # Jazzmin Configuration
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "EmailGrid Admin",
+    "site_title": "Accesszilla Admin",
     
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "EmailGrid",
+    "site_header": "Accesszilla",
     
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "EmailGrid",
+    "site_brand": "Accesszilla",
     
     # Logo to use for your site, must be present in static files, used for brand on top left
     "site_logo": "images/logo.png",
@@ -324,10 +324,10 @@ JAZZMIN_SETTINGS = {
     "site_icon": None,
     
     # Welcome text on the login screen
-    "welcome_sign": "Welcome to EmailGrid Admin",
+    "welcome_sign": "Welcome to Accesszilla Admin",
     
     # Copyright on the footer
-    "copyright": "EmailGrid © 2024",
+    "copyright": "Accesszilla © 2024",
     
     # List of model admins to search from the search bar, search bar omitted if excluded
     "search_model": ["auth.User", "accounts.CustomUser"],

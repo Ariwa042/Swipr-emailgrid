@@ -1,4 +1,4 @@
-# filepath: c:\Users\SURFACE\Documents\Works\EmailGrid\config\accounts\admin.py
+# filepath: c:\Users\SURFACE\Documents\Works\Accesszilla\config\accounts\admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
