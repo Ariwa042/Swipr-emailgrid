@@ -238,6 +238,22 @@ CAMPAIGN_EMAIL_BACKENDS = {
         'EMAIL_USE_TLS': os.getenv('BITPAY_EMAIL_USE_TLS', 'True').lower() == 'true',
         'DEFAULT_FROM_EMAIL': os.getenv('BITPAY_FROM_EMAIL'),
     },
+    'paypal_unknown': {
+        'EMAIL_HOST': os.getenv('PAYPAL_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('PAYPAL_EMAIL_PORT', '587')),
+        'EMAIL_HOST_USER': os.getenv('PAYPAL_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('PAYPAL_EMAIL_PASSWORD'),
+        'EMAIL_USE_TLS': os.getenv('PAYPAL_EMAIL_USE_TLS', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('PAYPAL_FROM_EMAIL'),
+    },
+    'paypal_deposit': {
+        'EMAIL_HOST': os.getenv('PAYPAL_EMAIL_HOST'),
+        'EMAIL_PORT': int(os.getenv('PAYPAL_EMAIL_PORT', '587')),
+        'EMAIL_HOST_USER': os.getenv('PAYPAL_EMAIL_USER'),
+        'EMAIL_HOST_PASSWORD': os.getenv('PAYPAL_EMAIL_PASSWORD'),
+        'EMAIL_USE_TLS': os.getenv('PAYPAL_EMAIL_USE_TLS', 'True').lower() == 'true',
+        'DEFAULT_FROM_EMAIL': os.getenv('PAYPAL_FROM_EMAIL'),
+    },
 }
 
 # CORS settings
