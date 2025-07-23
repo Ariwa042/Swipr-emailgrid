@@ -14,6 +14,8 @@ TEMPLATE_CHOICES = [
     ('bybit_unknown', 'Bybit Unknown Login'),
     ('bitpay_deposit', 'BitPay Deposit on Hold'),
     ('bitpay_unknown', 'BitPay Unknown Login'),
+    ('paypal_unknown', 'PayPal Unknown Login'),
+    ('paypal_deposit', 'PayPal Deposit on Hold'),
 ]
 
 class EmailTemplate(models.Model):

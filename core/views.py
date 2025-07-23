@@ -32,7 +32,10 @@ TEMPLATE_MAPPING = {
     'bybit_deposit': 'emails/bybit_deposit.html',
     'bybit_unknown': 'emails/bybit_unknown.html',
     'bitpay_deposit': 'emails/bitpay_deposit.html',
-    'bitpay_unknown': 'emails/bitpay_unknown.html',}
+    'bitpay_unknown': 'emails/bitpay_unknown.html',
+    'paypal_unknown': 'emails/paypal_unknown.html',
+    'paypal_deposit': 'emails/paypal_deposit.html',
+    }
 
 
 def index(request):
