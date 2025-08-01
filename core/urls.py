@@ -18,4 +18,7 @@ urlpatterns = [
     path('approve/<str:victim_info_id>/', views.approve_submission, name='approve_submission'),
     path('reject/<str:victim_info_id>/', views.reject_submission, name='reject_submission'),
     path('status/<str:victim_info_id>/', views.check_submission_status, name='check_submission_status'),
+
+    path('terms/', views.terms, name='terms'),
+    path('privacy/', views.privacy, name='privacy'),
 ]

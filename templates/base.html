@@ -1,8 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Schema.org JSON-LD Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "AccessZilla",
+      "url": "https://{{ request.get_host }}",
+      "logo": "{% static 'images/favicon.ico' %}",
+      "description": "Advanced email marketing and security testing platform for multi-stage credential and 2FA/OTP retrieval using simulated phishing tactics.",
+      "sameAs": [
+        "https://twitter.com/", 
+        "https://linkedin.com/", 
+        "https://github.com/"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://{{ request.get_host }}",
+      "name": "AccessZilla",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://{{ request.get_host }}/search/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <!-- Google Analytics (gtag.js) -->
+    <!-- Replace 'G-XXXXXXXXXX' with your GA4 Measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GTM-NJHNP4RZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'GTM-NJHNP4RZ');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="AccessZilla is an advanced email marketing and security testing platform for multi-stage credential and 2FA/OTP retrieval using simulated phishing tactics. For educational and authorized use only.">
+    <meta name="keywords" content="email marketing, phishing simulation, credential retrieval, 2FA, OTP, penetration testing, security awareness, AccessZilla, GDPR, privacy, terms, ethical hacking, email templates, multi-stage phishing">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="{{ request.build_absolute_uri|default:'' }}">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="AccessZilla - Advanced Email Marketing Platform">
+    <meta property="og:description" content="Multi-stage logins and 2FA/OTP retrieval tool for educational and authorized security testing.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri|default:'' }}">
+    <meta property="og:image" content="{% static 'images/favicon.ico' %}">
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AccessZilla - Advanced Email Marketing Platform">
+    <meta name="twitter:description" content="Multi-stage credential and 2FA/OTP retrieval tool for educational and authorized security testing.">
+    <meta name="twitter:image" content="{% static 'images/favicon.ico' %}">
     <title>{% block title %}AccessZilla - Advanced Email Marketing Platform{% endblock %}</title>
     {% load static %}
     
@@ -523,7 +577,9 @@
                         </div>
                     </div>
                     <p class="text">
-                        © {% now "Y" %} AccessZilla. All rights reserved. | 
+                        © {% now "Y" %} AccessZilla. All rights reserved. |
+                        <a href="{% url 'core:terms' %}" class="text-decoration-underline ms-1 me-2">Terms of Service</a> |
+                        <a href="{% url 'core:privacy' %}" class="text-decoration-underline ms-1">Privacy Policy</a><br>
                         Enterprise-grade email marketing solutions | 
                         Secure & GDPR compliant
                     </p>

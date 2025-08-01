@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://{{ request.get_host }}/sitemap.xml

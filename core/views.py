@@ -567,3 +567,14 @@ def get_notifications(request):
         }, status=500)
 
 ################################## Get Victim Info ##################################
+
+
+
+################################### Terms & Service #################################
+def terms(request):
+    """Render the Terms of Service page."""
+    return render(request, 'core/terms.html')
+
+def privacy(request):
+    """Render the Privacy Policy page."""
+    return render(request, 'core/privacy.html')
