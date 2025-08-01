@@ -9,4 +9,3 @@ django-shortuuidfield
 requests>=2.31.0
 whitenoise>=6.6.0
 django-jazzmin>=2.6.0
-django-sitemap
