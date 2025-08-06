@@ -372,7 +372,7 @@
                         {% else %}
                         <a href="{% url 'payments:checkout' plan.id %}" class="cta-button plan-button" data-plan-id="{{ plan.id }}" data-crypto-url="{% url 'payments:checkout' plan.id %}" data-bank-url="{% url 'payments:bank_transfer_direct' plan.id %}">
                             <i class="bi bi-rocket-takeoff me-2"></i>
-                            {% if plan.name == 'Basic' %}Start Free{% else %}Upgrade Now{% endif %}
+                            {% if plan.name == 'Basic' %}Start Now{% else %}Upgrade Now{% endif %}
                         </a>
                         {% endif %}
                     </div>
