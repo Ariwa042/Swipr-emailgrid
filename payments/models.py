@@ -20,9 +20,15 @@ STATUS_CHOICES = [
     ('expired', 'Expired'),
 ]
 
+PAYMENT_METHOD_CHOICES = [
+    ('crypto', 'Cryptocurrency'),
+    ('bank_transfer', 'Bank Transfer'),
+]
+
 class SubscriptionPlan(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
+    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price in USD")
+    price_in_ngn = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Price in Nigerian Naira (NGN)")
     max_emails = models.IntegerField(default=100)
     duration_days = models.IntegerField(default=30)
 
@@ -92,15 +98,31 @@ class PaymentInfo(models.Model):
         return f"{self.cryptocurrency} - {self.symbol} - {self.wallet_address}"
 
 
+class BankTransferInfo(models.Model):
+    bank_name = models.CharField(max_length=100)
+    account_holder = models.CharField(max_length=100)
+    account_number = models.CharField(max_length=50)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Bank Transfer Info'
+        verbose_name_plural = 'Bank Transfer Infos'
+
+    def __str__(self):
+        return f"{self.bank_name} - {self.account_holder} ({self.account_number})"
+
+
 class Payment(models.Model):
     payment_id = ShortUUIDField(primary_key=True, length=10, alphabet='0123456789ABCDEF')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='payments')
     plan = models.ForeignKey(SubscriptionPlan, on_delete=models.CASCADE, related_name='payments')
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='waiting')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='crypto')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # NOWPayments fields
+    
+    # NOWPayments fields (for crypto payments)
     nowpayments_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
     pay_address = models.CharField(max_length=255, null=True, blank=True)
     pay_amount = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
@@ -113,10 +135,15 @@ class Payment(models.Model):
     purchase_id = models.CharField(max_length=100, null=True, blank=True)
     outcome_amount = models.DecimalField(max_digits=20, decimal_places=8, null=True, blank=True)
     outcome_currency = models.CharField(max_length=10, null=True, blank=True)
+    
+    # Bank transfer fields
+    bank_transfer_info = models.ForeignKey(BankTransferInfo, on_delete=models.SET_NULL, null=True, blank=True)
+    
     class Meta:
         verbose_name = 'Payment'
         verbose_name_plural = 'Payments'
         ordering = ['-created_at']
+        
     def __str__(self):
         return f"Payment {self.payment_id} - {self.user.email} - {self.plan.name} - ${self.amount} - {self.status}"
 

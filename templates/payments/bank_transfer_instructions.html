@@ -1,0 +1,730 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bank Transfer Payment Instructions - AccessZilla{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        --gradient-secondary: linear-gradient(135deg, #60a5fa 0%, #2563eb 100%);
+        --gradient-accent: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        --gradient-success: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        --gradient-warning: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        --card-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        --card-shadow-hover: 0 20px 60px rgba(59, 130, 246, 0.15);
+        --blue-50: #eff6ff;
+        --blue-100: #dbeafe;
+        --blue-500: #3b82f6;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+        --blue-800: #1e40af;
+        --blue-900: #1e3a8a;
+    }
+
+    .payment-hero {
+        background: linear-gradient(135deg, var(--blue-50) 0%, var(--blue-100) 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .payment-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%233b82f608" points="0,0 1000,300 1000,1000 0,700"/></svg>');
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .payment-badge {
+        background: var(--gradient-primary);
+        padding: 12px 24px;
+        border-radius: 50px;
+        color: white;
+        font-weight: 600;
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.3);
+        display: inline-block;
+        margin-bottom: 2rem;
+    }
+
+    .instruction-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        border: 2px solid var(--blue-100);
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+        transition: all 0.3s ease;
+    }
+
+    .instruction-card:hover {
+        border-color: var(--blue-300);
+        box-shadow: var(--card-shadow-hover);
+    }
+
+    .instructions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .instruction-step {
+        background: var(--blue-50);
+        border: 2px solid var(--blue-200);
+        border-radius: 12px;
+        padding: 1.25rem;
+        position: relative;
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .instruction-step:hover {
+        background: var(--blue-100);
+        border-color: var(--blue-400);
+        transform: translateY(-2px);
+    }
+
+    .step-number-badge {
+        position: absolute;
+        top: -10px;
+        left: 1rem;
+        background: var(--gradient-primary);
+        color: white;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+
+    .step-icon {
+        color: var(--blue-500);
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .step-title {
+        color: var(--blue-900);
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+        margin-top: 0.5rem;
+    }
+
+    .step-description {
+        color: #6b7280;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    .bank-details-card {
+        background: white;
+        border: 3px solid var(--blue-500);
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .bank-details-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--gradient-primary);
+    }
+
+    .bank-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--blue-100);
+    }
+
+    .bank-icon {
+        background: var(--gradient-primary);
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.75rem;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
+    .bank-title {
+        color: var(--blue-900);
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0;
+    }
+
+    .bank-details-grid {
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .detail-item {
+        background: var(--blue-50);
+        border: 1px solid var(--blue-200);
+        border-radius: 10px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .detail-item:hover {
+        background: var(--blue-100);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+    }
+
+    .detail-label {
+        font-size: 0.9rem;
+        color: var(--blue-600);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-shrink: 0;
+        min-width: 140px;
+    }
+
+    .detail-value {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--blue-900);
+        background: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        border: 1px solid var(--blue-200);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-grow: 1;
+        margin-left: 1rem;
+    }
+
+    .copy-btn {
+        background: transparent;
+        color: var(--blue-500);
+        border: none;
+        padding: 0.25rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+    }
+
+    .copy-btn:hover {
+        background: var(--blue-50);
+        color: var(--blue-600);
+        transform: scale(1.1);
+    }
+
+    .payment-reference-card {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 2px solid #f59e0b;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        text-align: center;
+    }
+
+    .reference-highlight {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        display: inline-block;
+        margin: 0.5rem 0;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .warning-alert {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        border: 2px solid #f59e0b;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .warning-alert::before {
+        content: '⚠️';
+        font-size: 1.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .success-alert {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 2px solid #10b981;
+        border-radius: 20px;
+        padding: 1.5rem 2rem;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .success-alert::before {
+        content: '✅';
+        font-size: 1.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .payment-summary {
+        background: var(--gradient-secondary);
+        color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .summary-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .summary-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 3rem;
+    }
+
+    .btn-primary-custom {
+        background: var(--gradient-primary);
+        border: none;
+        padding: 1rem 2.5rem;
+        border-radius: 16px;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+
+    .btn-outline-custom {
+        background: transparent;
+        border: 2px solid var(--blue-500);
+        padding: 1rem 2rem;
+        border-radius: 16px;
+        color: var(--blue-600);
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-outline-custom:hover {
+        background: var(--blue-50);
+        transform: translateY(-2px);
+        color: var(--blue-700);
+    }
+
+    .telegram-highlight {
+        background: linear-gradient(135deg, #0088cc 0%, #006bb3 100%);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .instruction-card {
+            padding: 1.5rem 1rem;
+        }
+        
+        .bank-details-card {
+            padding: 1.5rem 1rem;
+        }
+        
+        .bank-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .bank-icon {
+            margin-right: 0;
+            margin-bottom: 1rem;
+        }
+        
+        .instructions-grid {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        
+        .action-buttons {
+            flex-direction: column;
+        }
+        
+        .detail-item {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        
+        .detail-label {
+            min-width: auto;
+            justify-content: center;
+        }
+        
+        .detail-value {
+            margin-left: 0;
+            width: 100%;
+        }
+        
+        .payment-summary {
+            padding: 1.5rem;
+        }
+        
+        .instruction-step {
+            padding: 1rem;
+        }
+        
+        .step-number-badge {
+            width: 24px;
+            height: 24px;
+            font-size: 0.75rem;
+        }
+        
+        .step-title {
+            font-size: 0.9rem;
+        }
+        
+        .step-description {
+            font-size: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="payment-hero">
+    <div class="container hero-content">
+        <!-- Hero Section -->
+        <div class="text-center py-5">
+            <div class="payment-badge">
+                <i class="bi bi-bank me-2"></i>
+                Bank Transfer Payment
+            </div>
+            <h1 class="display-4 fw-bold text-dark mb-4">
+                Complete Your Payment
+            </h1>
+            <p class="lead text-muted mb-5 mx-auto" style="max-width: 600px;">
+                Follow these simple steps to complete your subscription payment via bank transfer.
+                Your subscription will be activated immediately after payment verification.
+            </p>
+        </div>
+
+        <!-- Payment Summary -->
+        <div class="payment-summary">
+            <h3 class="fw-bold mb-4">
+                <i class="bi bi-receipt me-2"></i>
+                Payment Summary
+            </h3>
+            <div class="summary-item">
+                <span>Subscription Plan:</span>
+                <span class="fw-bold">{{ payment.plan.name }}</span>
+            </div>
+            <div class="summary-item">
+                <span>Duration:</span>
+                <span>{{ payment.plan.duration_days }} days</span>
+            </div>
+            
+            
+            <div class="summary-item">
+                <span>Total Amount:</span>
+                <span class="fw-bold fs-4">₦{{ payment.amount|floatformat:0 }}</span>
+            </div>
+        </div>
+
+        <!-- Bank Details Card -->
+        <div class="bank-details-card">
+            <div class="bank-header">
+                <div class="bank-icon">
+                    <i class="bi bi-bank2 fs-4 text-white"></i>
+                </div>
+                <h3 class="bank-title">Bank Account Details</h3>
+            </div>
+            
+            <div class="bank-details-grid">
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="bi bi-building"></i>
+                        Bank Name
+                    </div>
+                    <div class="detail-value">
+                        <span>{{ payment.bank_transfer_info.bank_name }}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ payment.bank_transfer_info.bank_name }}')" title="Copy bank name">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="bi bi-person"></i>
+                        Account Holder
+                    </div>
+                    <div class="detail-value">
+                        <span>{{ payment.bank_transfer_info.account_holder }}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ payment.bank_transfer_info.account_holder }}')" title="Copy account holder">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">
+                        <i class="bi bi-credit-card"></i>
+                        Account Number
+                    </div>
+                    <div class="detail-value">
+                        <span>{{ payment.bank_transfer_info.account_number }}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ payment.bank_transfer_info.account_number }}')" title="Copy account number">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Instructions Card -->
+        <div class="instruction-card">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-dark mb-2">
+                    <i class="bi bi-list-check me-2"></i>
+                    Payment Requirements
+                </h2>
+                <p class="text-muted">Ensure you meet these requirements for successful payment processing</p>
+            </div>
+
+            <div class="instructions-grid">
+                <div class="instruction-step">
+                    <div class="step-number-badge">1</div>
+                    <div class="step-icon">
+                        <i class="bi bi-currency-exchange"></i>
+                    </div>
+                    <h5 class="step-title">Exact Amount Required</h5>
+                    <p class="step-description">
+                        Transfer exactly ₦{{ payment.amount|floatformat:0 }}. Any variation will delay processing.
+                    </p>
+                </div>
+
+                <div class="instruction-step">
+                    <div class="step-number-badge">2</div>
+                    <div class="step-icon">
+                        <i class="bi bi-tag"></i>
+                    </div>
+                    <h5 class="step-title">Do not dispute payment</h5>
+                    <p class="step-description">
+                        Once payment is made, do not dispute the transaction, it will lead to restrictions.
+                    </p>
+                </div>
+
+                <div class="instruction-step">
+                    <div class="step-number-badge">3</div>
+                    <div class="step-icon">
+                        <i class="bi bi-receipt"></i>
+                    </div>
+                    <h5 class="step-title">Avoid sending fake payment proofs</h5>
+                    <p class="step-description">
+                       This can lead to permanent blocking of your account. Always send genuine receipts.
+                    </p>
+                </div>
+
+                <div class="instruction-step">
+                    <div class="step-number-badge">4</div>
+                    <div class="step-icon">
+                        <i class="bi bi-telegram"></i>
+                    </div>
+                    <h5 class="step-title">Telegram Verification</h5>
+                    <p class="step-description">
+                        Send receipt via Telegram for account activation.
+                    </p>
+                </div>
+
+                <div class="instruction-step">
+                    <div class="step-number-badge">5</div>
+                    <div class="step-icon">
+                        <i class="bi bi-clock"></i>
+                    </div>
+                    <h5 class="step-title">Processing Time</h5>
+                    <p class="step-description">
+                        Account activation within 1-2 business days after verification.
+                    </p>
+                </div>
+
+                <div class="instruction-step">
+                    <div class="step-number-badge">6</div>
+                    <div class="step-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <h5 class="step-title">Email Confirmation</h5>
+                    <p class="step-description">
+                        You'll receive activation confirmation via email.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Alert -->
+        <div class="success-alert">
+            <strong>Quick Verification:</strong> Send your payment receipt via Telegram using the button below for faster verification and activation (within a few hours during business hours).
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            
+            <a href="https://t.me/accesszilla" target="_blank" class="btn-primary-custom">
+                <i class="bi bi-telegram me-2"></i>
+                I Have Transferred
+            </a>
+
+            <a href="{% url 'payments:subscription_plans' %}" class="btn-outline-custom">
+                <i class="bi bi-arrow-left me-2"></i>
+                Back to Plans
+            </a>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="instruction-card mt-4">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="fw-bold text-primary mb-3">
+                        <i class="bi bi-question-circle me-2"></i>
+                        Need Help?
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Contact us on Telegram for instant support</li>
+                        <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Keep your transfer receipt safe</li>
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        // Show success message with toast
+        const Toast = Swal ? Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true
+        }) : null;
+        
+        if (Toast) {
+            Toast.fire({
+                icon: 'success',
+                title: 'Copied to clipboard!',
+                text: text
+            });
+        } else {
+            // Fallback alert
+            alert('Copied to clipboard: ' + text);
+        }
+    }).catch(function(err) {
+        console.error('Could not copy text: ', err);
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('Copied to clipboard: ' + text);
+    });
+}
+
+// Add smooth scroll behavior for better UX
+document.addEventListener('DOMContentLoaded', function() {
+    // Highlight important elements on page load
+    setTimeout(() => {
+        const paymentId = document.querySelector('.telegram-highlight');
+        if (paymentId) {
+            paymentId.style.animation = 'pulse 2s infinite';
+        }
+    }, 1000);
+});
+
+// Add CSS animation for pulse effect
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+{% endblock %}

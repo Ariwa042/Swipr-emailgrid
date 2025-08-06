@@ -233,6 +233,28 @@
         box-shadow: 0 8px 32px rgba(96, 165, 250, 0.3);
     }
 
+    .currency-toggle .btn-outline-primary {
+        border-color: var(--blue-500);
+        color: var(--blue-600);
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .currency-toggle .btn-outline-primary:hover {
+        background: var(--blue-50);
+        border-color: var(--blue-600);
+        color: var(--blue-700);
+    }
+
+    .currency-toggle .btn-check:checked + .btn-outline-primary {
+        background: var(--gradient-primary);
+        border-color: var(--blue-600);
+        color: white;
+        box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+    }
+
     @media (max-width: 768px) {
         .pricing-card {
             margin-bottom: 2rem;
@@ -265,6 +287,21 @@
                 Scale your email marketing with confidence. No hidden fees, no surprises. 
                 Just powerful tools to grow your business.
             </p>
+            
+            <!-- Currency Toggle -->
+            <div class="currency-toggle mb-4">
+                <div class="btn-group" role="group" aria-label="Currency selection">
+                    <input type="radio" class="btn-check" name="currency" id="usd" value="usd" checked>
+                    <label class="btn btn-outline-primary" for="usd">
+                        <i class="bi bi-currency-dollar me-1"></i>Crypto
+                    </label>
+                    
+                    <input type="radio" class="btn-check" name="currency" id="ngn" value="ngn">
+                    <label class="btn btn-outline-primary" for="ngn">
+                        <i class="bi bi-currency-exchange me-1"></i>Bank Transfer
+                    </label>
+                </div>
+            </div>
         </div>
 
         <!-- Current Subscription Alert -->
@@ -294,9 +331,11 @@
                         </h3>
                         
                         <div class="price-display {% if plan.name != 'Pro' %}text-primary{% endif %}">
-                            ${{ plan.price|floatformat:0 }}
-                            <span class="price-period">
-                                /{{ plan.duration_days }} days
+                            <span class="usd-price">
+                                ${{ plan.price|floatformat:0 }}<span class="price-period">/{{ plan.duration_days }} days</span>
+                            </span>
+                            <span class="ngn-price" style="display: none;">
+                                ₦{{ plan.price_in_ngn|floatformat:0|default:"N/A" }}<span class="price-period">/{{ plan.duration_days }} days</span>
                             </span>
                         </div>
                         
@@ -331,7 +370,7 @@
                             Current Plan
                         </button>
                         {% else %}
-                        <a href="{% url 'payments:checkout' plan.id %}" class="cta-button">
+                        <a href="{% url 'payments:checkout' plan.id %}" class="cta-button plan-button" data-plan-id="{{ plan.id }}" data-crypto-url="{% url 'payments:checkout' plan.id %}" data-bank-url="{% url 'payments:bank_transfer_direct' plan.id %}">
                             <i class="bi bi-rocket-takeoff me-2"></i>
                             {% if plan.name == 'Basic' %}Start Free{% else %}Upgrade Now{% endif %}
                         </a>
@@ -461,4 +500,50 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const currencyInputs = document.querySelectorAll('input[name="currency"]');
+    const usdPrices = document.querySelectorAll('.usd-price');
+    const ngnPrices = document.querySelectorAll('.ngn-price');
+    const planButtons = document.querySelectorAll('.plan-button');
+    
+    function toggleCurrency(selectedCurrency) {
+        if (selectedCurrency === 'usd') {
+            usdPrices.forEach(price => price.style.display = 'inline');
+            ngnPrices.forEach(price => price.style.display = 'none');
+            
+            // Update button URLs to checkout page for crypto
+            planButtons.forEach(button => {
+                const cryptoUrl = button.getAttribute('data-crypto-url');
+                if (cryptoUrl) {
+                    button.href = cryptoUrl;
+                }
+            });
+        } else if (selectedCurrency === 'ngn') {
+            usdPrices.forEach(price => price.style.display = 'none');
+            ngnPrices.forEach(price => price.style.display = 'inline');
+            
+            // Update button URLs to bank transfer instructions page
+            planButtons.forEach(button => {
+                const bankUrl = button.getAttribute('data-bank-url');
+                if (bankUrl) {
+                    button.href = bankUrl;
+                }
+            });
+        }
+    }
+    
+    currencyInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            if (this.checked) {
+                toggleCurrency(this.value);
+            }
+        });
+    });
+    
+    // Initialize with USD (crypto) selected
+    toggleCurrency('usd');
+});
+</script>
 {% endblock %}

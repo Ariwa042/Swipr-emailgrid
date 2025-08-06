@@ -421,6 +421,143 @@
         color: var(--primary);
     }
 
+    /* Payment Method Cards */
+    .payment-method-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .method-card {
+        background: var(--light);
+        border: 2px solid #e2e8f0;
+        border-radius: var(--border-radius-lg);
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+    }
+
+    .method-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .method-card.selected {
+        border-color: var(--primary);
+        background: var(--gradient-primary);
+        color: var(--white);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .method-content,
+    .bank-content {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+
+    .method-icon,
+    .bank-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(59, 130, 246, 0.1);
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary);
+        transition: all 0.3s ease;
+    }
+
+    .method-card:hover .method-icon,
+    .method-card.selected .method-icon,
+    .bank-card:hover .bank-icon,
+    .bank-card.selected .bank-icon {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--white);
+    }
+
+    .method-info h4,
+    .bank-info h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--dark);
+        transition: color 0.3s ease;
+    }
+
+    .method-info p,
+    .bank-info p {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0;
+        transition: color 0.3s ease;
+    }
+
+    .method-card.selected .method-info h4,
+    .method-card.selected .method-info p,
+    .bank-card.selected .bank-info h4,
+    .bank-card.selected .bank-info p {
+        color: var(--white);
+    }
+
+    /* Bank Transfer Cards */
+    .bank-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+
+    .bank-card {
+        background: var(--light);
+        border: 2px solid #e2e8f0;
+        border-radius: var(--border-radius-lg);
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+    }
+
+    .bank-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .bank-card.selected {
+        border-color: var(--primary);
+        background: var(--gradient-primary);
+        color: var(--white);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+    }
+
+    .payment-options {
+        margin-bottom: 2rem;
+    }
+
+    .options-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 1rem;
+    }
+
     .action-section {
         display: flex;
         gap: 1rem;
@@ -667,15 +804,129 @@
                         </div>
                         <div>
                             <div>Choose Payment Method</div>
-                            <div class="section-subtitle">Select your preferred cryptocurrency for secure payment</div>
+                            <div class="section-subtitle">Select your preferred payment method</div>
                         </div>
                     </div>
 
                     <form method="post" id="paymentForm">
                         {% csrf_token %}
-                        <input type="hidden" name="pay_currency" id="selectedCurrency" required>
+                        <input type="hidden" name="payment_method" id="selectedPaymentMethod" required>
+                        <input type="hidden" name="pay_currency" id="selectedCurrency">
+                        <input type="hidden" name="bank_info_id" id="selectedBankInfo">
                         
-                        <div class="payment-grid">
+                        <!-- Payment Method Selection -->
+                        <div class="payment-method-selector">
+                            <div class="method-card" onclick="selectPaymentMethod('crypto', this)">
+                                <div class="method-content">
+                                    <div class="method-icon">₿</div>
+                                    <div class="method-info">
+                                        <h4>Cryptocurrency</h4>
+                                        <p>Pay with Bitcoin, Ethereum, USDT and more</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {% if bank_transfer_options %}
+                            <div class="method-card" onclick="selectPaymentMethod('bank_transfer', this)">
+                                <div class="method-content">
+                                    <div class="method-icon">🏦</div>
+                                    <div class="method-info">
+                                        <h4>Bank Transfer</h4>
+                                        <p>Direct bank transfer (manual verification)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Cryptocurrency Options (hidden by default) -->
+                        <div id="cryptoOptions" class="payment-options" style="display: none;">
+                            <h5 class="options-title">Select Cryptocurrency</h5>
+                        <!-- Cryptocurrency Options (hidden by default) -->
+                        <div id="cryptoOptions" class="payment-options" style="display: none;">
+                            <h5 class="options-title">Select Cryptocurrency</h5>
+                            <div class="payment-grid">
+                                <div class="crypto-card" onclick="selectCurrency('btc', this)">
+                                    <div class="crypto-content">
+                                        <div class="crypto-icon">₿</div>
+                                        <div class="crypto-info">
+                                            <h4>Bitcoin</h4>
+                                            <p>BTC</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="crypto-card" onclick="selectCurrency('eth', this)">
+                                    <div class="crypto-content">
+                                        <div class="crypto-icon">Ξ</div>
+                                        <div class="crypto-info">
+                                            <h4>Ethereum</h4>
+                                            <p>ETH</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="crypto-card" onclick="selectCurrency('sol', this)">
+                                    <div class="crypto-content">
+                                        <div class="crypto-icon">◎</div>
+                                        <div class="crypto-info">
+                                            <h4>Solana</h4>
+                                            <p>SOL</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="crypto-card" onclick="selectCurrency('usdttrc20', this)">
+                                    <div class="crypto-content">
+                                        <div class="crypto-icon">₮</div>
+                                        <div class="crypto-info">
+                                            <h4>Tether</h4>
+                                            <p>USDT(TRC20)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="crypto-card" onclick="selectCurrency('ada', this)">
+                                    <div class="crypto-content">
+                                        <div class="crypto-icon">₳</div>
+                                        <div class="crypto-info">
+                                            <h4>Cardano</h4>
+                                            <p>ADA</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="crypto-card" onclick="selectCurrency('matic', this)">
+                                    <div class="crypto-content">
+                                        <div class="crypto-icon">⬟</div>
+                                        <div class="crypto-info">
+                                            <h4>Polygon</h4>
+                                            <p>MATIC</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bank Transfer Options (hidden by default) -->
+                        {% if bank_transfer_options %}
+                        <div id="bankOptions" class="payment-options" style="display: none;">
+                            <h5 class="options-title">Select Bank Account</h5>
+                            <div class="bank-grid">
+                                {% for bank_info in bank_transfer_options %}
+                                <div class="bank-card" onclick="selectBankInfo('{{ bank_info.id }}', this)">
+                                    <div class="bank-content">
+                                        <div class="bank-icon">🏦</div>
+                                        <div class="bank-info">
+                                            <h4>{{ bank_info.bank_name }}</h4>
+                                            <p>{{ bank_info.currency }} - {{ bank_info.account_holder }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
                             <div class="crypto-card" onclick="selectCurrency('btc', this)">
                                 <div class="crypto-content">
                                     <div class="crypto-icon">₿</div>
@@ -767,13 +1018,48 @@
 
 {% block extra_js %}
 <script>
+let selectedPaymentMethod = null;
 let selectedCrypto = null;
+let selectedBank = null;
+
+function selectPaymentMethod(method, element) {
+    selectedPaymentMethod = method;
+    document.getElementById('selectedPaymentMethod').value = method;
+    
+    // Remove selected class from all method cards
+    document.querySelectorAll('.method-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked card
+    element.classList.add('selected');
+    
+    // Show/hide relevant options
+    const cryptoOptions = document.getElementById('cryptoOptions');
+    const bankOptions = document.getElementById('bankOptions');
+    
+    if (method === 'crypto') {
+        cryptoOptions.style.display = 'block';
+        if (bankOptions) bankOptions.style.display = 'none';
+        // Reset bank selection
+        selectedBank = null;
+        document.getElementById('selectedBankInfo').value = '';
+    } else if (method === 'bank_transfer') {
+        if (bankOptions) bankOptions.style.display = 'block';
+        cryptoOptions.style.display = 'none';
+        // Reset crypto selection
+        selectedCrypto = null;
+        document.getElementById('selectedCurrency').value = '';
+    }
+    
+    updateProceedButton();
+}
 
 function selectCurrency(currency, element) {
     selectedCrypto = currency;
     document.getElementById('selectedCurrency').value = currency;
     
-    // Remove selected class from all cards
+    // Remove selected class from all crypto cards
     document.querySelectorAll('.crypto-card').forEach(card => {
         card.classList.remove('selected');
     });
@@ -781,10 +1067,36 @@ function selectCurrency(currency, element) {
     // Add selected class to clicked card
     element.classList.add('selected');
     
-    // Enable proceed button
+    updateProceedButton();
+}
+
+function selectBankInfo(bankId, element) {
+    selectedBank = bankId;
+    document.getElementById('selectedBankInfo').value = bankId;
+    
+    // Remove selected class from all bank cards
+    document.querySelectorAll('.bank-card').forEach(card => {
+        card.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked card
+    element.classList.add('selected');
+    
+    updateProceedButton();
+}
+
+function updateProceedButton() {
     const proceedBtn = document.getElementById('proceedBtn');
-    proceedBtn.disabled = false;
-    proceedBtn.style.opacity = '1';
+    let canProceed = false;
+    
+    if (selectedPaymentMethod === 'crypto' && selectedCrypto) {
+        canProceed = true;
+    } else if (selectedPaymentMethod === 'bank_transfer' && selectedBank) {
+        canProceed = true;
+    }
+    
+    proceedBtn.disabled = !canProceed;
+    proceedBtn.style.opacity = canProceed ? '1' : '0.6';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -792,9 +1104,21 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Form validation and submission
     document.getElementById('paymentForm').addEventListener('submit', function(e) {
-        if (!selectedCrypto) {
+        if (!selectedPaymentMethod) {
+            e.preventDefault();
+            alert('Please select a payment method to proceed.');
+            return false;
+        }
+        
+        if (selectedPaymentMethod === 'crypto' && !selectedCrypto) {
             e.preventDefault();
             alert('Please select a cryptocurrency to proceed.');
+            return false;
+        }
+        
+        if (selectedPaymentMethod === 'bank_transfer' && !selectedBank) {
+            e.preventDefault();
+            alert('Please select a bank account to proceed.');
             return false;
         }
         

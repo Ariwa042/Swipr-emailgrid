@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import SubscriptionPlan, Subscription, PaymentInfo, Payment
+from .models import SubscriptionPlan, Subscription, PaymentInfo, Payment, BankTransferInfo
 
 @admin.register(PaymentInfo)
 class PaymentInfoAdmin(admin.ModelAdmin):
@@ -8,7 +8,7 @@ class PaymentInfoAdmin(admin.ModelAdmin):
 
 @admin.register(SubscriptionPlan)
 class SubscriptionPlanAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'max_emails', 'duration_days')
+    list_display = ('name', 'price', 'price_in_ngn', 'max_emails', 'duration_days')
     list_filter = ('duration_days',)
     search_fields = ('name',)
 
@@ -52,5 +52,18 @@ class PaymentAdmin(admin.ModelAdmin):
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(BankTransferInfo)
+class BankTransferInfoAdmin(admin.ModelAdmin):
+    list_display = ('bank_name', 'account_holder', 'account_number', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('bank_name', 'account_holder', 'account_number')
+    
+    fieldsets = (
+        ('Bank Details', {
+            'fields': ('bank_name', 'account_holder', 'account_number', 'is_active')
         }),
     )
