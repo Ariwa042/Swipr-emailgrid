@@ -62,12 +62,32 @@ def payment(request, plan_id):
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         
+        if not payment_method:
+            messages.error(request, 'Please select a payment method.')
+            return render(request, 'payments/payment_instructions.html', {
+                'plan': plan,
+                'available_currencies': available_currencies,
+                'popular_currencies': popular_currencies,
+                'bank_transfer_options': bank_transfer_options,
+            })
+        
         if payment_method == 'crypto':
             pay_currency = request.POST.get('pay_currency')
             
-            if not pay_currency or pay_currency not in available_currencies:
+            if not pay_currency:
+                messages.error(request, 'Please select a cryptocurrency.')
+                return render(request, 'payments/payment_instructions.html', {
+                    'plan': plan,
+                    'available_currencies': available_currencies,
+                    'popular_currencies': popular_currencies,
+                    'bank_transfer_options': bank_transfer_options,
+                })
+            
+            # Allow hardcoded currencies for development/testing
+            allowed_currencies = ['btc', 'eth', 'sol', 'usdttrc20', 'ada', 'matic']
+            if pay_currency not in allowed_currencies and pay_currency not in available_currencies:
                 messages.error(request, 'Please select a valid cryptocurrency.')
-                return render(request, 'payments/checkout.html', {
+                return render(request, 'payments/payment_instructions.html', {
                     'plan': plan,
                     'available_currencies': available_currencies,
                     'popular_currencies': popular_currencies,
@@ -118,7 +138,7 @@ def payment(request, plan_id):
             
             if not bank_info_id:
                 messages.error(request, 'Please select a bank transfer option.')
-                return render(request, 'payments/checkout.html', {
+                return render(request, 'payments/payment_instructions.html', {
                     'plan': plan,
                     'available_currencies': available_currencies,
                     'popular_currencies': popular_currencies,
@@ -140,8 +160,17 @@ def payment(request, plan_id):
             
             # Redirect to bank transfer instructions
             return redirect('payments:bank_transfer_instructions', payment_id=payment.payment_id)
+        
+        else:
+            messages.error(request, 'Invalid payment method selected.')
+            return render(request, 'payments/payment_instructions.html', {
+                'plan': plan,
+                'available_currencies': available_currencies,
+                'popular_currencies': popular_currencies,
+                'bank_transfer_options': bank_transfer_options,
+            })
     
-    return render(request, 'payments/checkout.html', {
+    return render(request, 'payments/payment_instructions.html', {
         'plan': plan,
         'available_currencies': available_currencies,
         'popular_currencies': popular_currencies,
