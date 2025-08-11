@@ -811,7 +811,7 @@
 
                     <div class="payment-method-selector">
                         <form method="get" action="{% url 'payments:payment' plan.id %}" style="margin:0;">
-                            <button type="submit" class="method-card" style="width:100%;border:none;background:none;padding:0;">
+                            <button type="submit" class="method-card" style="width:100%;border:2px solid rgba(128, 128, 128, 0.495);background:none;padding:8px;">
                                 <div class="method-content">
                                     <div class="method-icon">₿</div>
                                     <div class="method-info">
@@ -823,12 +823,12 @@
                         </form>
                         {% if bank_transfer_options %}
                         <form method="get" action="{% url 'payments:bank_transfer_instructions' plan.id %}" style="margin:0;">
-                            <button type="submit" class="method-card" style="width:100%;border:none;background:none;padding:0;">
+                            <button type="submit" class="method-card" style="width:100%;border:none;background:linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);padding:8px;">
                                 <div class="method-content">
-                                    <div class="method-icon">🏦</div>
+                                    <div class="method-icon" style="background-color: #f5f5f5b0;">🏦</div>
                                     <div class="method-info">
-                                        <h4>Bank Transfer</h4>
-                                        <p>Direct bank transfer (manual verification)</p>
+                                        <h4 style="color: #ffffff;">Bank Transfer</h4>
+                                        <p style="color: #ffffffc4;">Direct bank transfer (manual verification)</p>
                                     </div>
                                 </div>
                             </button>
