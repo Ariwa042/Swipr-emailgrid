@@ -298,7 +298,7 @@
                     
                     <input type="radio" class="btn-check" name="currency" id="ngn" value="ngn">
                     <label class="btn btn-outline-primary" for="ngn">
-                        <i class="bi bi-currency-exchange me-1"></i>Bank Transfer
+                        <i class="bi bi-currency-exchange me-1"></i>Naira
                     </label>
                 </div>
             </div>
@@ -370,7 +370,7 @@
                             Current Plan
                         </button>
                         {% else %}
-                        <a href="{% url 'payments:checkout' plan.id %}" class="cta-button plan-button" data-plan-id="{{ plan.id }}" data-crypto-url="{% url 'payments:checkout' plan.id %}" data-bank-url="{% url 'payments:bank_transfer_direct' plan.id %}">
+                        <a href="{% url 'payments:payment_method' plan.id %}" class="cta-button plan-button" data-plan-id="{{ plan.id }}">
                             <i class="bi bi-rocket-takeoff me-2"></i>
                             {% if plan.name == 'Basic' %}Start Now{% else %}Upgrade Now{% endif %}
                         </a>

@@ -40,7 +40,26 @@ def subscribe_to_plan(request, plan_id):
     # Redirect to the payment page with the plan_id
     return redirect('payments:payment', plan_id=plan.id)
 
-# Payment View
+
+# Payment Method Selection View
+@login_required
+def payment_method(request, plan_id):
+    plan = get_object_or_404(SubscriptionPlan, id=plan_id)
+    bank_transfer_options = BankTransferInfo.objects.filter(is_active=True)
+    if request.method == 'POST':
+        method = request.POST.get('payment_method')
+        if method == 'crypto':
+            return redirect('payments:payment', plan_id=plan.id)
+        elif method == 'bank_transfer':
+            return redirect('payments:bank_transfer_selection', plan_id=plan.id)
+        else:
+            messages.error(request, 'Please select a payment method.')
+    return render(request, 'payments/payment_method.html', {
+        'plan': plan,
+        'bank_transfer_options': bank_transfer_options,
+    })
+
+# Payment View (Crypto only)
 @login_required
 def payment(request, plan_id):
     plan = get_object_or_404(SubscriptionPlan, id=plan_id)
@@ -60,122 +79,55 @@ def payment(request, plan_id):
     bank_transfer_options = BankTransferInfo.objects.filter(is_active=True)
     
     if request.method == 'POST':
-        payment_method = request.POST.get('payment_method')
-        
-        if not payment_method:
-            messages.error(request, 'Please select a payment method.')
+        pay_currency = request.POST.get('pay_currency')
+        if not pay_currency:
+            messages.error(request, 'Please select a cryptocurrency.')
             return render(request, 'payments/payment_instructions.html', {
                 'plan': plan,
                 'available_currencies': available_currencies,
                 'popular_currencies': popular_currencies,
-                'bank_transfer_options': bank_transfer_options,
             })
-        
-        if payment_method == 'crypto':
-            pay_currency = request.POST.get('pay_currency')
-            
-            if not pay_currency:
-                messages.error(request, 'Please select a cryptocurrency.')
-                return render(request, 'payments/payment_instructions.html', {
-                    'plan': plan,
-                    'available_currencies': available_currencies,
-                    'popular_currencies': popular_currencies,
-                    'bank_transfer_options': bank_transfer_options,
-                })
-            
-            # Allow hardcoded currencies for development/testing
-            allowed_currencies = ['btc', 'eth', 'sol', 'usdttrc20', 'ada', 'matic']
-            if pay_currency not in allowed_currencies and pay_currency not in available_currencies:
-                messages.error(request, 'Please select a valid cryptocurrency.')
-                return render(request, 'payments/payment_instructions.html', {
-                    'plan': plan,
-                    'available_currencies': available_currencies,
-                    'popular_currencies': popular_currencies,
-                    'bank_transfer_options': bank_transfer_options,
-                })
-            
-            # Create crypto payment record
-            payment = Payment.objects.create(
-                user=request.user,
-                plan=plan,
-                amount=plan.price,
-                price_amount=plan.price,
-                price_currency='USD',
-                pay_currency=pay_currency,
-                payment_method='crypto',
-                status='waiting',
-                order_id=None,  # Will be set to payment_id
-                order_description=f'Subscription: {plan.name} Plan'
-            )
-            
-            # Update order_id to payment_id
-            payment.order_id = str(payment.payment_id)
+        allowed_currencies = ['btc', 'eth', 'sol', 'usdttrc20', 'ada', 'matic']
+        if pay_currency not in allowed_currencies and pay_currency not in available_currencies:
+            messages.error(request, 'Please select a valid cryptocurrency.')
+            return render(request, 'payments/payment_instructions.html', {
+                'plan': plan,
+                'available_currencies': available_currencies,
+                'popular_currencies': popular_currencies,
+            })
+        payment = Payment.objects.create(
+            user=request.user,
+            plan=plan,
+            amount=plan.price,
+            price_amount=plan.price,
+            price_currency='USD',
+            pay_currency=pay_currency,
+            payment_method='crypto',
+            status='waiting',
+            order_id=None,
+            order_description=f'Subscription: {plan.name} Plan'
+        )
+        payment.order_id = str(payment.payment_id)
+        payment.save()
+        payment_data = nowpayments.prepare_payment_data(payment, pay_currency, request)
+        nowpayments_response = nowpayments.create_payment(payment_data)
+        if nowpayments_response:
+            payment.nowpayments_id = str(nowpayments_response.get('payment_id'))
+            payment.pay_address = nowpayments_response.get('pay_address')
+            payment.pay_amount = nowpayments_response.get('pay_amount')
+            payment.status = nowpayments_response.get('payment_status', 'waiting')
+            payment.ipn_callback_url = payment_data.get('ipn_callback_url')
             payment.save()
-            
-            # Prepare payment data for NOWPayments
-            payment_data = nowpayments.prepare_payment_data(payment, pay_currency, request)
-            
-            # Create payment with NOWPayments
-            nowpayments_response = nowpayments.create_payment(payment_data)
-            
-            if nowpayments_response:
-                # Update payment with NOWPayments data
-                payment.nowpayments_id = str(nowpayments_response.get('payment_id'))
-                payment.pay_address = nowpayments_response.get('pay_address')
-                payment.pay_amount = nowpayments_response.get('pay_amount')
-                payment.status = nowpayments_response.get('payment_status', 'waiting')
-                payment.ipn_callback_url = payment_data.get('ipn_callback_url')
-                payment.save()
-                
-                # Redirect to payment instructions page
-                return redirect('payments:payment_instructions', payment_id=payment.payment_id)
-            else:
-                messages.error(request, 'Failed to create payment. Please try again.')
-                payment.delete()
-                
-        elif payment_method == 'bank_transfer':
-            bank_info_id = request.POST.get('bank_info_id')
-            
-            if not bank_info_id:
-                messages.error(request, 'Please select a bank transfer option.')
-                return render(request, 'payments/payment_instructions.html', {
-                    'plan': plan,
-                    'available_currencies': available_currencies,
-                    'popular_currencies': popular_currencies,
-                    'bank_transfer_options': bank_transfer_options,
-                })
-            
-            bank_info = get_object_or_404(BankTransferInfo, id=bank_info_id, is_active=True)
-            
-            # Create bank transfer payment record
-            payment = Payment.objects.create(
-                user=request.user,
-                plan=plan,
-                amount=plan.price,
-                payment_method='bank_transfer',
-                bank_transfer_info=bank_info,
-                status='waiting',
-                order_description=f'Subscription: {plan.name} Plan'
-            )
-            
-            # Redirect to bank transfer instructions
-            return redirect('payments:bank_transfer_instructions', payment_id=payment.payment_id)
-        
+            return redirect('payments:payment_instructions', payment_id=payment.payment_id)
         else:
-            messages.error(request, 'Invalid payment method selected.')
-            return render(request, 'payments/payment_instructions.html', {
-                'plan': plan,
-                'available_currencies': available_currencies,
-                'popular_currencies': popular_currencies,
-                'bank_transfer_options': bank_transfer_options,
-            })
-    
-    return render(request, 'payments/payment_instructions.html', {
+            messages.error(request, 'Failed to create payment. Please try again.')
+            payment.delete()
+    return render(request, 'payments/checkout.html', {
         'plan': plan,
         'available_currencies': available_currencies,
         'popular_currencies': popular_currencies,
-        'bank_transfer_options': bank_transfer_options,
     })
+
 
 @login_required
 def check_payment_status(request, payment_id):
@@ -230,38 +182,49 @@ def payment_instructions(request, payment_id):
     })
 
 
+
 @login_required
-def bank_transfer_instructions(request, payment_id):
+def bank_transfer_instructions(request, plan_id):
     """
-    Show bank transfer payment instructions to the user
+    Show bank transfer payment instructions to the user. Create a new Payment for the plan.
     """
-    payment = get_object_or_404(Payment, payment_id=payment_id, user=request.user)
-    
-    # Ensure this is a bank transfer payment
-    if payment.payment_method != 'bank_transfer':
-        messages.error(request, 'Invalid payment method.')
+    try:
+        plan = SubscriptionPlan.objects.get(id=plan_id)
+    except SubscriptionPlan.DoesNotExist:
+        messages.error(request, 'Selected plan not found.')
         return redirect('payments:subscription_plans')
     
-    # Ensure payment is in waiting status
-    if payment.status in ['finished', 'failed', 'expired', 'refunded']:
-        messages.warning(request, 'This payment is no longer awaiting completion.')
+    # Get the first active bank transfer info
+    bank_info = BankTransferInfo.objects.filter(is_active=True).first()
+    if not bank_info:
+        messages.error(request, 'Bank transfer option is currently unavailable.')
         return redirect('payments:subscription_plans')
     
+    # Create payment record
+    payment = Payment.objects.create(
+        user=request.user,
+        plan=plan,
+        amount=getattr(plan, 'price_in_ngn', None) or plan.price,
+        payment_method='bank_transfer',
+        bank_transfer_info=bank_info,
+        status='waiting'
+    )
+
     if request.method == 'POST':
         transfer_reference = request.POST.get('transfer_reference')
         transfer_proof = request.FILES.get('transfer_proof')
-        
+
         if transfer_reference:
             payment.transfer_reference = transfer_reference
             payment.status = 'confirming'
-            
+
         if transfer_proof:
             payment.transfer_proof = transfer_proof
-            
+
         payment.save()
         messages.success(request, 'Transfer details submitted successfully. Your payment is now under review.')
         return redirect('payments:subscription_plans')
-    
+
     return render(request, 'payments/bank_transfer_instructions.html', {
         'payment': payment,
         'plan': payment.plan,
@@ -339,79 +302,3 @@ def get_exchange_rate(request):
         return JsonResponse(rate_data)
     else:
         return JsonResponse({'error': 'Failed to get exchange rate'}, status=500)
-
-
-@login_required
-def bank_transfer_selection(request, plan_id):
-    """Handle bank transfer selection and create payment"""
-    try:
-        plan = SubscriptionPlan.objects.get(id=plan_id)
-        
-        if request.method == 'POST':
-            bank_info_id = request.POST.get('bank_info_id')
-            
-            if not bank_info_id:
-                messages.error(request, 'Please select a bank account.')
-                return redirect('payments:bank_transfer_selection', plan_id=plan_id)
-            
-            try:
-                bank_info = BankTransferInfo.objects.get(id=bank_info_id, is_active=True)
-            except BankTransferInfo.DoesNotExist:
-                messages.error(request, 'Selected bank account is not available.')
-                return redirect('payments:bank_transfer_selection', plan_id=plan_id)
-            
-            # Create payment record
-            payment = Payment.objects.create(
-                user=request.user,
-                plan=plan,
-                amount=plan.price_in_ngn if plan.price_in_ngn else plan.price,
-                payment_method='bank_transfer',
-                bank_info=bank_info,
-                status='waiting'
-            )
-            
-            return redirect('payments:bank_transfer_instructions', payment_id=payment.payment_id)
-        
-        # GET request - show bank selection page
-        bank_transfer_options = BankTransferInfo.objects.filter(is_active=True)
-        
-        context = {
-            'plan': plan,
-            'bank_transfer_options': bank_transfer_options,
-        }
-        
-        return render(request, 'payments/bank_transfer_selection.html', context)
-        
-    except SubscriptionPlan.DoesNotExist:
-        messages.error(request, 'Selected plan not found.')
-        return redirect('payments:subscription_plans')
-
-
-@login_required
-def bank_transfer_direct(request, plan_id):
-    """Create payment directly and redirect to bank transfer instructions"""
-    try:
-        plan = SubscriptionPlan.objects.get(id=plan_id)
-        
-        # Get the first active bank transfer info (since we're going direct)
-        bank_info = BankTransferInfo.objects.filter(is_active=True).first()
-        
-        if not bank_info:
-            messages.error(request, 'Bank transfer option is currently unavailable.')
-            return redirect('payments:subscription_plans')
-        
-        # Create payment record directly
-        payment = Payment.objects.create(
-            user=request.user,
-            plan=plan,
-            amount=plan.price_in_ngn if plan.price_in_ngn else plan.price,
-            payment_method='bank_transfer',
-            bank_transfer_info=bank_info,
-            status='waiting'
-        )
-        
-        return redirect('payments:bank_transfer_instructions', payment_id=payment.payment_id)
-        
-    except SubscriptionPlan.DoesNotExist:
-        messages.error(request, 'Selected plan not found.')
-        return redirect('payments:subscription_plans')

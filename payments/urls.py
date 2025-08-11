@@ -5,12 +5,13 @@ app_name = 'payments'
 
 urlpatterns = [
     path('plans/', views.subscription_plans, name='subscription_plans'),
+    path('payment_method/<int:plan_id>', views.payment_method, name='payment_method'),
     path('checkout/<int:plan_id>/', views.payment, name='checkout'),
     path('payment/<int:plan_id>/', views.payment, name='payment'),
-    path('bank-transfer/<int:plan_id>/', views.bank_transfer_selection, name='bank_transfer_selection'),
-    path('bank-transfer-direct/<int:plan_id>/', views.bank_transfer_direct, name='bank_transfer_direct'),
+    #path('bank-transfer/<int:plan_id>/', views.bank_transfer_selection, name='bank_transfer_selection'),
+    #path('bank-transfer-direct/<int:plan_id>/', views.bank_transfer_direct, name='bank_transfer_direct'),
     path('payment-instructions/<str:payment_id>/', views.payment_instructions, name='payment_instructions'),
-    path('bank-transfer-instructions/<str:payment_id>/', views.bank_transfer_instructions, name='bank_transfer_instructions'),
+    path('bank-transfer-instructions/<int:plan_id>/', views.bank_transfer_instructions, name='bank_transfer_instructions'),
     path('check-status/<str:payment_id>/', views.check_payment_status, name='check_payment_status'),
     path('nowpayments/ipn/', views.nowpayments_ipn, name='nowpayments_ipn'),
     path('exchange-rate/', views.get_exchange_rate, name='get_exchange_rate'),
